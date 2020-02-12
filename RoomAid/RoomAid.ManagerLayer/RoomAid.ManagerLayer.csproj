@@ -86,6 +86,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RoomAid.DataAccessLayer\RoomAid.DataAccessLayer.csproj">
+      <Project>{5E8E8769-AF6B-49C7-A61C-AA85B747EF93}</Project>
+      <Name>RoomAid.DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RoomAid.ServiceLayer\RoomAid.ServiceLayer.csproj">
       <Project>{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}</Project>
       <Name>RoomAid.ServiceLayer</Name>

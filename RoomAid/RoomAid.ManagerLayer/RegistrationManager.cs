@@ -1,35 +1,43 @@
 ﻿using RoomAid.DataAccessLayer;
 using RoomAid.ServiceLayer;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
+using RoomAid.ServiceLayer;
+using RoomAid.ServiceLayer.Registration;
+using RoomAid.ServiceLayer.UserManagement;
 
 namespace RoomAid.ManagerLayer
 {
-    public class CreateAccountManager
+    public class RegistrationManager
     {
         //For normal User
         /// <summary>
-        /// Method CreateAccount() will check all user input and see if they are valid 
+        /// Method RegisterUser() will check all user input and see if they are valid 
         /// <param name="email">The input email, should be passed from fortnend or controller, used as username</param>
         /// <param name="fname">User first name passed from frontend</param>
         /// <param name="lname">User last name passed from frontend</param>
         /// <param name="dob">User's date of birth passed from frontend</param>
         /// <param name="gender">User's gender passed from frontend</param>
         /// <param name="password">User's password passed from frontend</param>
-        /// <returns>IResult result the object that contains a message and if the check is true or false</returns>
-        public IResult CreateAccount(string email, string fname, string lname, DateTime dob, string gender, string password, string repassword, UserSession session)
+        /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
+        public IResult RegisterUser(RegistrationRequestDTO registrationRequest)
         {
-            RegistrationService rs = new RegistrationService();
+            ValidationService rs = new ValidationService();
             string message = "";
             bool ifSuccess = false;
-            if (session.UserCurrentSession == null)
-            {
-                
-                
-                IResult checkResult = rs.EmailCheck(email);
+
+            string email = registrationRequest.Email;
+            string fname = registrationRequest.Fname;
+            string lname = registrationRequest.Lname;
+            DateTime dob = registrationRequest.Dob;
+            string gender = registrationRequest.Gender;
+            string password = registrationRequest.Password;
+            string repassword = registrationRequest.Repassword;
+
+
+                IResult checkResult = rs.EmailValidation(email);
 
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
@@ -42,12 +50,12 @@ namespace RoomAid.ManagerLayer
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                checkResult = rs.AgeCheck(dob);
+                checkResult = rs.AgeValidation(dob);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
 
-                checkResult = rs.PasswordCheck(password);
+                checkResult = rs.PasswordValidation(password);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
@@ -70,50 +78,19 @@ namespace RoomAid.ManagerLayer
                     AddUserService ad = new AddUserService();
 
                     checkResult = ad.AddUser(newUser, hash.HashedValue, hash.Salt);
+                    //TODO: Hash the password
+                    //TODO: Store the salt
+                    //TODO: Call the service to add user
+                    CreateAccountService ad = new CreateAccountService();
+                    checkResult = ad.CreateAccount(newUser);	
                     message = message + checkResult.Message;
                     ifSuccess = checkResult.IsSuccess;
                 }
-
-            }
 
             //log
             Logger.Log(message);
             return new CheckResult(message, ifSuccess);
         }
 
-        //For admin account
-        /// <summary>
-        /// Method CreateAccount() will check if the new admin account is valid 
-        /// <param name="admin">The user object that is already created</param>
-        /// <param name="password">admin's password passed from frontend</param>
-        /// <returns>IResult result the object that contains a message and if the check is true or false</returns>
-        public IResult CreateAccount(User admin, string password)
-        {
-            //TODO: check if current User is system admin
-            RegistrationService rs = new RegistrationService();
-            IResult checkResult = null;
-            string message = "";
-            bool ifSuccess = false;
-            if (admin != null)
-            {
-                checkResult = rs.PasswordCheck(password);
-                if (checkResult.IsSuccess)
-                {
-                    AddUserService ad = new AddUserService();
-
-                    checkResult = ad.AddAdmin(admin, password);
-                    message = message + checkResult.Message;
-                    ifSuccess = checkResult.IsSuccess;
-                }
-            }
-            else
-            {
-                return new CheckResult("no account detected!",false);
-            }
-
-            //log
-            Logger.Log(message);
-            return checkResult;
-        }
     }
 }

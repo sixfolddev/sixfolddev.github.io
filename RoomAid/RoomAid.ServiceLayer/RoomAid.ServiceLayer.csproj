@@ -100,6 +100,8 @@
     <Compile Include="Registration\CheckResult.cs" />
     <Compile Include="Registration\IResult.cs" />
     <Compile Include="Registration\RegistrationService.cs" />
+    <Compile Include="Security\Hasher.cs" />
+    <Compile Include="Security\SaltGenerator.cs" />
     <Compile Include="UserManagement\AddUserService.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
     <Compile Include="UserManagement\DeleteUserService.cs" />
@@ -113,7 +115,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RoomAid.DataAccessLayer\RoomAid.DataAccessLayer.csproj">
+      <Project>{5E8E8769-AF6B-49C7-A61C-AA85B747EF93}</Project>
+      <Name>RoomAid.DataAccessLayer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
