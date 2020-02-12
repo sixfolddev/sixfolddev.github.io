@@ -102,6 +102,7 @@
     <Compile Include="Registration\RegistrationService.cs" />
     <Compile Include="UserManagement\AddUserService.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
+    <Compile Include="UserManagement\DeleteUserService.cs" />
     <Compile Include="UserManagement\IConverter.cs" />
     <Compile Include="UserManagement\JWTService.cs" />
     <Compile Include="UserManagement\SessionTokenService.cs" />

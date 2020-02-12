@@ -34,6 +34,7 @@ namespace RoomAid.Archive.Tests
             //For testing, make sure directory exists then delete it
             if (Directory.Exists(logStorage))
             {
+               DirClean();
                Directory.Delete(logStorage);
             }
             
