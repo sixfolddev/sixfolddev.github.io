@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Reflection;
 
-
 namespace RoomAid.ServiceLayer
 {
     public class Logger

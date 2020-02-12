@@ -1,8 +1,10 @@
-﻿using RoomAid.Authentication;
+﻿using RoomAid.DataAccessLayer;
 using RoomAid.ServiceLayer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace RoomAid.ManagerLayer
 {
@@ -62,16 +64,14 @@ namespace RoomAid.ManagerLayer
                 if (ifSuccess)
                 {
                     User newUser = new User(email, fname, lname, "Enable", dob, gender);
-                    //TODO: Hash the password
-                    //TODO: Store the salt
-                    //TODO: Call the service to add user
+
+                    Hasher hasher = new Hasher(new SHA256Cng()); // SHA256 algorithm
+                    HashDAO hash = hasher.GenerateHash(password);
                     AddUserService ad = new AddUserService();
 
-                    string salt = "";
-                    checkResult = ad.AddUser(newUser, password, salt);
+                    checkResult = ad.AddUser(newUser, hash.HashedValue, hash.Salt);
                     message = message + checkResult.Message;
                     ifSuccess = checkResult.IsSuccess;
-
                 }
 
             }

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace RoomAid.Authentication
+namespace RoomAid.ServiceLayer
 {
     public class Authentication
     {
@@ -84,15 +84,6 @@ namespace RoomAid.Authentication
         public bool GetAuthenticated()
         {
             return _authenticated;
-        }
-        public byte[] GenerateSalt()
-        {
-            var salt = new byte[32];
-
-            var random = new RNGCryptoServiceProvider();
-            random.GetBytes(salt);
-
-            return salt;
         }
     }
 }
