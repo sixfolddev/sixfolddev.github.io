@@ -99,8 +99,9 @@
     <Compile Include="Archiving\SevenZipArchiveService.cs" />
     <Compile Include="Registration\CheckResult.cs" />
     <Compile Include="Registration\IResult.cs" />
-    <Compile Include="Registration\RegistrationService.cs" />
-    <Compile Include="UserManagement\AddUserService.cs" />
+    <Compile Include="Registration\RegistrationRequestDTO.cs" />
+    <Compile Include="Registration\ValidationService.cs" />
+    <Compile Include="UserManagement\CreateAccountService.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
     <Compile Include="UserManagement\DeleteUserService.cs" />
     <Compile Include="UserManagement\IConverter.cs" />

@@ -2,6 +2,7 @@
 using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
+using RoomAid.ServiceLayer.Registration;
 
 namespace RoomAid.Registration.Test
 {
@@ -9,7 +10,7 @@ namespace RoomAid.Registration.Test
     public class RegistrationTest
     {
         //Get the instance of registration service
-        private RegistrationService testRS = new RegistrationService();
+        private ValidationService testVs = new ValidationService();
 
         //The success condition for Name Check
         [TestMethod]
@@ -19,7 +20,7 @@ namespace RoomAid.Registration.Test
             bool expected = true;
 
             //Act
-            IResult checkResult = testRS.NameCheck("AlbertDu");
+            IResult checkResult = testVs.NameCheck("AlbertDu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -37,12 +38,12 @@ namespace RoomAid.Registration.Test
             bool expected = false;
             int checkRange = Int32.Parse(ConfigurationManager.AppSettings["nameLength"]);
             string input = "a";
-            for(int i = 0; i < checkRange + 1; i++)
+            for (int i = 0; i < checkRange + 1; i++)
             {
                 input = input + "a";
             }
             //Act
-            IResult checkResult = testRS.NameCheck(input);
+            IResult checkResult = testVs.NameCheck(input);
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -60,7 +61,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.NameCheck(" ");
+            IResult checkResult = testVs.NameCheck(" ");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -78,7 +79,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.NameCheck("");
+            IResult checkResult = testVs.NameCheck("");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -96,7 +97,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.NameCheck(null);
+            IResult checkResult = testVs.NameCheck(null);
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -113,7 +114,7 @@ namespace RoomAid.Registration.Test
             bool expected = true;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy19970205014436615");
+            IResult checkResult = testVs.PasswordValidation("Djy19970205014436615");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -131,7 +132,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy1997020>501<36615");
+            IResult checkResult = testVs.PasswordValidation("Djy1997020>501<36615");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -149,7 +150,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy19970205");
+            IResult checkResult = testVs.PasswordValidation("Djy19970205");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -167,7 +168,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy1999967205");
+            IResult checkResult = testVs.PasswordValidation("Djy1999967205");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -185,7 +186,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy1bbbbb67205");
+            IResult checkResult = testVs.PasswordValidation("Djy1bbbbb67205");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -203,7 +204,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy123456albertdu");
+            IResult checkResult = testVs.PasswordValidation("Djy123456albertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -221,7 +222,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djyabcdelbertdu");
+            IResult checkResult = testVs.PasswordValidation("Djyabcdelbertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -239,7 +240,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy54321albertdu");
+            IResult checkResult = testVs.PasswordValidation("Djy54321albertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -257,7 +258,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djyzyxwu33267albertdu");
+            IResult checkResult = testVs.PasswordValidation("Djyzyxwu33267albertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -275,7 +276,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordCheck("Djy45678bbbbbbbalbertdu");
+            IResult checkResult = testVs.PasswordValidation("Djy45678bbbbbbbalbertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -293,7 +294,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.PasswordUserNameCheck("bbcdalbertdu233@gmail.com", "albertdu233@gmail.com" );
+            IResult checkResult = testVs.PasswordUserNameCheck("bbcdalbertdu233@gmail.com", "albertdu233@gmail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -301,6 +302,8 @@ namespace RoomAid.Registration.Test
             Assert.AreEqual(expected, actual);
 
         }
+
+
 
         //The success condtion for Email check
         [TestMethod]
@@ -310,7 +313,7 @@ namespace RoomAid.Registration.Test
             bool expected = true;
 
             //Act
-            IResult checkResult = testRS.EmailCheck("albertdu233@gmail.com");
+            IResult checkResult = testVs.EmailValidation("albertdu233@gmail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -328,7 +331,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testRS.EmailCheck("dhajdhadh@kjshdjakhg@mail.com");
+            IResult checkResult = testVs.EmailValidation("dhajdhadh@kjshdjakhg@mail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
