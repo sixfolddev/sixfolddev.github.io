@@ -12,12 +12,12 @@ namespace RoomAid.Archive.Tests
     [TestClass]
     public class ArchiveTest
     {
-        private IArchiveService archiver = new SevenZipArchiveService();
-        private ArchiveManager manager = new ArchiveManager();
-        private string logStorage = ConfigurationManager.AppSettings["logStorage"];
-        private int logLife = Int32.Parse(ConfigurationManager.AppSettings["logLife"]);
-        private string dateFormat = ConfigurationManager.AppSettings["dateFormat"];
-        private string logExtension = ConfigurationManager.AppSettings["logExtension"];
+        private readonly IArchiveService archiver = new SevenZipArchiveService();
+        private readonly ArchiveManager manager = new ArchiveManager();
+        private readonly string logStorage = ConfigurationManager.AppSettings["logStorage"];
+        private readonly int logLife = Int32.Parse(ConfigurationManager.AppSettings["logLife"]);
+        private readonly string dateFormat = ConfigurationManager.AppSettings["dateFormat"];
+        private readonly string logExtension = ConfigurationManager.AppSettings["logExtension"];
 
 
         //manager test

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace RoomAid.ServiceLayer.Registration
+namespace RoomAid.ServiceLayer
 {
     public class ValidationService
     {

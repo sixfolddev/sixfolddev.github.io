@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RoomAid.Authentication;
+using RoomAid.ServiceLayer;
 
 namespace UnitTestAuthentication
 {

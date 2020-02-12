@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
 
 
-namespace RoomAid.EmailingTest
+namespace RoomAid.Emailing.Test
 {
     [TestClass]
     public class EmailServiceTest

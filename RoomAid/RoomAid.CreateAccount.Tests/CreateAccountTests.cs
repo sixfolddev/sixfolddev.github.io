@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
-using RoomAid.ServiceLayer.UserManagement;
 
 namespace RoomAid.CreateAccount.Tests
 {

@@ -2,7 +2,6 @@
 using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
-using RoomAid.ServiceLayer.Registration;
 
 namespace RoomAid.Registration.Test
 {

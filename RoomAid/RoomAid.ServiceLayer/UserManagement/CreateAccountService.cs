@@ -1,9 +1,9 @@
-﻿using RoomAid.ServiceLayer.Registration;
+﻿using RoomAid.ServiceLayer;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
 
-namespace RoomAid.ServiceLayer.UserManagement
+namespace RoomAid.ServiceLayer
 {
     public class CreateAccountService
     {

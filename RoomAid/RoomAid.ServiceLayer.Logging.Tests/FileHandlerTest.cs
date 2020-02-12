@@ -11,10 +11,10 @@ namespace RoomAid.Logging.Tests
     public class FileHandlerTest
     {
         // Log Storage directory
-        private string logStorage = ConfigurationManager.AppSettings["logStorage"];
-        private FileHandler fileHandler = new FileHandler();
-        private string className = "FileHandlerTest.cs";
-        private ILogFormatter formatter = new SingleLineFormatter();
+        private readonly string logStorage = ConfigurationManager.AppSettings["logStorage"];
+        private readonly FileHandler fileHandler = new FileHandler();
+        private readonly string className = "FileHandlerTest.cs";
+        private readonly ILogFormatter formatter = new SingleLineFormatter();
 
         [TestMethod]
         public void WriteLog_NewFileIsCreatedAndWrites_Pass()
