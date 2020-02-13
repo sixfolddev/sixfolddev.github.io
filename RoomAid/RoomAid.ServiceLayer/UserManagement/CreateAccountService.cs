@@ -89,6 +89,10 @@ namespace RoomAid.ServiceLayer
             return result;
         }
 
+        /// <summary>
+        /// Method IfUserExist will use query to check if the email is already registered in database
+        /// <param name="email">The email you want to check</param>
+        /// <returns>true if exist, false if the email is not registered</returns>
         public bool IfUserExist(string email)
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnection"]))
