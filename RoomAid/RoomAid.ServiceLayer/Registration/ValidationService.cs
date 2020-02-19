@@ -168,6 +168,7 @@ namespace RoomAid.ServiceLayer
         /// <summary>
         /// Method LengthValidation() is used to check if the input is empty or too long
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
+        /// <param name="length">The length limit for an input</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
         public IResult LengthValidation(string input, int length)
         {
@@ -179,8 +180,39 @@ namespace RoomAid.ServiceLayer
             }
             else if (input.Length > length)
             {
-                result = new CheckResult("Your name should not be longer than " + ConfigurationManager.AppSettings["nameLength"]
+                result = new CheckResult("Your name should not be longer than " + length
                     + "characters ", false);
+            }
+            else
+            {
+                result = new CheckResult(ConfigurationManager.AppSettings["messagePass"], true);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Method LengthValidation() is used to check if the input is empty or too long
+        /// <param name="input">The input string , should be passed from fortnend or controller</param>
+        /// <param name="max">the max range for an input</param>
+        /// <param name="min">the min range for an input</param>
+        /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
+        public IResult LengthValidation(string input, int max, int min)
+        {
+
+            IResult result = null;
+            if (input.Length > max)
+            {
+                result = new CheckResult("Your name should not be longer than " + max
+                    + "characters ", false);
+            }
+            else if(input.Length<min)
+            {
+                result = new CheckResult("Your name should not be shorter than " + min
+                    + "characters ", false);
+            }
+            else if (string.IsNullOrWhiteSpace(input))
+            {
+                result = new CheckResult(ConfigurationManager.AppSettings["messageNameEmpty"], false);
             }
             else
             {
@@ -193,7 +225,7 @@ namespace RoomAid.ServiceLayer
         /// Method Repetitive(Check) is used to check if the input contains repetitive contents based on a check range in config
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found repetitive or a null</returns>
-       public string RepetitiveCheck(string input)
+        public string RepetitiveCheck(string input)
         {
             int checkRange = Int32.Parse(ConfigurationManager.AppSettings["repetitiveRange"]);
 
