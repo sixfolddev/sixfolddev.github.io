@@ -19,7 +19,7 @@ namespace RoomAid.Registration.Test
             bool expected = true;
 
             //Act
-            IResult checkResult = testVs.NameCheck("AlbertDu");
+            IResult checkResult = testVs.NameValidation("AlbertDu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -42,7 +42,7 @@ namespace RoomAid.Registration.Test
                 input = input + "a";
             }
             //Act
-            IResult checkResult = testVs.NameCheck(input);
+            IResult checkResult = testVs.NameValidation(input);
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -60,7 +60,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testVs.NameCheck(" ");
+            IResult checkResult = testVs.NameValidation(" ");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -78,7 +78,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testVs.NameCheck("");
+            IResult checkResult = testVs.NameValidation("");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -96,7 +96,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testVs.NameCheck(null);
+            IResult checkResult = testVs.NameValidation(null);
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 
@@ -293,7 +293,7 @@ namespace RoomAid.Registration.Test
             bool expected = false;
 
             //Act
-            IResult checkResult = testVs.PasswordUserNameCheck("bbcdalbertdu233@gmail.com", "albertdu233@gmail.com");
+            IResult checkResult = testVs.PasswordUserNameValidation("bbcdalbertdu233@gmail.com", "albertdu233@gmail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
 

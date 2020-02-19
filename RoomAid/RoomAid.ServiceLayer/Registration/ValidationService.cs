@@ -10,16 +10,16 @@ namespace RoomAid.ServiceLayer
     public class ValidationService
     {
         /// <summary>
-        /// Method NameCheck() is used to check if the firstname and last name entered by user is valid.
+        /// Method NameValidation() is used to check if the firstname and last name entered by user is valid.
         /// According to the requirement, firstname and lastname can be up to 200 characters.
         ///can be alphanumeric with special characters. 
         /// </summary>
         /// <param name="input">The input string for either firstname or lastname, should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        public IResult NameCheck(string input)
+        public IResult NameValidation(string input)
         {
             int nameLength = Int32.Parse(ConfigurationManager.AppSettings["nameLength"]);
-            IResult result = CheckLength(input, nameLength);
+            IResult result = LengthValidation(input, nameLength);
             return result;
         }
 
@@ -43,7 +43,7 @@ namespace RoomAid.ServiceLayer
             int nameLength = Int32.Parse(ConfigurationManager.AppSettings["passwordLength"]);
 
             //check password length
-            IResult result = CheckLength(input, nameLength);
+            IResult result = LengthValidation(input, nameLength);
             if (!result.IsSuccess)
             {
                 return result;
@@ -98,13 +98,13 @@ namespace RoomAid.ServiceLayer
         }
 
         /// <summary>
-        /// Method PasswordUserNameCheck() is used to check if the password entered by user is valid.
+        /// Method PasswordUserNameValidation() is used to check if the password entered by user is valid.
         /// check if the password contain or is the same input as email/username
         /// </summary>
         /// <param name="input">The input string password, should be passed from fortnend or controller</param>
         /// <param name="userName">The username (should be an email) should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        public IResult PasswordUserNameCheck(string input, string userName)
+        public IResult PasswordUserNameValidation(string input, string userName)
         {
             IResult result = new CheckResult(ConfigurationManager.AppSettings["messagePass"], true);
             if (input.Contains(userName))
@@ -127,7 +127,7 @@ namespace RoomAid.ServiceLayer
         public IResult EmailValidation(string input)
         {
             int nameLength = Int32.Parse(ConfigurationManager.AppSettings["emailLength"]);
-            IResult result = CheckLength(input, nameLength);
+            IResult result = LengthValidation(input, nameLength);
 
             bool isEmail = Regex.IsMatch(input,
                  @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
@@ -166,10 +166,10 @@ namespace RoomAid.ServiceLayer
         }
 
         /// <summary>
-        /// Method CheckLength() is used to check if the input is empty or too long
+        /// Method LengthValidation() is used to check if the input is empty or too long
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        private IResult CheckLength(string input, int length)
+        public IResult LengthValidation(string input, int length)
         {
 
             IResult result = null;
@@ -193,7 +193,7 @@ namespace RoomAid.ServiceLayer
         /// Method Repetitive(Check) is used to check if the input contains repetitive contents based on a check range in config
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found repetitive or a null</returns>
-        private string RepetitiveCheck(string input)
+       public string RepetitiveCheck(string input)
         {
             int checkRange = Int32.Parse(ConfigurationManager.AppSettings["repetitiveRange"]);
 
@@ -234,7 +234,7 @@ namespace RoomAid.ServiceLayer
         /// Method SequentialCheck() is used to check if the input contains sequential contents based on a check range in config
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found sequential or a null</returns>
-        private string SequentialCheck(string input)
+        public string SequentialCheck(string input)
         {
 
             char[] charList = input.ToCharArray();
@@ -281,7 +281,7 @@ namespace RoomAid.ServiceLayer
         /// and password
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found in list or a null</returns>
-        private string PasswordListCheck(string input)
+        public string PasswordListCheck(string input)
         {
             List<string> passwordList = File.ReadAllLines(Path.GetFullPath(ConfigurationManager.AppSettings["passwordListName"])).ToList();
 

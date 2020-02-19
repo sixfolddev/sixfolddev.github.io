@@ -39,11 +39,11 @@ namespace RoomAid.ManagerLayer
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                checkResult = rs.NameCheck(fname);
+                checkResult = rs.NameValidation(fname);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                checkResult = rs.NameCheck(lname);
+                checkResult = rs.NameValidation(lname);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
@@ -56,7 +56,7 @@ namespace RoomAid.ManagerLayer
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                checkResult = rs.PasswordUserNameCheck(password, email);
+                checkResult = rs.PasswordUserNameValidation(password, email);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
