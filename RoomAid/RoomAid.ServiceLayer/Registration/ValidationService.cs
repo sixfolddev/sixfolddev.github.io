@@ -327,6 +327,19 @@ namespace RoomAid.ServiceLayer
             return null;
         }
 
+        /// <summary>
+        /// Method ZipValidation_CA will check if the input zip code is in California
+        /// <param name="input">a numeric zipcode</param>
+        /// <returns>true/false</returns>
+        public bool ZipValidation_CA(int input)
+        {
+            if (input>=90001&&input<=96162)
+            {
+                return true;
+            }
+            return false;
+        }
+
 
     }
 }
