@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.CreateAccount.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.ServiceLayer", "RoomAid.ServiceLayer\RoomAid.ServiceLayer.csproj", "{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.Authorization", "RoomAid.Authorization\RoomAid.Authorization.csproj", "{0EEA68E4-7EE6-4BAB-A70D-135F151147B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.Authorization.Tests", "RoomAid.Authorization.Tests\RoomAid.Authorization.Tests.csproj", "{D2125EC3-A2DB-46DE-95D6-746E890E0503}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EEA68E4-7EE6-4BAB-A70D-135F151147B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EEA68E4-7EE6-4BAB-A70D-135F151147B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EEA68E4-7EE6-4BAB-A70D-135F151147B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EEA68E4-7EE6-4BAB-A70D-135F151147B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2125EC3-A2DB-46DE-95D6-746E890E0503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2125EC3-A2DB-46DE-95D6-746E890E0503}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2125EC3-A2DB-46DE-95D6-746E890E0503}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2125EC3-A2DB-46DE-95D6-746E890E0503}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
