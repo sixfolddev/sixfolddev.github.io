@@ -8,6 +8,6 @@ namespace RoomAid.Authorization
 {
     public interface IAuthZService
     {
-        bool Authorize();
+        bool Authorize(AuthZEnum.AuthZ[] permissions, string userID, string householdID);
     }
 }

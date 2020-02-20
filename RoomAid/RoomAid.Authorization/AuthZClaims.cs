@@ -8,6 +8,12 @@ namespace RoomAid.Authorization
 {
     public class AuthZClaims
     {
+        public AuthZClaims()
+        {
+            UserID = "";
+            HouseholdID = "";
+            Claims = new AuthZEnum.AuthZ[] { };
+        }
        public AuthZClaims(string id, string householdID, AuthZEnum.AuthZ[] claims)
         {
             UserID = id;

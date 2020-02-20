@@ -31,10 +31,12 @@ namespace RoomAid.Authorization
                 {
                     return false;
                 }
+
                 if (!_authZ.HouseholdID.Equals(householdID))
                 {
                     return false;
                 }
+
                 foreach (AuthZEnum.AuthZ permission in permissions)
                 {
                     if (!_authZ.Claims.Contains(permission))
@@ -47,5 +49,7 @@ namespace RoomAid.Authorization
             return true;
             
         }
+
+        
     }
 }
