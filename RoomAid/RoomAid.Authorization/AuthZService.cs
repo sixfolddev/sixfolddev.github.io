@@ -20,19 +20,19 @@ namespace RoomAid.Authorization
         
         public bool Authorize(AuthZEnum.AuthZ[] permissions, string userID = defaultUserID, string householdID=defaultHouseholdID)
         {
-            if (permissions.Length == 0 && userID.Equals(defaultUserID) && householdID.Equals(defaultHouseholdID))
+            if (permissions.Length.Equals(0) && userID.Equals(defaultUserID) && householdID.Equals(defaultHouseholdID))
             {
                 return true;
             }
 
             else
             {
-                if (!_authZ.UserID.Equals(userID))
+                if (!userID.Equals(defaultUserID) && !_authZ.UserID.Equals(userID))
                 {
                     return false;
                 }
 
-                if (!_authZ.HouseholdID.Equals(householdID))
+                if (!householdID.Equals(defaultHouseholdID) && !_authZ.HouseholdID.Equals(householdID))
                 {
                     return false;
                 }
@@ -49,7 +49,6 @@ namespace RoomAid.Authorization
             return true;
             
         }
-
         
     }
 }
