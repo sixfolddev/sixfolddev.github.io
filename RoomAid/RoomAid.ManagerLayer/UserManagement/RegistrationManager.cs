@@ -47,7 +47,7 @@ namespace RoomAid.ManagerLayer
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                checkResult = rs.AgeValidation(dob);
+                checkResult = rs.AgeValidation(dob, Int32.Parse(ConfigurationManager.AppSettings["ageRequired"]));
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 

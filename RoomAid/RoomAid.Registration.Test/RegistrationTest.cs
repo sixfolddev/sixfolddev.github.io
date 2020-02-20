@@ -338,5 +338,41 @@ namespace RoomAid.Registration.Test
             Assert.AreEqual(expected, actual);
 
         }
+
+        //The success function for age validation
+        //if age is > 18, should return true
+        [TestMethod]
+        public void AgeCheckPass()
+        {
+            //Arrange
+            bool expected = true;
+
+            //Act
+            DateTime dt = new DateTime(1997, 2, 5);
+            IResult checkResult = testVs.AgeValidation(dt, Int32.Parse(ConfigurationManager.AppSettings["ageRequired"]));
+            bool actual = checkResult.IsSuccess;
+            Console.WriteLine(checkResult.Message);
+
+            //Assert
+            Assert.AreEqual(expected, actual);   
+        }
+
+        //The success function for age validation
+        //if age is < 18, should return false
+        [TestMethod]
+        public void AgeCheckNotPass()
+        {
+            //Arrange
+            bool expected = false;
+
+            //Act
+            DateTime dt = DateTime.Today;
+            IResult checkResult = testVs.AgeValidation(dt, Int32.Parse(ConfigurationManager.AppSettings["ageRequired"]));
+            bool actual = checkResult.IsSuccess;
+            Console.WriteLine(checkResult.Message);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
