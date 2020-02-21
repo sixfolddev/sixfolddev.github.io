@@ -19,53 +19,45 @@ namespace RoomAid.ErrorHandlingTest
 
         [TestMethod]
         public void TestErrorResponseManagerFatal()
-        {
-            var Err = new AnalyzedError(new Exception());
-            Err.Lev = LogLevels.Levels.Fatal;
-            Err.Message = "A fatal error has occurred and system admin has been contacted. Please try again at another time";
-
+        { 
             var ErrFatal = new AnalyzedError(new Exception())
             {
-                Lev = LogLevels.Levels.Fatal
-            };
+                Lev = LogLevels.Levels.Fatal,
+                Message = "A fatal error has occurred and system admin has been contacted. Please try again at another time"
+        };
 
             var manager = new ErrorResponseManager();
             var Response = manager.GetResponse(ErrFatal);
-            Assert.AreEqual(Err.Message, Response.Message);
+            Assert.AreEqual(ErrFatal.Message, Response.Message);
         }
 
         [TestMethod]
         public void TestErrorResponseManagerError()
         {
-            var Err = new AnalyzedError(new Exception());
-            Err.Lev = LogLevels.Levels.Error;
-            Err.Message = "An Error has occurred. Please try again";
-
             var ErrError = new AnalyzedError(new Exception())
             {
-                Lev = LogLevels.Levels.Error
+                Lev = LogLevels.Levels.Error,
+                Message = "An Error has occurred. Please try again"
             };
 
             var manager = new ErrorResponseManager();
             var Response = manager.GetResponse(ErrError);
-            Assert.AreEqual(Err.Message, Response.Message);
+            Assert.AreEqual(ErrError.Message, Response.Message);
         }
 
         [TestMethod]
         public void TestErrorResponseManagerWarning()
-        {
-            var Err = new AnalyzedError(new Exception());
-            Err.Lev = LogLevels.Levels.Warning;
-            Err.Message = "Something unexpected occurred. Please try again.";
+        {     
 
             var ErrWarning = new AnalyzedError(new Exception())
             {
-                Lev = LogLevels.Levels.Warning
+                Lev = LogLevels.Levels.Warning,
+                Message = "Something unexpected occurred. Please try again."
             };
 
             var manager = new ErrorResponseManager();
             var Response = manager.GetResponse(ErrWarning);
-            Assert.AreEqual(Err.Message, Response.Message);
+            Assert.AreEqual(ErrWarning.Message, Response.Message);
         }
 
       

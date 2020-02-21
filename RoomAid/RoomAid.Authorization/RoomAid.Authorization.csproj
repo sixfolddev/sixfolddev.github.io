@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5E8E8769-AF6B-49C7-A61C-AA85B747EF93}</ProjectGuid>
+    <ProjectGuid>{0EEA68E4-7EE6-4BAB-A70D-135F151147B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RoomAid.DataAccessLayer</RootNamespace>
-    <AssemblyName>RoomAid.DataAccessLayer</AssemblyName>
+    <RootNamespace>RoomAid.Authorization</RootNamespace>
+    <AssemblyName>RoomAid.Authorization</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthZClaims.cs" />
+    <Compile Include="AuthZEnum.cs" />
+    <Compile Include="AuthZService.cs" />
+    <Compile Include="IAuthZService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

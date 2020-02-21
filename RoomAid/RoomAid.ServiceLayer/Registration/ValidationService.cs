@@ -10,16 +10,16 @@ namespace RoomAid.ServiceLayer
     public class ValidationService
     {
         /// <summary>
-        /// Method NameCheck() is used to check if the firstname and last name entered by user is valid.
+        /// Method NameValidation() is used to check if the firstname and last name entered by user is valid.
         /// According to the requirement, firstname and lastname can be up to 200 characters.
         ///can be alphanumeric with special characters. 
         /// </summary>
         /// <param name="input">The input string for either firstname or lastname, should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        public IResult NameCheck(string input)
+        public IResult NameValidation(string input)
         {
             int nameLength = Int32.Parse(ConfigurationManager.AppSettings["nameLength"]);
-            IResult result = CheckLength(input, nameLength);
+            IResult result = LengthValidation(input, nameLength);
             return result;
         }
 
@@ -43,7 +43,7 @@ namespace RoomAid.ServiceLayer
             int nameLength = Int32.Parse(ConfigurationManager.AppSettings["passwordLength"]);
 
             //check password length
-            IResult result = CheckLength(input, nameLength);
+            IResult result = LengthValidation(input, nameLength);
             if (!result.IsSuccess)
             {
                 return result;
@@ -68,7 +68,7 @@ namespace RoomAid.ServiceLayer
             }
 
             //check if the password contains repetitive contents
-            string repetitiveCheckResult = RepetitiveCheck(input);
+            string repetitiveCheckResult = RepetitiveCheck(input, Int32.Parse(ConfigurationManager.AppSettings["repetitiveRange"]));
             if (repetitiveCheckResult != null)
             {
                 message = message + "\n" + ConfigurationManager.AppSettings["passwordRepetitive"] + "'"
@@ -98,13 +98,13 @@ namespace RoomAid.ServiceLayer
         }
 
         /// <summary>
-        /// Method PasswordUserNameCheck() is used to check if the password entered by user is valid.
+        /// Method PasswordUserNameValidation() is used to check if the password entered by user is valid.
         /// check if the password contain or is the same input as email/username
         /// </summary>
         /// <param name="input">The input string password, should be passed from fortnend or controller</param>
         /// <param name="userName">The username (should be an email) should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        public IResult PasswordUserNameCheck(string input, string userName)
+        public IResult PasswordUserNameValidation(string input, string userName)
         {
             IResult result = new CheckResult(ConfigurationManager.AppSettings["messagePass"], true);
             if (input.Contains(userName))
@@ -127,7 +127,7 @@ namespace RoomAid.ServiceLayer
         public IResult EmailValidation(string input)
         {
             int nameLength = Int32.Parse(ConfigurationManager.AppSettings["emailLength"]);
-            IResult result = CheckLength(input, nameLength);
+            IResult result = LengthValidation(input, nameLength);
 
             bool isEmail = Regex.IsMatch(input,
                  @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
@@ -156,9 +156,9 @@ namespace RoomAid.ServiceLayer
         /// Method AgeValidation() is used to check if user reach the age requirement
         /// <param name="dob">The input date of birth , should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        public IResult AgeValidation(DateTime dob)
+        public IResult AgeValidation(DateTime dob, int ageRequired)
         {
-            if (dob.Year - DateTime.Today.Year < Int32.Parse(ConfigurationManager.AppSettings["ageRequired"]))
+            if (DateTime.Today.Year - dob.Year < ageRequired)
             {
                 return new CheckResult(ConfigurationManager.AppSettings["ageNotPass"], false);
             }
@@ -166,10 +166,11 @@ namespace RoomAid.ServiceLayer
         }
 
         /// <summary>
-        /// Method CheckLength() is used to check if the input is empty or too long
+        /// Method LengthValidation() is used to check if the input is empty or too long
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
+        /// <param name="length">The length limit for an input</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        private IResult CheckLength(string input, int length)
+        public IResult LengthValidation(string input, int length)
         {
 
             IResult result = null;
@@ -179,8 +180,39 @@ namespace RoomAid.ServiceLayer
             }
             else if (input.Length > length)
             {
-                result = new CheckResult("Your name should not be longer than " + ConfigurationManager.AppSettings["nameLength"]
+                result = new CheckResult("Your name should not be longer than " + length
                     + "characters ", false);
+            }
+            else
+            {
+                result = new CheckResult(ConfigurationManager.AppSettings["messagePass"], true);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Method LengthValidation() is used to check if the input is empty or too long
+        /// <param name="input">The input string , should be passed from fortnend or controller</param>
+        /// <param name="max">the max range for an input</param>
+        /// <param name="min">the min range for an input</param>
+        /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
+        public IResult LengthValidation(string input, int max, int min)
+        {
+
+            IResult result = null;
+            if (input.Length > max)
+            {
+                result = new CheckResult("Your name should not be longer than " + max
+                    + "characters ", false);
+            }
+            else if(input.Length<min)
+            {
+                result = new CheckResult("Your name should not be shorter than " + min
+                    + "characters ", false);
+            }
+            else if (string.IsNullOrWhiteSpace(input))
+            {
+                result = new CheckResult(ConfigurationManager.AppSettings["messageNameEmpty"], false);
             }
             else
             {
@@ -193,21 +225,19 @@ namespace RoomAid.ServiceLayer
         /// Method Repetitive(Check) is used to check if the input contains repetitive contents based on a check range in config
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found repetitive or a null</returns>
-        private string RepetitiveCheck(string input)
+        public string RepetitiveCheck(string input, int repetitiveRange)
         {
-            int checkRange = Int32.Parse(ConfigurationManager.AppSettings["repetitiveRange"]);
-
-            if (checkRange > input.Length)
+            if (repetitiveRange > input.Length)
             {
-                checkRange = input.Length;
+                repetitiveRange = input.Length;
             }
 
 
-            for (int i = 1; i < input.Length - checkRange; i++)
+            for (int i = 1; i < input.Length - repetitiveRange; i++)
             {
                 bool ifRepetitive = true;
                 string result = "" + input[i];
-                for (int j = 1; j < checkRange; j++)
+                for (int j = 1; j < repetitiveRange; j++)
                 {
 
 
@@ -234,7 +264,7 @@ namespace RoomAid.ServiceLayer
         /// Method SequentialCheck() is used to check if the input contains sequential contents based on a check range in config
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found sequential or a null</returns>
-        private string SequentialCheck(string input)
+        public string SequentialCheck(string input)
         {
 
             char[] charList = input.ToCharArray();
@@ -281,7 +311,7 @@ namespace RoomAid.ServiceLayer
         /// and password
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found in list or a null</returns>
-        private string PasswordListCheck(string input)
+        public string PasswordListCheck(string input)
         {
             List<string> passwordList = File.ReadAllLines(Path.GetFullPath(ConfigurationManager.AppSettings["passwordListName"])).ToList();
 
@@ -293,6 +323,19 @@ namespace RoomAid.ServiceLayer
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Method ZipValidation_CA will check if the input zip code is in California
+        /// <param name="input">a numeric zipcode</param>
+        /// <returns>true/false</returns>
+        public bool ZipValidation_CA(int input)
+        {
+            if (input>=90001&&input<=96162)
+            {
+                return true;
+            }
+            return false;
         }
 
 
