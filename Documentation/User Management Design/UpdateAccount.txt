@@ -1,0 +1,57 @@
+title Update Account
+
+participant "RegistrationManager" as m
+participant "UpdateAccountSqlService" as s
+participant "UpdateAccountDAO" as d
+m->d:UpdateAccountDAO updateDao = new UpdateAccountDAO(String connection)
+d-->m: return instance
+m->s: UpdateAccountSqlService update = new UpdateAccountSqlService(List<User> newUsers, UpdateAccountSqlDAO updateDAO)
+s-->m: return instance
+m->s:public IResult update.Update()
+
+
+note over s: create an interface for IUpdateAccountService to make it craft query for multiple types of databases
+
+
+s->s:String message = \"";
+s->s:bool isSuccess = true;
+s->s: List<String> queries = new ArrayList<>()
+s->s: String tableName = ConfigurationManager.AppSettings["tableName"]
+alt foreach(User newUser in newUsers)
+s->s: queries.add($"UPDATE {tableName} SET FirstName = {newUser.FirstName},\nLastName = {newUser.LastName}, DateOfBirth = {newUser.DateOfBirth}, Gender = {newUser.Gender},\nAccountStatus = {newUser.AccountStatus} WHERE UserEmail = {newUser.UserEmail})
+end
+note over s: UpdateDao will use Interface for update
+alt try
+s->d:int updateDao.Update(List<String> queries)
+alt using (SqlConnection connection = new SqlConnection(connection))
+d->d: connection.Open()
+
+d->d: SqlTransaction trans = connection.BeginTransaction()
+d->d:SqlCommand cmd = new SqlCommand("", connection,trans)
+d->d: int rowsChanged = 0
+alt try
+alt foreach(String query in queries)
+d->d:cmd.CommandText=query
+d->d:rowsChanged+=cmd.ExecuteNonQuery()
+end 
+d->d:trans.Commit()
+else catch(Exception e)
+
+d->d: trans.Rollback()
+
+end 
+end 
+d-->s: return rowsChanged
+alt if(rowsChanged==1)
+s->s:message = ConfigurationMangaer.AppSettings["SuccessMessage"]
+else else
+s->s: message = ConfigurationManager.AppSettings["FailureMessage"]
+s->s: isSuccess = false
+end 
+else catch (Exception e)
+s->s: message = ConfigurationManager.AppSettings["ErrorMessage"]
+s->s: isSuccess=false
+
+end 
+
+s-->m: return new CheckResult(message, isSuccess);
