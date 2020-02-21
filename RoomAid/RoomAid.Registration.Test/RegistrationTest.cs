@@ -2,33 +2,26 @@
 using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
-
 namespace RoomAid.Registration.Test
 {
-    //test for registration
     [TestClass]
     public class RegistrationTest
     {
         //Get the instance of registration service
         private ValidationService testVs = new ValidationService();
-
         //The success condition for Name Check
         [TestMethod]
         public void NameCheckPass()
         {
             //Arrange
             bool expected = true;
-
             //Act
             IResult checkResult = testVs.NameValidation("AlbertDu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The faile condtion for Name check
         //With an input that is out of range, the method should return false
         [TestMethod]
@@ -46,12 +39,9 @@ namespace RoomAid.Registration.Test
             IResult checkResult = testVs.NameValidation(input);
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The faile condtion for Name check
         //With an input that is white space, the method should return false
         [TestMethod]
@@ -59,17 +49,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.NameValidation(" ");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The faile condtion for Name check
         //With an input that is empty, the method should return false
         [TestMethod]
@@ -77,17 +63,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.NameValidation("");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The faile condtion for Name check
         //With an input that is null, the method should return false
         [TestMethod]
@@ -95,34 +77,26 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.NameValidation(null);
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The success condition for Name Check
         [TestMethod]
         public void PasswordCheckPass()
         {
             //Arrange
             bool expected = true;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy19970205014436615");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion forpassword check
         //With an input that contains '<' and '>', the method should return false
         [TestMethod]
@@ -130,17 +104,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy1997020>501<36615");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that is less than 12, the method should return false
         [TestMethod]
@@ -148,17 +118,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy19970205");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that contains repetitive numbers, the method should return false
         [TestMethod]
@@ -166,17 +132,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy1999967205");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that contains repetitive letters, the method should return false
         [TestMethod]
@@ -184,17 +146,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy1bbbbb67205");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that contains sequential numbers, the method should return false
         [TestMethod]
@@ -202,17 +160,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy123456albertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that contains sequential letters, the method should return false
         [TestMethod]
@@ -220,17 +174,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djyabcdelbertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that contains sequential numners in reversed order, the method should return false
         [TestMethod]
@@ -238,17 +188,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy54321albertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that contains sequential letters in reversed order, the method should return false
         [TestMethod]
@@ -256,17 +202,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djyzyxwu33267albertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion forpassword check
         //With an input that contains sequential and repetitive contents, the method should return false
         [TestMethod]
@@ -274,17 +216,13 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordValidation("Djy45678bbbbbbbalbertdu");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for password check
         //With an input that caontains or the same as user's email/username, the method should return false
         [TestMethod]
@@ -292,36 +230,26 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.PasswordUserNameValidation("bbcdalbertdu233@gmail.com", "albertdu233@gmail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
-
-
         //The success condtion for Email check
         [TestMethod]
         public void EmailCheckPass()
         {
             //Arrange
             bool expected = true;
-
             //Act
             IResult checkResult = testVs.EmailValidation("albertdu233@gmail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
-
         }
-
         //The fail condtion for Email check
         //with bad format of email input, should return false
         [TestMethod]
@@ -329,12 +257,10 @@ namespace RoomAid.Registration.Test
         {
             //Arrange
             bool expected = false;
-
             //Act
             IResult checkResult = testVs.EmailValidation("dhajdhadh@kjshdjakhg@mail.com");
             bool actual = checkResult.IsSuccess;
             Console.WriteLine(checkResult.Message);
-
             //Assert
             Assert.AreEqual(expected, actual);
 
@@ -355,7 +281,7 @@ namespace RoomAid.Registration.Test
             Console.WriteLine(checkResult.Message);
 
             //Assert
-            Assert.AreEqual(expected, actual);   
+            Assert.AreEqual(expected, actual);
         }
 
         //The success function for age validation
