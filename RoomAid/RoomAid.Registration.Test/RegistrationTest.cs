@@ -5,6 +5,7 @@ using RoomAid.ServiceLayer;
 
 namespace RoomAid.Registration.Test
 {
+    //test for registration
     [TestClass]
     public class RegistrationTest
     {
