@@ -1,0 +1,63 @@
+title Household Creation low Level Design
+
+Controller->HouseHoldManager:HouseHoldManger = new HouseHoldManger()
+Controller<--HouseHoldManager:Return instance()
+
+Controller->HouseHoldManager:bool AuthorizUser(Context)
+
+HouseHoldManager->HouseHoldManager: Authoriz the User
+
+note left of HouseHoldManager:To create a new household,the user \nmust not be a tenant of another household 
+
+HouseHoldManager-->Controller:true/false
+
+
+Controller->HouseHoldManager:IResult CreateHouseHold(HouseHoldCreationRequestDTO)
+
+note right of HouseHoldManager:Based on the BRD, User need to input a A household name\nMust be unique in the system.\nShall have a character range of 12-200 characters.\nCharacters can be alphanumeric or special characters
+
+note right of HouseHoldManager:To do input validation, reuse the ValidationService\nfor registration feature
+
+HouseHoldManager->ValidationService: ValidationService = new ValidationService()
+
+ValidationService-->HouseHoldManager: instance()
+
+HouseHoldManager->ValidationService:IResult LengthValidation(string houseHoldName, int 200, int 12)
+
+ValidationService-->HouseHoldManager:return IResult with true or false with reason of failure
+
+note right of HouseHoldManager:Based on the BRD, the street address should be with a\ncharacter range of 1-200 characters.
+
+HouseHoldManager->ValidationService:IResult LengthValidation(string streetAddress, int 200)
+
+ValidationService-->HouseHoldManager:return IResult with true or false with reason of failure
+
+note right of HouseHoldManager:Based on the BRD, A city name with a character range\nof 1-200 characters.
+
+HouseHoldManager->ValidationService:IResult LengthValidation(string city, int 200)
+
+ValidationService-->HouseHoldManager:return IResult with true or false with reason of failure
+
+note right of HouseHoldManager:Since our User Scope are users live in California, we need\nto make sure the new Household is located in CA
+
+HouseHoldManager->ValidationService:bool ZipValidation_CA(int zipCode)
+
+ValidationService-->HouseHoldManager:return true/false
+
+HouseHoldManager->HouseHoldManager: Check if Monthly Rent is nonegative
+
+HouseHoldManager->HouseHoldManager: Check if Monthly Rent has more than 2 decimal places
+
+note right of HouseHoldManager: If all validation passed, call the creation service and use query\n to insert a new household in database
+HouseHoldManager->HouseHoldCreationService:HouseHoldCreationService = new HouseHoldCreationService()
+
+HouseHoldCreationService-->HouseHoldManager:return instance()
+
+HouseHoldManager->HouseHoldCreationService:IResult CreateNewHouseHold(HouseHoldCreationRequestDTO)
+
+HouseHoldCreationService->Database:Query the new HouseHold
+
+HouseHoldCreationService->HouseHoldCreationService: retry up to 3 times if faild\nto insert new HouseHold\nif still failed, contact admin
+HouseHoldCreationService-->HouseHoldManager:true or false with reason of failure/error message
+
+HouseHoldManager-->Controller: true or false with reason of failure/error message
