@@ -66,15 +66,12 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Archiving\IArchiveService.cs" />
-    <Compile Include="Archiving\WindowsZipArchiveService.cs" />
     <Compile Include="Authentication\Authentication.cs" />
     <Compile Include="Authorization\AuthZClaims.cs" />
     <Compile Include="Authorization\AuthZService.cs" />
@@ -93,7 +90,7 @@
     <Compile Include="Logging\FileHandler.cs" />
     <Compile Include="Logging\ILogFormatter.cs" />
     <Compile Include="Logging\ILogHandler.cs" />
-    <Compile Include="Logging\LogDAO.cs" />
+    <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LogLevels.cs" />
     <Compile Include="Logging\LogMessage.cs" />
@@ -105,6 +102,7 @@
     <Compile Include="Registration\RegistrationRequestDTO.cs" />
     <Compile Include="Registration\ValidationService.cs" />
     <Compile Include="Security\Hasher.cs" />
+    <Compile Include="Security\HashObject.cs" />
     <Compile Include="Security\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
     <Compile Include="UserManagement\CreateAccountService.cs" />

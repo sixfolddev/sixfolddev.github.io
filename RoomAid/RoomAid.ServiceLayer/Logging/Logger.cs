@@ -28,7 +28,7 @@ namespace RoomAid.ServiceLayer
             var logId = Guid.NewGuid();
 
             var logMessage = new LogMessage(logId, time, className, methodName, level, userId, sessionId, text);
-            LogDAO.WriteLog(logMessage);
+            LogManager.WriteLog(logMessage);
         }
 
         private static MethodBase GetCallingMethod()
