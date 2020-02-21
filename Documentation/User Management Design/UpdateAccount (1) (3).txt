@@ -42,16 +42,12 @@ d->d: trans.Rollback()
 end 
 end 
 d-->s: return rowsChanged
-alt if(rowsChanged==1)
+alt if(rowsChanged==queries.size())
 s->s:message = ConfigurationMangaer.AppSettings["SuccessMessage"]
 else else
 s->s: message = ConfigurationManager.AppSettings["FailureMessage"]
 s->s: isSuccess = false
 end 
-else catch (Exception e)
-s->s: message = ConfigurationManager.AppSettings["ErrorMessage"]
-s->s: isSuccess=false
 
-end 
 
 s-->m: return new CheckResult(message, isSuccess);

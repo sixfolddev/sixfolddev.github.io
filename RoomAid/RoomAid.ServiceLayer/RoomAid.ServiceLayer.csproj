@@ -61,6 +61,11 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.NonGeneric, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.NonGeneric.4.3.0\lib\net46\System.Collections.NonGeneric.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,8 +114,10 @@
     <Compile Include="UserManagement\CreateAccountService.cs" />
     <Compile Include="UserManagement\DeleteUserService.cs" />
     <Compile Include="UserManagement\IConverter.cs" />
+    <Compile Include="UserManagement\IUpdateAccountService.cs" />
     <Compile Include="UserManagement\JWTService.cs" />
     <Compile Include="UserManagement\SessionTokenService.cs" />
+    <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="UserManagement\User.cs" />
     <Compile Include="UserManagement\UserSession.cs" />
   </ItemGroup>
