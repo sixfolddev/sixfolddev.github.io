@@ -6,8 +6,8 @@ namespace RoomAid.Authorization.Tests
     [TestClass]
     public class AuthZServiceTests
     {
-        private AuthZClaims claim;
-        private AuthZService service;
+        private AuthZClaims claim; //Represents User Context
+        private AuthZService service; //Represents authorization service that performs authorization.
 
         /*
          * These test methods are for the function:
