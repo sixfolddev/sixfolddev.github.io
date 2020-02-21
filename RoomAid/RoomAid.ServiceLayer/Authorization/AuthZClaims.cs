@@ -4,53 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Authorization
+namespace RoomAid.Authorization
 {
-    class AuthZClaims
+    public class AuthZClaims
     {
-        public enum AuthZEnum
+        public AuthZClaims()
         {
-            None,
-            EnabledAccount,
-            CreateAdmin,
-            EnableACcount,
-            DisableACcount,
-            EditProfile,
-            ViewProfile,
-            DeleteAccount,
-            SearchHousehold,
-            SendMessage,
-            ReplyMessage,
-            ViewMessage,
-            MarkMessage,
-            DeleteMessage,
-            SendInvite,
-            ViewInvite,
-            AcceptInvite,
-            DeclineInvite,
-            ViewTenant,
-            PromoteTenant,
-            DemoteTenant,
-            RemoveTenant,
-            LeaveHousehold,
-            CreateExpense,
-            ViewExpense,
-            EditExpense,
-            DeleteExpense,
-            CreateTask,
-            ViewTask,
-            EditTask,
-            DeleteTask,
-            CreateSupplyRequest,
-            ViewSupplyRequest,
-            EditSupplyRequest,
-            DeleteSupplyRequest
+            UserID = "";
+            HouseholdID = "";
+            Claims = new AuthZEnum.AuthZ[] { };
         }
-
+       public AuthZClaims(string id, string householdID, AuthZEnum.AuthZ[] claims)
+        {
+            UserID = id;
+            HouseholdID = householdID;
+            Claims = claims;
+        }
         public string UserID { get; }
         public string HouseholdID { get; }
-        public AuthZEnum[] Claims { get; }
-
-        
+        public AuthZEnum.AuthZ[] Claims { get; }
     }
 }
