@@ -51,7 +51,7 @@ namespace RoomAid.ServiceLayer
             Dictionary<string, string> claims = new Dictionary<string, string>();
             claims.Add(ISSUED_AT_TIME, getTimeNowInSeconds().ToString());
             claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + sessiontimeout).ToString());
-            claims.Add(JWT_ID, Guid.NewGuid().ToString());
+            claims.Add(JWT_ID, Guid.NewGuid().ToString()); // TODO: Do not use GUID
             claims.Add(EMAIL, user.UserEmail); // TODO: encrypt email
             //claims.Add(ADMIN, user.Admin.ToString());
             string encodedPayload = Encoder.Encode(claims);

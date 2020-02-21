@@ -9,6 +9,7 @@ namespace RoomAid.ServiceLayer
         private string userID;
         private string password;
         private bool _authenticated;
+        private Hasher hasher = new Hasher(new SHA256Cng());
         
         //Create object when user tries to log in
         public Authentication(string userID, string password)
@@ -28,6 +29,8 @@ namespace RoomAid.ServiceLayer
         }
         public bool CompareHashes()
         {
+            // var emailhash = hasher.GenerateHash(userID);
+            // Grab associated pw from database
             if (GenerateHash(userID, password) == DataStoreHash())
             {
                 _authenticated = true;
@@ -49,6 +52,7 @@ namespace RoomAid.ServiceLayer
 
             return passwordToCheck;
         }
+
         public string DataStoreHash()
         {
             string storedHash;
@@ -66,6 +70,7 @@ namespace RoomAid.ServiceLayer
 
             return storedHash;
         }
+
         public byte[] GetSalt(string userID)
         {
             try
@@ -81,6 +86,7 @@ namespace RoomAid.ServiceLayer
                 return Encoding.ASCII.GetBytes("");
             }
         }
+
         public bool GetAuthenticated()
         {
             return _authenticated;

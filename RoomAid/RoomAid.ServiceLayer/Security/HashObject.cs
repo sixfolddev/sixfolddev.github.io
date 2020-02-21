@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoomAid.DataAccessLayer
 {
-    public class HashDAO
+    public class HashObject
     {
         public string HashedValue { get; set; }
         public string Salt { get; set; }

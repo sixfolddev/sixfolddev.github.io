@@ -9,6 +9,8 @@ namespace RoomAid.ManagerLayer
 {
     public class RegistrationManager
     {
+        private SHA256Cng algorithm = new SHA256Cng(); // SHA256 algorithm
+
         //For normal User
         /// <summary>
         /// Method RegisterUser() will check all user input and see if they are valid 
@@ -34,55 +36,59 @@ namespace RoomAid.ManagerLayer
             string repassword = registrationRequest.Repassword;
 
 
-                IResult checkResult = rs.EmailValidation(email);
+            IResult checkResult = rs.EmailValidation(email);
 
+            message = message + checkResult.Message;
+            ifSuccess = checkResult.IsSuccess;
+
+            checkResult = rs.NameCheck(fname);
+            message = message + checkResult.Message;
+            ifSuccess = checkResult.IsSuccess;
+
+            checkResult = rs.NameCheck(lname);
+            message = message + checkResult.Message;
+            ifSuccess = checkResult.IsSuccess;
+
+            checkResult = rs.AgeValidation(dob);
+            message = message + checkResult.Message;
+            ifSuccess = checkResult.IsSuccess;
+
+
+            checkResult = rs.PasswordValidation(password);
+            message = message + checkResult.Message;
+            ifSuccess = checkResult.IsSuccess;
+
+            checkResult = rs.PasswordUserNameCheck(password, email);
+            message = message + checkResult.Message;
+            ifSuccess = checkResult.IsSuccess;
+
+            if (password != repassword)
+            {
+                message = message + "/n" + ConfigurationManager.AppSettings["passwordNotMatch"];
+                ifSuccess = false;
+            }
+
+            if (ifSuccess)
+            {
+                // TODO: store email in separate mapping table?
+                // Hash email and store hashed value
+                Hasher hasher = new Hasher(algorithm);
+                string hashedEmail = hasher.GenerateHash(email);
+                User newUser = new User(hashedEmail, fname, lname, "Enable", dob, gender);
+
+                // Generate salt and hash password
+                HashObject hash = hasher.GenerateSaltedHash(password);
+                string hashedPw = hash.HashedValue;
+                string salt = hash.Salt;
+
+                // Call the service to add user
+                CreateAccountService ad = new CreateAccountService();
+                checkResult = ad.CreateAccount(newUser);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                checkResult = rs.NameCheck(fname);
-                message = message + checkResult.Message;
-                ifSuccess = checkResult.IsSuccess;
-
-                checkResult = rs.NameCheck(lname);
-                message = message + checkResult.Message;
-                ifSuccess = checkResult.IsSuccess;
-
-                checkResult = rs.AgeValidation(dob);
-                message = message + checkResult.Message;
-                ifSuccess = checkResult.IsSuccess;
-
-
-                checkResult = rs.PasswordValidation(password);
-                message = message + checkResult.Message;
-                ifSuccess = checkResult.IsSuccess;
-
-                checkResult = rs.PasswordUserNameCheck(password, email);
-                message = message + checkResult.Message;
-                ifSuccess = checkResult.IsSuccess;
-
-                if (password != repassword)
-                {
-                    message = message + "/n" + ConfigurationManager.AppSettings["passwordNotMatch"];
-                    ifSuccess = false;
-                }
-
-                if (ifSuccess)
-                {
-                    User newUser = new User(email, fname, lname, "Enable", dob, gender);
-
-                    // Generate salt and hash password
-                    Hasher hasher = new Hasher(new SHA256Cng()); // SHA256 algorithm
-                    HashDAO hash = hasher.GenerateHash(password);
-                    string hashedPw = hash.HashedValue;
-                    string salt = hash.Salt;
-
-                    // Call the service to add user
-                    CreateAccountService ad = new CreateAccountService();
-                    checkResult = ad.CreateAccount(newUser);	
-                    message = message + checkResult.Message;
-                    ifSuccess = checkResult.IsSuccess;
-                    // TODO: If success, call UpdateUser() function to add pw and salt into db
-                }
+                // TODO: If success, call UpdateUser() function to add pw and salt into db
+            }
 
             //log
             Logger.Log(message);

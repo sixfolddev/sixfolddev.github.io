@@ -13,7 +13,7 @@ namespace RoomAid.Logging.Tests
         // Log Storage directory
         private readonly string logStorage = ConfigurationManager.AppSettings["logStorage"];
         private readonly FileHandler fileHandler = new FileHandler();
-        private readonly string className = "FileHandlerTest.cs";
+        private readonly string className = ConfigurationManager.AppSettings["className"];
         private readonly ILogFormatter formatter = new SingleLineFormatter();
 
         [TestMethod]

@@ -6,22 +6,35 @@ namespace RoomAid.ServiceLayer
 {
     public class Hasher
     {
-        private HashAlgorithm _algorithm;
+        private readonly HashAlgorithm _algorithm;
+
+        public Hasher()
+        {
+            _algorithm = new SHA256Cng(); // default: SHA256 algorithm
+        }
+
         public Hasher(HashAlgorithm alg)
         {
             _algorithm = alg;
         }
 
-        public HashDAO GenerateHash(string value)
+        public string GenerateHash(string value)
+        {
+            byte[] valueBytes = System.Text.Encoding.UTF8.GetBytes(value);
+            byte[] hashBytes = _algorithm.ComputeHash(valueBytes);
+            string hashString = BitConverter.ToString(hashBytes); // Returns hyphenated base 16 string
+            hashString = hashString.Replace("-", "");
+
+            return hashString;
+        }
+
+        public HashObject GenerateSaltedHash(string value)
         {
             string salt = SaltGenerator.GenerateSalt();
             string saltedValue = value + salt;
-            byte[] saltedValueBytes = System.Text.Encoding.UTF8.GetBytes(saltedValue);
+            string hashString = GenerateHash(saltedValue);
 
-            byte[] hashBytes = _algorithm.ComputeHash(saltedValueBytes);
-            string hashString = BitConverter.ToString(hashBytes);
-
-            HashDAO hash = new HashDAO { HashedValue = hashString, Salt = salt };
+            HashObject hash = new HashObject { HashedValue = hashString, Salt = salt };
             return hash;
         }
     }
