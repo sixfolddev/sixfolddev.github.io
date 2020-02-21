@@ -34,7 +34,7 @@ namespace RoomAid.Authorization.Tests
          */
         private const string userTestID_negative = "I want to die";
         private const string householdTestID_negative = "But I guess that coding this makes me feel better";
-        AuthZEnum.AuthZ[] testAuthorizations_negative = { AuthZEnum.AuthZ.CreateTask, AuthZEnum.AuthZ.EditTask };
+        AuthZEnum.AuthZ[] testAuthorizations_negative = { AuthZEnum.AuthZ.CreateTask, AuthZEnum.AuthZ.CreateExpense };
 
 
         [TestInitialize]

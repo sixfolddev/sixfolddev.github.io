@@ -43,8 +43,10 @@ namespace RoomAid.Authorization
             DeleteTask,
             CreateSupplyRequest,
             ViewSupplyRequest,
-            EditSupplyRequest,
-            DeleteSupplyRequest
+            EditSupplyRequest_Self,
+            EditSupplyRequest_Others,
+            DeleteSupplyRequest_Self,
+            DeleteSupplyRequest_Others
         }
 
     }
