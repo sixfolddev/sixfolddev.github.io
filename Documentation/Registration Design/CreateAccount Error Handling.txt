@@ -1,0 +1,22 @@
+title CreateAccount Error Handling
+
+CreateAccountService-->Database: bool IfExist(string email)
+
+note left of Database: check if the user email is already used in database,\n return true if already used
+
+Database--> Database: if unable to connect with the databsase\nor error occurs when running query, \nretry up to 3 times
+
+note left of Database: After retry 3 times if still cannot connect to the database\nor run query successfully, return false
+
+Database -->CreateAccountService: return true/false
+
+CreateAccountService-->Database: IResult CreateUser(User)
+
+note left of Database: run query to insert new user into the database, return true\nif successed, return false if failed with reason why it failed\n or error message if any error occurs
+
+Database--> Database: if unable to connect with the databsase or error occurs\n when inserting query, retry up to 3 times
+
+
+note left of Database: After retry 3 times if still cannot connect to the database\nor run query successfully, set the IResult as false and catch\nthe error message
+
+Database-->CreateAccountService: return IResult

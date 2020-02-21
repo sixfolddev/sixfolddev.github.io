@@ -9,8 +9,10 @@ namespace RoomAid.ServiceLayer
         {
             var saltbytes = new byte[32];
 
-            var random = new RNGCryptoServiceProvider();
-            random.GetBytes(saltbytes);
+            using (var random = new RNGCryptoServiceProvider()) // Does indirect disposal of RNGCryptoService
+            {
+                random.GetBytes(saltbytes);
+            }
 
             return BitConverter.ToString(saltbytes);
         }

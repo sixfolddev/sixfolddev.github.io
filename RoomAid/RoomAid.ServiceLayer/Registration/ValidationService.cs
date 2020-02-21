@@ -68,7 +68,7 @@ namespace RoomAid.ServiceLayer
             }
 
             //check if the password contains repetitive contents
-            string repetitiveCheckResult = RepetitiveCheck(input);
+            string repetitiveCheckResult = RepetitiveCheck(input, Int32.Parse(ConfigurationManager.AppSettings["repetitiveRange"]));
             if (repetitiveCheckResult != null)
             {
                 message = message + "\n" + ConfigurationManager.AppSettings["passwordRepetitive"] + "'"
@@ -156,9 +156,9 @@ namespace RoomAid.ServiceLayer
         /// Method AgeValidation() is used to check if user reach the age requirement
         /// <param name="dob">The input date of birth , should be passed from fortnend or controller</param>
         /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-        public IResult AgeValidation(DateTime dob)
+        public IResult AgeValidation(DateTime dob, int ageRequired)
         {
-            if (dob.Year - DateTime.Today.Year < Int32.Parse(ConfigurationManager.AppSettings["ageRequired"]))
+            if (DateTime.Today.Year - dob.Year < ageRequired)
             {
                 return new CheckResult(ConfigurationManager.AppSettings["ageNotPass"], false);
             }
@@ -225,21 +225,19 @@ namespace RoomAid.ServiceLayer
         /// Method Repetitive(Check) is used to check if the input contains repetitive contents based on a check range in config
         /// <param name="input">The input string , should be passed from fortnend or controller</param>
         /// <returns>string result return string that found repetitive or a null</returns>
-        public string RepetitiveCheck(string input)
+        public string RepetitiveCheck(string input, int repetitiveRange)
         {
-            int checkRange = Int32.Parse(ConfigurationManager.AppSettings["repetitiveRange"]);
-
-            if (checkRange > input.Length)
+            if (repetitiveRange > input.Length)
             {
-                checkRange = input.Length;
+                repetitiveRange = input.Length;
             }
 
 
-            for (int i = 1; i < input.Length - checkRange; i++)
+            for (int i = 1; i < input.Length - repetitiveRange; i++)
             {
                 bool ifRepetitive = true;
                 string result = "" + input[i];
-                for (int j = 1; j < checkRange; j++)
+                for (int j = 1; j < repetitiveRange; j++)
                 {
 
 

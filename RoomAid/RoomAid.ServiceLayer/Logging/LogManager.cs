@@ -4,7 +4,7 @@ using System.IO;
 
 namespace RoomAid.ServiceLayer
 {
-    public static class LogDAO
+    public static class LogManager
     {
         // <Summary>
         // Write the created log to both data store locations.

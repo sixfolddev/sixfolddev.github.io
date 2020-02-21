@@ -1,0 +1,71 @@
+title Registration Deisgn
+note right of Controller:When a user request to create an account, \nthe controller will collect all necessary info\ninto a RegistrationRequestDTO and pass\nthe object into the RegistrationManager to \nstart registration
+Controller-> RegistrationRequestDTO: RegistrationRequestDTO = newRegistrationRequestDTO \n  (string userEmail, string firstName, string lastName, \ndateTime DOB, string gender, string password)
+
+RegistrationRequestDTO-->Controller: return instance()
+
+Controller->RegistrationManager:CreateAccountManager cam = new RegistrationManager()
+
+RegistrationManager-->Controller: return instance()
+
+Controller->RegistrationManager:IResult RegisterUser(RegistrationRequestDTO)
+
+RegistrationManager->ValidationService: ValidationService rs = new ValidationService()
+
+ValidationService-->RegistrationManager: return instance()
+
+RegistrationManager->ValidationService: IResult EmailValidation(string userEmail)
+
+note left of ValidationService:EmailValidation will check if the input is a valid email address\nReturn true if successed, return false and reason why it failed 
+
+ValidationService-->RegistrationManager: return IResult
+
+RegistrationManager->ValidationService: IResult NameCheck(string name)
+
+note left of ValidationService:NameCheck can be used for both firstname and lastname,\nwill check if the length of name  meets the requirement\nReturn true if successed, return false and reason why it failed 
+
+ValidationService-->RegistrationManager: return IResult
+
+RegistrationManager->ValidationService: IResult AgeValidation(DateTime DoB)
+
+note left of ValidationService:Our program requires users must be above 18 years old to use\n the application\nReturn true if successed, return false and reason why it failed 
+
+ValidationService-->RegistrationManager: return IResult
+
+RegistrationManager->ValidationService: IResult PasswordValidation(string password)
+
+note left of ValidationService:Will call a series of check methods to valid the password\n based on the requirements\nReturn true if successed, return false and reason why it failed 
+
+ValidationService-->RegistrationManager:return IResult
+
+note left of ValidationService: Create a user object with all necessary info of the user\nand pass the object to CreateAccountService to create account\nfor this user
+RegistrationManager --> User Object:User newUser = new User Object(string email, string fname, \nstring lname, DateTime dob, string gender, string salt)
+
+User Object-->RegistrationManager: return instance()
+
+RegistrationManager-->CreateAccountService: CreateAccountService = new CreateAccountService()
+
+CreateAccountService-->RegistrationManager: return instance()
+
+note right of CreateAccountService: Call the CreateAccount method with passed in user object
+
+RegistrationManager-->CreateAccountService: IResult CreateAccount(User)
+
+CreateAccountService-->Database: bool IfExist(string email)
+
+note left of Database: check if the user email is already used in database,\n return true if already used
+
+Database -->CreateAccountService: return true/false
+
+CreateAccountService-->Database: IResult CreateUser(User)
+
+note left of Database: run query to insert new user into the database, return true\nif successed, return false if failed with reason why it failed\n or error message if any error occurs
+
+Database-->CreateAccountService: return IResult
+
+
+CreateAccountService-->RegistrationManager: return IResult
+
+note left of RegistrationManager:If all check passed and create account successed,\nreturn a result with true, ortherwise return \na result with false and reason why it failed or error messages.\nlog the registration nomatter it is failed or successed
+
+RegistrationManager--> Controller: return IResult

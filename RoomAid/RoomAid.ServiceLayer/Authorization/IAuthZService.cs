@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Authorization
+namespace RoomAid.Authorization
 {
-    interface IAuthZService
+    public interface IAuthZService
     {
-        bool Authorize();
+        bool Authorize(AuthZEnum.AuthZ[] permissions, string userID, string householdID);
     }
 }

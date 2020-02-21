@@ -16,8 +16,8 @@ namespace RoomAid.ServiceLayer
         // Claims
         public const string ISSUED_AT_TIME = "iat";
         public const string EXPIRATION_TIME = "exp";
-        public const string JWT_ID = "jti";
-        public const string EMAIL = "email";
+        //public const string JWT_ID = "jti";
+        public const string SUB = "sub";
         //public const string ADMIN = "admin";
 
         public Base64UrlConverter Encoder 
@@ -51,8 +51,8 @@ namespace RoomAid.ServiceLayer
             Dictionary<string, string> claims = new Dictionary<string, string>();
             claims.Add(ISSUED_AT_TIME, getTimeNowInSeconds().ToString());
             claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + sessiontimeout).ToString());
-            claims.Add(JWT_ID, Guid.NewGuid().ToString());
-            claims.Add(EMAIL, user.UserEmail); // TODO: encrypt email
+            //claims.Add(JWT_ID, Guid.NewGuid().ToString()); // TODO: Do not use GUID
+            claims.Add(SUB, user.UserEmail); // TODO: encrypt email
             //claims.Add(ADMIN, user.Admin.ToString());
             string encodedPayload = Encoder.Encode(claims);
 
