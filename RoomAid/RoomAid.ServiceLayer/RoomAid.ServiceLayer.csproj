@@ -74,6 +74,7 @@
     <Compile Include="Archiving\IArchiveService.cs" />
     <Compile Include="Authentication\Authentication.cs" />
     <Compile Include="Authorization\AuthZClaims.cs" />
+    <Compile Include="Authorization\AuthZEnum.cs" />
     <Compile Include="Authorization\AuthZService.cs" />
     <Compile Include="Authorization\IAuthZService.cs" />
     <Compile Include="Emailing\EmailReady.cs" />

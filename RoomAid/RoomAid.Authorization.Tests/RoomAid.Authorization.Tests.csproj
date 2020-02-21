@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RoomAid.Authorization\RoomAid.Authorization.csproj">
-      <Project>{0eea68e4-7ee6-4bab-a70d-135f151147b0}</Project>
-      <Name>RoomAid.Authorization</Name>
+    <ProjectReference Include="..\RoomAid.ServiceLayer\RoomAid.ServiceLayer.csproj">
+      <Project>{3fe754d4-2138-454a-9de6-c7e3301e8d6c}</Project>
+      <Name>RoomAid.ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
