@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
@@ -8,17 +9,24 @@ namespace RoomAid.Logging.Tests
     [TestClass]
     public class DsHandlerTest
     {
+        private static readonly LogMessage _msg = new LogMessage(
+            DateTime.UtcNow,
+            ConfigurationManager.AppSettings["testClass"],
+            ConfigurationManager.AppSettings["testMethod"],
+            LogLevels.Levels.None,
+            ConfigurationManager.AppSettings["testUser"],
+            ConfigurationManager.AppSettings["testSession"],
+            ConfigurationManager.AppSettings["testText"]);
+
         [TestMethod]
         public void WriteLog_NewFileCreationAndWrite_Pass()
         {
             //Arrange
-            var dsHandler = new DataStoreHandler();
-            LogMessage msg = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, "DataStoreHandlerTest.cs",
-                "WriteLog_NewFileCreationAndWrite_Pass()", LogLevels.Levels.None, "Tester", "1", "Testing...");
+            var dsHandler = new DataStoreHandler(_msg);
             var expected = true;
             var actual = false;
             //Act
-            if(dsHandler.WriteLog(msg))
+            if(dsHandler.WriteLog())
             {
                 actual = true;
             }
@@ -29,20 +37,17 @@ namespace RoomAid.Logging.Tests
         public void DeleteLog_DeleteExistingLog_Pass()
         {
             //Arrange
-            var dsHandler = new DataStoreHandler();
-            LogMessage msg = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, "DataStoreHandlerTest.cs",
-                "DeleteLog_DeleteExistingLog_Pass()", LogLevels.Levels.None, "Tester", "1", "Proof of first file write");
-            LogMessage msg2 = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, "DataStoreHandlerTest.cs",
-                "DeleteLog_DeleteExistingLog_Pass()", LogLevels.Levels.None, "Tester", "1", "Proof of second file write");
-            dsHandler.WriteLog(msg);
-            dsHandler.WriteLog(msg2);
+            var dsHandler = new DataStoreHandler(_msg);
             var expected = true;
             var actual = false;
             //Act
-            if(dsHandler.DeleteLog(msg2))
+            if (dsHandler.WriteLog())
             {
-                actual = true;
-            }
+                if (dsHandler.DeleteLog())
+                {
+                    actual = true;
+                }
+            } 
             //Assert
             Assert.IsTrue(expected == actual);
         }

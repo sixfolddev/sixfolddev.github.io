@@ -11,19 +11,25 @@ namespace RoomAid.Logging.Tests
     public class FileHandlerTest
     {
         // Log Storage directory
-        private readonly string logStorage = ConfigurationManager.AppSettings["logStorage"];
-        private readonly FileHandler fileHandler = new FileHandler();
-        private readonly string className = ConfigurationManager.AppSettings["className"];
-        private readonly ILogFormatter formatter = new SingleLineFormatter();
+        private readonly string _logStorage = ConfigurationManager.AppSettings["logStorage"];
+        private readonly ILogFormatter _formatter = new SingleLineFormatter();
+        private static readonly LogMessage _msg = new LogMessage(
+            DateTime.UtcNow,
+            ConfigurationManager.AppSettings["testClass"],
+            ConfigurationManager.AppSettings["testMethod"],
+            LogLevels.Levels.None,
+            ConfigurationManager.AppSettings["testUser"],
+            ConfigurationManager.AppSettings["testSession"],
+            ConfigurationManager.AppSettings["testText"]);
+        private static readonly FileHandler fileHandler = new FileHandler(_msg);
+        private readonly string _fileName = fileHandler.MakeFileNameByDate(_msg);
 
         [TestMethod]
         public void WriteLog_NewFileIsCreatedAndWrites_Pass()
         {
             //Arrange
-            LogMessage msg = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, className,
-                "WriteLog_NewFileIsCreatedAndWrites_Pass()", LogLevels.Levels.None, "Tester", "1", "Testing...");
-            string fileName = fileHandler.MakeFileNameByDate(msg);
-            string path = Path.Combine(logStorage, fileName);
+            //Arrange
+            string path = Path.Combine(_logStorage, _fileName);
             var expected = true;
             var actual = false;
 
@@ -32,12 +38,12 @@ namespace RoomAid.Logging.Tests
             {
                 File.Delete(path);
             }
-            if (fileHandler.WriteLog(msg))
+            if (fileHandler.WriteLog())
             {
                 if (File.Exists(path)) // New file created
                 {
                     string[] entries = File.ReadAllLines(path);
-                    string message = formatter.FormatLog(msg);
+                    string message = _formatter.FormatLog(_msg);
                     var lastEntry = entries.Length - 1;
                     if (entries[lastEntry].Equals(message))
                     {
@@ -54,18 +60,15 @@ namespace RoomAid.Logging.Tests
         public void WriteLog_LogEntryAppends_Pass()
         {
             //Arrange
-            LogMessage msg = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, className,
-                "WriteLog_LogEntryAppends_Pass()", LogLevels.Levels.None, "Tester", "2", "Testing...");
-            string fileName = fileHandler.MakeFileNameByDate(msg);
-            string path = Path.Combine(logStorage, fileName);
+            string path = Path.Combine(_logStorage, _fileName);
             var expected = true;
             var actual = false;
 
             //Act
-            if (fileHandler.WriteLog(msg))
+            if (fileHandler.WriteLog())
             {
                 string[] entries = File.ReadAllLines(path);
-                string message = formatter.FormatLog(msg);
+                string message = _formatter.FormatLog(_msg);
                 var lastEntry = entries.Length - 1;
                 if (entries[lastEntry].Equals(message))
                 {
@@ -81,22 +84,19 @@ namespace RoomAid.Logging.Tests
         public void DeleteLog_LogEntryFoundAndDeleted_Pass()
         {
             //Arrange
-            LogMessage msg = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, className,
-                "LogEntryFoundAndDeleted_Pass()", LogLevels.Levels.None, "Tester", "3", "Testing...");
-            string fileName = fileHandler.MakeFileNameByDate(msg);
-            string path = Path.Combine(logStorage, fileName);
+            string path = Path.Combine(_logStorage, _fileName);
             var expected = true;
             var actual = false;
 
             //Act
-            if (fileHandler.WriteLog(msg))
+            if (fileHandler.WriteLog())
             {
                 string[] entries = File.ReadAllLines(path);
-                string message = formatter.FormatLog(msg);
+                string message = _formatter.FormatLog(_msg);
                 var lastEntry = entries.Length - 1;
                 if (entries[lastEntry].Equals(message))
                 {
-                    fileHandler.DeleteLog(msg);
+                    fileHandler.DeleteLog();
                 }
                 entries = File.ReadAllLines(path);
                 lastEntry = entries.Length - 1;
@@ -114,19 +114,16 @@ namespace RoomAid.Logging.Tests
         public void DeleteLog_LogFileUnaltered_Pass()
         {
             //Arrange
-            LogMessage msg = new LogMessage(Guid.NewGuid(), DateTime.UtcNow, className,
-                "LogFileUnaltered_Pass()", LogLevels.Levels.None, "Tester", "4", "Testing...");
-            string fileName = fileHandler.MakeFileNameByDate(msg);
-            string path = Path.Combine(logStorage, fileName);
+            string path = Path.Combine(_logStorage, _fileName);
             var expected = true;
             var actual = false;
 
             //Act
             string[] entries = File.ReadAllLines(path);
-            string message = formatter.FormatLog(msg);
+            string message = _formatter.FormatLog(_msg);
             if(!entries.Any(message.Equals))
             {
-                fileHandler.DeleteLog(msg);
+                fileHandler.DeleteLog();
                 entries = File.ReadAllLines(path);
                 var lastEntry = entries.Length - 1;
                 if (!entries[lastEntry].Equals(message))

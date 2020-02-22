@@ -4,7 +4,6 @@ namespace RoomAid.ServiceLayer
 {
     public class LogMessage
     {
-        public Guid LogGUID { get; set; }
         public DateTime Time { get; set; }
         public String Level { get; set; }
         public string UserID { get; set; }
@@ -13,9 +12,8 @@ namespace RoomAid.ServiceLayer
         public string CallingMethod { get; set; }
         public string Text { get; set; }
 
-        public LogMessage(Guid logId, DateTime time, string className, string methodName, LogLevels.Levels level, string user, string session,string text)
+        public LogMessage(DateTime time, string className, string methodName, LogLevels.Levels level, string user, string session,string text)
         {
-            LogGUID = logId;
             Level = level.ToString();
             Time = time;
             UserID = user;
@@ -27,7 +25,7 @@ namespace RoomAid.ServiceLayer
 
         public string GetParamNames()
         {
-            return "LogGUID,Time,CallingClass,CallingMethod,Level,UserID,SessionID,Text";
+            return "Time,CallingClass,CallingMethod,Level,UserID,SessionID,Text";
         }
     }
 }

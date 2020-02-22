@@ -9,15 +9,19 @@ namespace RoomAid.ServiceLayer
     {
         private readonly string _directory;
         private readonly ILogFormatter _formatter;
+        private readonly LogMessage _message;
+        private readonly string _firstparam;
 
         /// <summary>
         /// Default constructor. Initializes a directory to store the log files and the formatter to
         /// format the log message into a single line format.
         /// </summary>
-        public FileHandler()
+        public FileHandler(LogMessage msg)
         {
             _directory = ConfigurationManager.AppSettings["logStorage"]; // Temporary directory
             _formatter = new SingleLineFormatter();
+            _message = msg;
+            _firstparam = msg.Time.ToString();
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace RoomAid.ServiceLayer
         /// </summary>
         /// <param name="logMessage">Log entry to be written to file</param>
         /// <returns>true if write is successful, false otherwise</returns>
-        public bool WriteLog(LogMessage logMessage)
+        public bool WriteLog()
         {
             try
             {
@@ -55,18 +59,18 @@ namespace RoomAid.ServiceLayer
                 {
                     directory.Create();
                 }
-                string fileName = MakeFileNameByDate(logMessage);
+                string fileName = MakeFileNameByDate(_message);
                 string path = Path.Combine(_directory, fileName);
                 if (!File.Exists(path)) // If file doesn't exist, create and write parameter names as first line
                 {
                     using (StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8)) // UTF8 Encoding recommended for .NET Framework 4.7.2
                     {
-                        writer.WriteLine(logMessage.GetParamNames());
+                        writer.WriteLine(_message.GetParamNames());
                     }
                 }
                 using (StreamWriter writer = new StreamWriter(path, true, Encoding.UTF8))
                 {
-                    writer.WriteLine(_formatter.FormatLog(logMessage));
+                    writer.WriteLine(_formatter.FormatLog(_message));
                 }
                 return true;
             }
@@ -82,21 +86,21 @@ namespace RoomAid.ServiceLayer
         /// </summary>
         /// <param name="logMessage">Log entry to search for and delete</param>
         /// <returns>true if delete is successful, false otherwise</returns>
-        public bool DeleteLog(LogMessage logMessage)
+        public bool DeleteLog()
         {
             try
             {
-                string fileName = MakeFileNameByDate(logMessage);
+                string fileName = MakeFileNameByDate(_message);
                 string path = Path.Combine(_directory, fileName);
                 string[] logEntries = File.ReadAllLines(path);
                 for (var j = 0; j < logEntries.Length; j++)
                 {
                     string[] tokens = logEntries[j].Split(',');
-                    if (!(tokens[0].Equals(logMessage.LogGUID.ToString()))) // First token is always the GUID
+                    if (!(tokens[0].Equals(_firstparam)))
                     {
                         using (StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8)) // Overwrite existing file
                         {
-                            writer.WriteLine(logMessage);
+                            writer.WriteLine(_message);
                         }
                     }
                 }
@@ -112,7 +116,6 @@ namespace RoomAid.ServiceLayer
         {
             return logMessage.Time.ToString(ConfigurationManager.AppSettings["dateFormat"]) + ConfigurationManager.AppSettings["logExtension"];
         }
-
 
     }
 }

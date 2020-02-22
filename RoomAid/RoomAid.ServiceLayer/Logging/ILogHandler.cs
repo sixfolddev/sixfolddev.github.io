@@ -2,7 +2,7 @@
 {
     public interface ILogHandler
     {
-        bool WriteLog(LogMessage logMessage);
-        bool DeleteLog(LogMessage logMessage);
+        bool WriteLog();
+        bool DeleteLog();
     }
 }

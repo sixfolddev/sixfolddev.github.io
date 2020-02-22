@@ -7,6 +7,7 @@ namespace RoomAid.ServiceLayer
     public class Logger
     {
         private static LogLevels.Levels _defaultLevel = LogLevels.Levels.Info;
+
         public static void Log()
         {
             Log("No information received.");
@@ -23,11 +24,12 @@ namespace RoomAid.ServiceLayer
             string className = GetCallingMethod().ReflectedType.Name; // Base class
             string methodName = GetCallingMethod().Name;
             // TODO: Grab session id and user id
-            string userId = ""; // mask
+            string userId = ""; // grab from user object/system
             string sessionId = ""; // mask
 
-            var logMessage = new LogMessage(logId, time, className, methodName, level, userId, sessionId, text);
-            LogManager.WriteLog(logMessage);
+            var logMessage = new LogMessage(time, className, methodName, level, userId, sessionId, text);
+            LogManager logManager = new LogManager(logMessage);
+            logManager.WriteLog();
         }
 
         private static MethodBase GetCallingMethod()
