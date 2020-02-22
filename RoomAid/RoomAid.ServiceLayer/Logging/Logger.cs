@@ -25,7 +25,6 @@ namespace RoomAid.ServiceLayer
             // TODO: Grab session id and user id
             string userId = ""; // mask
             string sessionId = ""; // mask
-            var logId = Guid.NewGuid();
 
             var logMessage = new LogMessage(logId, time, className, methodName, level, userId, sessionId, text);
             LogManager.WriteLog(logMessage);

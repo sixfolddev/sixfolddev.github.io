@@ -29,7 +29,6 @@ namespace RoomAid.ServiceLayer
                 {
                     var document = new BsonDocument
                     {
-                        {"LogID",BsonValue.Create(logMessage.LogGUID) },
                         {"DateTime", BsonValue.Create(logMessage.Time) },
                         {"Class",BsonValue.Create(logMessage.CallingClass)},
                         {"Method",BsonValue.Create(logMessage.CallingMethod) },
@@ -59,7 +58,7 @@ namespace RoomAid.ServiceLayer
             {
                 try
                 {
-                    var deleteFilter = Builders<BsonDocument>.Filter.Eq("LogID", logMessage.LogGUID);
+                    var deleteFilter = Builders<BsonDocument>.Filter.Eq("DateTime", logMessage.Time);
                     _collection.FindOneAndDelete(deleteFilter);
 
                     return true;
