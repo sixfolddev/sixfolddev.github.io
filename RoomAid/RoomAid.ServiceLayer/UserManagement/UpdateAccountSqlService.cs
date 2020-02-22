@@ -31,10 +31,9 @@ namespace RoomAid.ServiceLayer
         /// <returns>CheckResult</returns>
         public IResult Update()
         {
-            String message;
+            String message = "";
             bool isSuccess = true;
             List<SqlCommand> commands = new List<SqlCommand>();
-            String tableName = ConfigurationManager.AppSettings["tableName"];
 
             //creates a set of queries within a list to pass towards a dao for updating
             foreach(User newUser in _newUsers)
@@ -55,11 +54,11 @@ namespace RoomAid.ServiceLayer
             int rowsChanged = _update.Update(commands);
             if(rowsChanged == commands.Count)
             {
-                message = ConfigurationManager.AppSettings["successMessage"];
+                message += ConfigurationManager.AppSettings["successMessage"];
             }
             else
             {
-                message = ConfigurationManager.AppSettings["failureMessage"];
+                message += ConfigurationManager.AppSettings["failureMessage"];
                 isSuccess = false;
             }
 

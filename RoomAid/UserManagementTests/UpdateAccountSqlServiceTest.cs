@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.DataAccessLayer;
 using RoomAid.ServiceLayer;
+
 
 namespace UserManagementTests
 {
@@ -27,9 +29,9 @@ namespace UserManagementTests
             var update = new UpdateAccountSqlService(newUsers, dao);
             
             var compare = update.Update();
-            Console.WriteLine(compare.Message);
-            Console.WriteLine(compare.IsSuccess);
-            Assert.AreEqual(result, compare);
+
+            Assert.IsTrue(compare.IsSuccess);
+            Assert.AreEqual(compare.Message, result.Message);
 
         }
 
@@ -45,9 +47,9 @@ namespace UserManagementTests
             var update = new UpdateAccountSqlService(newUsers, dao);
 
             var compare = update.Update();
-            Console.WriteLine(compare.Message);
-            Console.WriteLine(compare.IsSuccess);
-            Assert.AreNotEqual(result, compare);
+
+            Assert.IsFalse(compare.IsSuccess);
+            Assert.AreNotEqual(compare.Message, result.Message);
         }
 
         public class UpdateAccountDAOTestSuccess: IUpdateAccountDAO
@@ -60,9 +62,19 @@ namespace UserManagementTests
 
             public int Update(List<SqlCommand> commands)
             {
-                
-                if(true)
 
+                var cmd = new SqlCommand();
+                cmd.CommandText= "UPDATE dbo.Users SET FirstName = @fName, LastName = @lName, DateOfBirth = @dob, Gender = @gender, AccountStatus = @status WHERE UserEmail = @email";
+                cmd.Parameters.AddWithValue("@email", "boi@gmail.com");
+                cmd.Parameters.AddWithValue("@fName", "daniel");
+                cmd.Parameters.AddWithValue("@lName", "gione");
+                cmd.Parameters.AddWithValue("@dob", date);
+                cmd.Parameters.AddWithValue("@gender", "Male");
+                cmd.Parameters.AddWithValue("@status", "enabled");
+                
+                Trace.WriteLine(cmd.CommandText);
+                Trace.WriteLine(commands[0].CommandText);
+                if (commands[0].CommandText.Equals(cmd.CommandText))
                     return 1;
                 else
                     return 0;
