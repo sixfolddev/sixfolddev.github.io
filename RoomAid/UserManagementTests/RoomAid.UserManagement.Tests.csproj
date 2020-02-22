@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7854A54E-A169-4F0A-B9E3-55220EFA21D7}</ProjectGuid>
+    <ProjectGuid>{9C4B8BA1-718B-43B8-B35E-07308501FCD1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RoomAid.DataMasking.Tests</RootNamespace>
-    <AssemblyName>RoomAid.DataMasking.Tests</AssemblyName>
+    <RootNamespace>UserManagementTests</RootNamespace>
+    <AssemblyName>UserManagementTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -47,13 +47,13 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HashTest.cs" />
+    <Compile Include="UpdateAccountSqlServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -61,12 +61,8 @@
       <Project>{5E8E8769-AF6B-49C7-A61C-AA85B747EF93}</Project>
       <Name>RoomAid.DataAccessLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RoomAid.ManagerLayer\RoomAid.ManagerLayer.csproj">
-      <Project>{15565b36-4b3f-411f-b173-96abd103153c}</Project>
-      <Name>RoomAid.ManagerLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RoomAid.ServiceLayer\RoomAid.ServiceLayer.csproj">
-      <Project>{3fe754d4-2138-454a-9de6-c7e3301e8d6c}</Project>
+      <Project>{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}</Project>
       <Name>RoomAid.ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>

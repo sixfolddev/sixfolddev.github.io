@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RoomAid.DataAccessLayer.User_Management
+
+namespace RoomAid.DataAccessLayer
 {
-    public class UpdateAccountDAO :IUpdateAccountDAO
+    public class UpdateAccountSqlDAO :IUpdateAccountDAO
     {
         private readonly String _connection;
 
-        public UpdateAccountDAO(String connection)
+        public UpdateAccountSqlDAO(String connection)
         {
             this._connection = connection;
         }
@@ -21,20 +20,19 @@ namespace RoomAid.DataAccessLayer.User_Management
         /// </summary>
         /// <param name="queries"></param>
         /// <returns></returns>
-        public int Update(List<String> queries)
+        public int Update(List<SqlCommand> commands)
         {
             int rowsChanged = 0;
             using (SqlConnection connection = new SqlConnection(_connection))
             {
                 connection.Open();
                 SqlTransaction trans = connection.BeginTransaction();
-                SqlCommand cmd = new SqlCommand("",connection, trans);
-
                 try
                 {
-                    foreach(String query in queries)
+                    foreach(SqlCommand cmd in commands)
                     {
-                        cmd.CommandText = query;
+                        cmd.Connection =connection;
+                        cmd.Transaction = trans;
                         rowsChanged += cmd.ExecuteNonQuery();
                     }
                     trans.Commit();

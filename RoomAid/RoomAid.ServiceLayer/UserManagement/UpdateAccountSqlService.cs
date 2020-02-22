@@ -1,25 +1,26 @@
-﻿using RoomAid.DataAccessLayer.User_Management;
+﻿using RoomAid.DataAccessLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoomAid.ServiceLayer.UserManagement
+namespace RoomAid.ServiceLayer
 {
     public class UpdateAccountSqlService : IUpdateAccountService
     {
         private readonly List<User> _newUsers;
-        private readonly UpdateAccountDAO _update;
+        private readonly IUpdateAccountDAO _update;
 
         /// <summary>
         /// Service that crafts queries for updating users related to a sql database
         /// </summary>
         /// <param name="newUsers"></param>
         /// <param name="update"></param>
-        public UpdateAccountSqlService(List<User> newUsers, UpdateAccountDAO update)
+        public UpdateAccountSqlService(List<User> newUsers, IUpdateAccountDAO update)
         {
             this._newUsers = newUsers;
             this._update = update;
@@ -32,20 +33,27 @@ namespace RoomAid.ServiceLayer.UserManagement
         {
             String message;
             bool isSuccess = true;
-            List<String> queries = new List<String>();
+            List<SqlCommand> commands = new List<SqlCommand>();
             String tableName = ConfigurationManager.AppSettings["tableName"];
 
             //creates a set of queries within a list to pass towards a dao for updating
             foreach(User newUser in _newUsers)
             {
-                queries.Add($"UPDATE {tableName} SET FirstName = {newUser.FirstName}, LastName = {newUser.LastName}," +
-                    $"DateOfBirth = {newUser.DateOfBirth}, Gender = {newUser.Gender}, AccountStatus = {newUser.AccountStatus}" +
-                    $" WHERE UserEmail = {newUser.UserEmail}");
+                var cmd = new SqlCommand(ConfigurationManager.AppSettings["updateCmd"]);
+                cmd.Parameters.AddWithValue("@email", newUser.UserEmail);
+                cmd.Parameters.AddWithValue("@fName", newUser.FirstName);
+                cmd.Parameters.AddWithValue("@lName", newUser.LastName);
+                cmd.Parameters.AddWithValue("@dob", newUser.DateOfBirth);
+                cmd.Parameters.AddWithValue("@gender", newUser.Gender);
+                cmd.Parameters.AddWithValue("@status", newUser.AccountStatus);
+
+                commands.Add(cmd);
+
             }
 
             //changing result based upon if all accounts were updated successfully
-            int rowsChanged = _update.Update(queries);
-            if(rowsChanged == queries.Count)
+            int rowsChanged = _update.Update(commands);
+            if(rowsChanged == commands.Count)
             {
                 message = ConfigurationManager.AppSettings["successMessage"];
             }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoomAid.ServiceLayer.UserManagement
+namespace RoomAid.ServiceLayer
 {
     /// <summary>
     /// This is an interface that allows for multiple UpdateAccount services to craft

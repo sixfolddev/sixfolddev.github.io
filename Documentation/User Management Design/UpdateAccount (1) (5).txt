@@ -15,23 +15,33 @@ note over s: create an interface for IUpdateAccountService to make it craft quer
 
 s->s:String message = \"";
 s->s:bool isSuccess = true;
-s->s: List<String> queries = new ArrayList<>()
-s->s: String tableName = ConfigurationManager.AppSettings["tableName"]
+s->s: var commands = new List<SqlCommand>()
+
 alt foreach(User newUser in newUsers)
-s->s: queries.add($"UPDATE {tableName} SET FirstName = {newUser.FirstName},\nLastName = {newUser.LastName}, DateOfBirth = {newUser.DateOfBirth}, Gender = {newUser.Gender},\nAccountStatus = {newUser.AccountStatus} WHERE UserEmail = {newUser.UserEmail})
+s->s: var cmd = new SqlCommand("UPDATE dbo.Users SET FirstName = @fName, LastName = @lName," + "DateOfBirth = @dob, Gender = @gender, AccountStatus = @status" +
+                    " WHERE UserEmail = @email"));
+                    
+s->s:cmd.Parameters.AddWithValue("@email", newUser.UserEmail);
+s->s:cmd.Parameters.AddWithValue("@fName", newUser.FirstName);
+s->s:cmd.Parameters.AddWithValue("@lName", newUser.LastName);
+s->s:cmd.Parameters.AddWithValue("@dob", newUser.DateOfBirth);
+s->s:cmd.Parameters.AddWithValue("@gender", newUser.Gender);
+s->s:cmd.Parameters.AddWithValue("@status", newUser.AccountStatus);
+s->s:commands.Add(cmd)
 end
 note over s: UpdateDao will use Interface for update
 alt try
-s->d:int updateDao.Update(List<String> queries)
+s->d:int updateDao.Update(List<SqlCommand> commands)
 alt using (SqlConnection connection = new SqlConnection(connection))
 d->d: connection.Open()
 
 d->d: SqlTransaction trans = connection.BeginTransaction()
-d->d:SqlCommand cmd = new SqlCommand("", connection,trans)
+
 d->d: int rowsChanged = 0
 alt try
-alt foreach(String query in queries)
-d->d:cmd.CommandText=query
+alt foreach(Sqlcommand cmd in commands)
+d->d:cmd.Connection = connection
+d->d:cmd.Transaction = trans
 d->d:rowsChanged+=cmd.ExecuteNonQuery()
 end 
 d->d:trans.Commit()
