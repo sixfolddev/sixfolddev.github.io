@@ -1,0 +1,6 @@
+CREATE TABLE Accounts(
+	UserEmail VARCHAR(200) NOT NULL,
+	HashPassword VARCHAR(32) NOT NULL,
+	Salt VARCHAR(32) NOT NULL,
+	CONSTRAINT pk_Accounts PRIMARY KEY (UserEmail)
+);
