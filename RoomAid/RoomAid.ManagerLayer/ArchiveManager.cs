@@ -65,7 +65,7 @@ namespace RoomAid.ManagerLayer
                 return false;
             }
 
-            //Create a new list for resultSet to store all file names that are needed to be archived
+            //CreateAccount a new list for resultSet to store all file names that are needed to be archived
             List<string> resultSet = GetFileNames();
 
             //if the result set is empty, the archive process must be stopped.
@@ -130,7 +130,7 @@ namespace RoomAid.ManagerLayer
         /// <returns>resultSet the list of log files that should be archived</returns>
         private List<string> GetFileNames()
         {
-            //Create the list for all file names that should be archived
+            //CreateAccount the list for all file names that should be archived
             var resultSet = new List<string>();
 
             //Use a for loop to go through the log storage path

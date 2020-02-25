@@ -11,6 +11,8 @@ namespace RoomAid.ServiceLayer
     {
         // Private backing fields
         private string _userEmail;
+        private string _password;
+        private string _salt;
         private string _firstName;
         private string _lastName;
         private string _accountStatus;
@@ -20,6 +22,8 @@ namespace RoomAid.ServiceLayer
 
         // Public accessors
         public string UserEmail { get; set; }
+        public string Password { get; set; }
+        public string Salt { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AccountStatus { get; set; }
@@ -31,6 +35,8 @@ namespace RoomAid.ServiceLayer
         public User()
         {
             UserEmail = _userEmail;
+            Password = _password;
+            Salt = _salt;
             FirstName = _firstName;
             LastName = _lastName;
             AccountStatus = _accountStatus;
@@ -39,9 +45,11 @@ namespace RoomAid.ServiceLayer
             //Admin = _admin;
         }
 
-        public User(string email, string fname, string lname, string status, DateTime dob, string gender/*, bool admin*/)
+        public User(string email, string password, string salt, string fname, string lname, string status, DateTime dob, string gender/*, bool admin*/)
         {
             UserEmail = email;
+            Password = password;
+            Salt = salt;
             FirstName = fname;
             LastName = lname;
             AccountStatus = status;

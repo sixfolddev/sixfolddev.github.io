@@ -69,17 +69,17 @@ namespace RoomAid.ManagerLayer
 
             if (ifSuccess)
             {
-                User newUser = new User(email, fname, lname, "Enable", dob, gender);
-
                 // Generate salt and hash password
                 Hasher hasher = new Hasher(algorithm);
                 HashObject hash = hasher.GenerateSaltedHash(password);
                 string hashedPw = hash.HashedValue;
                 string salt = hash.Salt;
 
+                User newUser = new User(email, hashedPw, salt, fname, lname, "Enable", dob, gender);
+
                 // Call the service to add user
-                CreateAccountService ad = new CreateAccountService();
-                checkResult = ad.CreateAccount(newUser);
+                ICreateAccountService ad = new SqlCreateAccountService();
+                checkResult = ad.Create(newUser);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
