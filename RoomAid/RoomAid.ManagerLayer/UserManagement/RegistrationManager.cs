@@ -78,7 +78,8 @@ namespace RoomAid.ManagerLayer
                 string salt = hash.Salt;
 
                 // Call the service to add user
-                CreateAccountService ad = new CreateAccountService();
+                ICreationAccountDAO sqlDAO = new SqlCreateAccountDAO();
+                CreateAccountService ad = new CreateAccountService(sqlDAO);
                 checkResult = ad.CreateAccount(newUser);
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;

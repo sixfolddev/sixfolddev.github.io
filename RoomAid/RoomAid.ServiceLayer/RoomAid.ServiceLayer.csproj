@@ -104,7 +104,9 @@
     <Compile Include="Registration\ValidationService.cs" />
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />
+    <Compile Include="UserManagement\ICreationAccountDAO.cs" />
     <Compile Include="UserManagement\IUpdateAccountService.cs" />
+    <Compile Include="UserManagement\SqlCreateAccountDAO.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="UserManagement\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />

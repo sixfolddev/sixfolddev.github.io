@@ -9,6 +9,7 @@ namespace RoomAid.CreateAccount.Tests
     [TestClass]
     public class CreateAccountTests
     {
+        private ICreationAccountDAO sqlDAO = new SqlCreateAccountDAO();
 
         //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
         [TestMethod]
@@ -19,8 +20,8 @@ namespace RoomAid.CreateAccount.Tests
 
             //Act
             User testUser = new User("testingemail@email.com","testerFname", "testerLname","enable", new DateTime(2008, 5, 1),"male");
-            CreateAccountService cas = new CreateAccountService();
-            if (cas.IfUserExist(testUser.UserEmail))
+            CreateAccountService cas = new CreateAccountService(sqlDAO);
+            if (sqlDAO.IfUserExist(testUser.UserEmail))
                 DeleteRow(testUser.UserEmail);
 
             IResult testResult = cas.CreateAccount(testUser);
@@ -43,8 +44,8 @@ namespace RoomAid.CreateAccount.Tests
 
             //Act
             User testUser = new User("testingemail@email.com", "testerFname", "testerLname", "enable", new DateTime(2008, 5, 1), "male");
-            CreateAccountService cas = new CreateAccountService();
-            if (!cas.IfUserExist(testUser.UserEmail))
+            CreateAccountService cas = new CreateAccountService(sqlDAO);
+            if (!sqlDAO.IfUserExist(testUser.UserEmail))
                 cas.CreateAccount(testUser);
 
             IResult testResult = cas.CreateAccount(testUser);
