@@ -4,56 +4,60 @@ using System.Text;
 
 namespace RoomAid.ServiceLayer
 {
-    public class Authentication
+    public class AuthenticationService
     {
-        private string userID;
-        private string password;
+        private string _userEmail;
+        private string _password;
         private bool _authenticated;
         private Hasher hasher = new Hasher(new SHA256Cng());
         
         //Create object when user tries to log in
-        public Authentication(string userID, string password)
+        public AuthenticationService(string email, string _password)
         {
             //Get salt from database tied to input account ID
-            //Call method to hash input password and salt
-            //Call method to retrieve stored hash password
-            //Compare generated password with stored password
+            //Call method to hash input _password and salt
+            //Call method to retrieve stored hash _password
+            //Compare generated _password with stored _password
             //Don't store into variables
-            this.userID = userID;
-            this.password = password;
+            this._userEmail = email;
+            this._password = _password;
             _authenticated = false;
+        }
+
+        public bool Authenticate()
+        {
             if (CompareHashes())
                 _authenticated = true;
-            else
-                _authenticated = false;
-        }
-        public bool CompareHashes()
-        {
-            // var emailhash = hasher.GenerateHash(userID);
-            // Grab associated pw from database
-            if (GenerateHash(userID, password) == DataStoreHash())
-            {
-                _authenticated = true;
-            }
             else
                 _authenticated = false;
 
             return _authenticated;
         }
 
-        public string GenerateHash(string userID, string password)
+        public bool CompareHashes()
+        {
+            string salt = GetSalt(_userEmail);
+
+            if (hasher.GenerateSaltedHash(_password, salt) == RetrieveDataStoreHash())
+            {
+                return true;
+            }
+            return false;
+        }
+        /*
+        public string GenerateHash(string _userEmail, string _password)
         {
             int iterations = 100000;
-            //concatenate salt and input password to run through hashing
+            //concatenate salt and input _password to run through hashing
 
-            var hash = new Rfc2898DeriveBytes(password, GetSalt(userID), 
+            var hash = new Rfc2898DeriveBytes(_password, GetSalt(_userEmail), 
                 iterations, HashAlgorithmName.SHA256);
             var passwordToCheck = Encoding.Default.GetString(hash.GetBytes(32));
 
             return passwordToCheck;
-        }
+        }*/
 
-        public string DataStoreHash()
+        public string RetrieveDataStoreHash()
         {
             string storedHash;
             try
@@ -63,7 +67,7 @@ namespace RoomAid.ServiceLayer
             }
             catch (Exception)
             {
-                //If hashed pw cannot be retrieved, authentication will fail because
+                //If hashed pw cannot be retrieved, AuthenticationService will fail because
                 //the comparison will fail
                 storedHash = "";
             }
@@ -71,26 +75,26 @@ namespace RoomAid.ServiceLayer
             return storedHash;
         }
 
-        public byte[] GetSalt(string userID)
+        public string GetSalt(string _userEmail)
         {
             try
             {
                 //pull salt from pw file
-                return Encoding.ASCII.GetBytes("AE2012DEWE193241"); //test salt
+                return "tempsalt"; // temp salt
             }
             catch (Exception)
             {
                 //Catch error handling.
                 //Returns error back to login screen if salt doesn't exist 
                 //which means account doesn't exist.
-                return Encoding.ASCII.GetBytes("");
+                return "";
             }
         }
-
+/*
         public bool GetAuthenticated()
         {
             return _authenticated;
-        }
+        }*/
     }
 }
 
