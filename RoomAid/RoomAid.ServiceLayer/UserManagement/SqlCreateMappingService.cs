@@ -21,7 +21,7 @@ namespace RoomAid.ServiceLayer
         {
             int userId = -1;
             List<SqlCommand> commands = new List<SqlCommand>();
-            var cmd = new SqlCommand("INSERT INTO dbo.Mapping (UserEmail) VALUES (@email)");
+            var cmd = new SqlCommand(ConfigurationManager.AppSettings["queryCreateMapping"]);
             cmd.Parameters.AddWithValue("@email", _newAccount.UserEmail);
             commands.Add(cmd);        
             int rowsChanged = _sqlDAO.Update(commands);
@@ -31,7 +31,7 @@ namespace RoomAid.ServiceLayer
             {
                 using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionMapping"]))
                 {
-                    string query = "SELECT SysID FROM dbo.Mapping WHERE UserEmail = @userEmail;";
+                    string query = ConfigurationManager.AppSettings["querySelectMapping"];
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@userEmail", _newAccount.UserEmail);

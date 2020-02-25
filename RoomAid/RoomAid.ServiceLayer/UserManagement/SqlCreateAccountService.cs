@@ -32,7 +32,7 @@ namespace RoomAid.ServiceLayer
 
             foreach (Account newAccount in _newAccounts)
             {
-                var cmd = new SqlCommand("INSERT INTO dbo.Accounts (UserEmail, HashedPassword, Salt) VALUES (@email, @hashedPw, @salt)");
+                var cmd = new SqlCommand(ConfigurationManager.AppSettings["queryCreateAccount"]);
                 cmd.Parameters.AddWithValue("@email", newAccount.UserEmail);
                 cmd.Parameters.AddWithValue("@hashedPw", newAccount.HashedPassword);
                 cmd.Parameters.AddWithValue("@salt", newAccount.Salt);
