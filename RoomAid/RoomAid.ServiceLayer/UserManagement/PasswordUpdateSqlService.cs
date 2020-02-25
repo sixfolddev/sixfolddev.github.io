@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace RoomAid.ServiceLayer.UserManagement
 {
+    /// <summary>
+    ///Service used for updating an Account's password
+    /// </summary>
     public class PasswordUpdateSqlService : IUpdateAccountService
     {
         private readonly IUpdateAccountDAO _dao;
@@ -26,7 +29,10 @@ namespace RoomAid.ServiceLayer.UserManagement
             _accountList = new List<Account>();
             _accountList.Add(acc);
         }
-
+        /// <summary>
+        /// takes list of accounts stored and attempts to update all their passwords
+        /// </summary>
+        /// <returns>IResult dependng on success </returns>
         public IResult Update()
         {
             String message = "";
@@ -37,8 +43,9 @@ namespace RoomAid.ServiceLayer.UserManagement
 
             foreach(Account acc in _accountList)
             {
-                var cmd = new SqlCommand("UPDATE @table SET Password = @pass WHERE UserEmail = @email");
+                var cmd = new SqlCommand("UPDATE @table SET Password = @pass, Salt = @salt WHERE UserEmail = @email");
                 cmd.Parameters.AddWithValue("@table", tableName);
+                cmd.Parameters.AddWithValue("@salt", acc.Salt);
                 cmd.Parameters.AddWithValue("@pass", acc.Password);
                 cmd.Parameters.AddWithValue("@email", acc.UserEmail);
                 commands.Add(cmd);
