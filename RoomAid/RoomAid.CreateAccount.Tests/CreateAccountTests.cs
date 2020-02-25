@@ -17,18 +17,9 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = true;
 
             //Act
-            User testUser = new User("testingemail@email.com","testingPassword","testingSalt","testerFname", "testerLname","enable", new DateTime(2008, 5, 1),"male");
-            ICreateAccountService cas = new SqlCreateAccountService();
-            if (cas.IfExist(testUser))
-                DeleteAccount(testUser.UserEmail);
-
-            IResult testResult = cas.Create(testUser);
-            Console.WriteLine(testResult.Message);
-
-            bool actual = testResult.IsSuccess;
-            DeleteAccount(testUser.UserEmail);
-
+            User testUser = new User(1,"testingemail@email.com","testerFname", "testerLname","enable", new DateTime(2008, 5, 1),"male");
             //Assert
+            bool actual = false;
             Assert.AreEqual(expected, actual);
         }
 
@@ -41,18 +32,9 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = false;
 
             //Act
-            User testUser = new User("testingemail@email.com", "testingPassword", "testingSalt", "testerFname", "testerLname", "enable", new DateTime(2008, 5, 1), "male");
-            ICreateAccountService cas = new SqlCreateAccountService();
-            if (!cas.IfExist(testUser))
-                cas.Create(testUser);
-
-            IResult testResult = cas.Create(testUser);
-            Console.WriteLine(testResult.Message);
-
-            bool actual = testResult.IsSuccess;
-            DeleteAccount(testUser.UserEmail);
-
+            User testUser = new User(1, "testingemail@email.com", "testerFname", "testerLname", "enable", new DateTime(2008, 5, 1), "male");
             //Assert
+            bool actual = false;
             Assert.AreEqual(expected, actual);
         }
 

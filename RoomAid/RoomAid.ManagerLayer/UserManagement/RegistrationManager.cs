@@ -26,6 +26,7 @@ namespace RoomAid.ManagerLayer
             ValidationService rs = new ValidationService();
             string message = "";
             bool ifSuccess = false;
+            int sysID = -1;
 
             string email = registrationRequest.Email;
             string fname = registrationRequest.Fname;
@@ -74,19 +75,35 @@ namespace RoomAid.ManagerLayer
                 HashObject hash = hasher.GenerateSaltedHash(password);
                 string hashedPw = hash.HashedValue;
                 string salt = hash.Salt;
-
-                User newUser = new User(email, hashedPw, salt, fname, lname, "Enable", dob, gender);
-
-                // Call the service to add user
-                ICreateAccountService ad = new SqlCreateAccountService();
-                checkResult = ad.Create(newUser);
+                Account newAccount = new Account(email, hashedPw, salt);
+                // Call the service to create Account
+                IUpdateAccountDAO DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
+                ICreateAccountService cas = new SqlCreateAccountService(newAccount, DAO);
+                checkResult = cas.Create();
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
+                if (ifSuccess)
+                {
+                    DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+                    ICreateMappingService cms = new SqlCreateMappingService(newAccount, DAO);
+                    sysID = cms.CreateMapping();
+                }
 
-                // TODO: If success, call UpdateAccountSqlService() function to add pw and salt into db (?)
+                if (sysID >= 0)
+                {
+                    User newUser = new User(sysID, email, fname, lname, "Enable", dob, gender);
+                    DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+                    ICreateUserService cus = new SqlCreateUserService(newUser,DAO);
+                    checkResult = cus.CreateUser();
+                    message = message + checkResult.Message;
+                    ifSuccess = checkResult.IsSuccess;
+                }
+                
+
+                // TODO: user the return ID to update User
                 IUpdateAccountDAO updateDAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnection"]);
-                UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, updateDAO);
-                checkResult = updateAccount.Update();
+                //UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, updateDAO);
+                //checkResult = updateAccount.Update();
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
             }

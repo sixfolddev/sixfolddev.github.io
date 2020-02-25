@@ -1,5 +1,7 @@
-﻿using RoomAid.ServiceLayer;
+﻿
+using RoomAid.DataAccessLayer;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 
@@ -7,117 +9,48 @@ namespace RoomAid.ServiceLayer
 {
     public class SqlCreateAccountService : ICreateAccountService
     {
-        public SqlCreateAccountService()
+        private readonly List<Account> _newAccounts;
+        private readonly IUpdateAccountDAO _sqlDAO;
+        public SqlCreateAccountService(Account newAccount, IUpdateAccountDAO sqlDAO)
         {
-           
+            this._newAccounts = new List<Account>();
+            this._newAccounts.Add(newAccount);
+            _sqlDAO = sqlDAO;  
         }
-        public IResult Create(User newUser)
+
+        public SqlCreateAccountService(List<User> newAccounts, IUpdateAccountDAO sqlDAO)
         {
-            IResult addUser = null;
-            int retryLimit = Int32.Parse(ConfigurationManager.AppSettings["retryLimit"]);
+            this._newAccounts = new List<Account>();
+            _sqlDAO = sqlDAO;
+        }
+
+        public IResult Create()
+        {
             string message = "";
-            bool ifSuccess = true;
-            ICreateAccountDAO accountDAO = new SqlCreateAccountDAO(newUser);
+            bool isSuccess = true;
+            List<SqlCommand> commands = new List<SqlCommand>();
 
-            // ConfigurationManager.AppSettings["sqlConnectionMapping"]
-
-            if (IfExist(newUser))
+            foreach (Account newAccount in _newAccounts)
             {
-                addUser = accountDAO.CreateAccount(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-                if (!addUser.IsSuccess)
-                {
-                    addUser = Retry(accountDAO.CreateUser, ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-                }
-
-                if (addUser.IsSuccess)
-                {
-                    addUser = accountDAO.CreateUser(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
-
-                    if (!addUser.IsSuccess)
-                    {
-                        addUser = Retry(accountDAO.CreateUser, ConfigurationManager.AppSettings["sqlConnectionSystem"]);
-                    } 
-                }
-
-                if (addUser.IsSuccess)
-                {
-                    addUser = accountDAO.CreateMapping(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-                    if (!addUser.IsSuccess)
-                    {
-                        addUser = Retry(accountDAO.CreateMapping, ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-                    }
-                }
+                var cmd = new SqlCommand("INSERT INTO dbo.Accounts (UserEmail, HashedPassword, Salt) VALUES (@email, @hashedPw, @salt)");
+                cmd.Parameters.AddWithValue("@email", newAccount.UserEmail);
+                cmd.Parameters.AddWithValue("@hashedPw", newAccount.HashedPassword);
+                cmd.Parameters.AddWithValue("@salt", newAccount.Salt);
+                commands.Add(cmd);
             }
+             
+            int rowsChanged = _sqlDAO.Update(commands);
 
+            if (rowsChanged == commands.Count)
+            {
+                message += ConfigurationManager.AppSettings["successMessage"];
+            }
             else
             {
-                message = message + ConfigurationManager.AppSettings["userExist"];
-                ifSuccess = false;
-                return new CheckResult(message, ifSuccess);
+                message += ConfigurationManager.AppSettings["failureMessage"];
+                isSuccess = false;
             }
-
-
-            if (addUser.IsSuccess)
-            {
-                message = message + ConfigurationManager.AppSettings["success"];
-            }
-
-            if (!addUser.IsSuccess)
-            {
-                message = message + addUser.Message;
-                ifSuccess = false;
-            }
-
-            return new CheckResult(message, ifSuccess);
+            return new CheckResult(message, isSuccess);
         }
-
-        /// <summary>
-        /// Method IfExist will use query to check if the email is already registered in database
-        /// <param name="email">The email you want to check</param>
-        /// <returns>true if exist, false if the email is not registered</returns>
-        public bool IfExist(User newUser)
-        {
-            string email = newUser.UserEmail;
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["connectionStringAccount"]))
-            {
-                SqlCommand command = new SqlCommand("SELECT UserEmail FROM dbo.Accounts WHERE UserEmail = @userEmail", connection);
-                command.Parameters.AddWithValue("@userEmail", email);
-                connection.Open();
-
-                var UserEmail = command.ExecuteScalar();
-
-                if (UserEmail != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        private IResult Retry(Func<string, IResult> method, string input)
-        {
-            //Set a bool as the retry result
-            IResult retryResult = new CheckResult("", false);
-
-            //Retry until it reached the limit time of retry or it successed
-            int retryLimit = Int32.Parse(ConfigurationManager.AppSettings["retryLimit"]);
-            for (int i = 0; i < retryLimit; i++)
-            {
-                //Call method again to check if certain method can be executed successfully
-                retryResult = method(input);
-
-                //If the result is true, then stop the retry, set retrySuccess as true
-                if (retryResult.IsSuccess == true)
-                {
-                    return retryResult;
-                }
-            }
-
-            return retryResult;
-        }
-
     }
 }
