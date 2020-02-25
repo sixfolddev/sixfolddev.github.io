@@ -104,10 +104,13 @@
     <Compile Include="Registration\ValidationService.cs" />
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />
+    <Compile Include="UserManagement\Account.cs" />
     <Compile Include="UserManagement\ICreateAccountService.cs" />
-    <Compile Include="UserManagement\ICreateAccountDAO.cs" />
+    <Compile Include="UserManagement\ICreateMappingService.cs" />
+    <Compile Include="UserManagement\ICreateUserService.cs" />
     <Compile Include="UserManagement\IUpdateAccountService.cs" />
-    <Compile Include="UserManagement\SqlCreateAccountDAO.cs" />
+    <Compile Include="UserManagement\SqlCreateMappingService.cs" />
+    <Compile Include="UserManagement\SqlCreateUserService.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="UserManagement\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />

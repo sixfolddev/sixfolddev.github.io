@@ -11,7 +11,7 @@ namespace RoomAid.ServiceLayer
         private bool _authenticated;
         private Hasher hasher = new Hasher(new SHA256Cng());
         
-        //CreateAccount object when user tries to log in
+        //Create object when user tries to log in
         public Authentication(string userID, string password)
         {
             //Get salt from database tied to input account ID
