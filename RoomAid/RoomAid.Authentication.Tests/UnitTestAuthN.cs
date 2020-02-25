@@ -6,7 +6,7 @@ namespace UnitTestAuthentication
     [TestClass]
     public class UnitTestAuthN
     {
-        Authentication authentication = new Authentication("tester01", "password1");
+        AuthenticationService authentication = new AuthenticationService("tester01", "password1");
 
         [TestMethod]
         public void hashing()

@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Archiving\IArchiveService.cs" />
-    <Compile Include="Authentication\Authentication.cs" />
+    <Compile Include="Authentication\AuthenticationService.cs" />
     <Compile Include="Authorization\AuthZClaims.cs" />
     <Compile Include="Authorization\AuthZEnum.cs" />
     <Compile Include="Authorization\AuthZService.cs" />
@@ -109,7 +109,7 @@
     <Compile Include="UserManagement\IUpdateAccountService.cs" />
     <Compile Include="UserManagement\SqlCreateAccountDAO.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
-    <Compile Include="UserManagement\SaltGenerator.cs" />
+    <Compile Include="Security\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
     <Compile Include="UserManagement\SqlCreateAccountService.cs" />
     <Compile Include="UserManagement\DeleteUserService.cs" />

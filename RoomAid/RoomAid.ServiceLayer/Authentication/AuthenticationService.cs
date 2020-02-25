@@ -4,41 +4,48 @@ using System.Text;
 
 namespace RoomAid.ServiceLayer
 {
-    public class Authentication
+    public class AuthenticationService
     {
-        private string userID;
-        private string password;
+        private string _userEmail;
+        private string _password;
         private bool _authenticated;
         private Hasher hasher = new Hasher(new SHA256Cng());
-        
+
         //CreateAccount object when user tries to log in
-        public Authentication(string userID, string password)
+        public AuthenticationService(string email, string password)
         {
-            //Get salt from database tied to input account ID
+            //Get salt from database tied to input email
             //Call method to hash input password and salt
             //Call method to retrieve stored hash password
             //Compare generated password with stored password
             //Don't store into variables
-            this.userID = userID;
-            this.password = password;
+            this._userEmail = email;
+            this._password = password;
             _authenticated = false;
+        }
+
+        public bool Authenticate()
+        {
             if (CompareHashes())
                 _authenticated = true;
             else
                 _authenticated = false;
-        }
-        public bool CompareHashes()
-        {
-            // var emailhash = hasher.GenerateHash(userID);
-            // Grab associated pw from database
-            if (GenerateHash(userID, password) == DataStoreHash())
-            {
-                _authenticated = true;
-            }
-            else
-                _authenticated = false;
 
             return _authenticated;
+        }
+
+        public bool CompareHashes()
+        {
+            // TODO: Get salt from db
+            string salt = GetSalt(_userEmail);
+
+            // Compare hashed passwords
+            if (hasher.GenerateSaltedHash(_password, salt) == RetrieveHashFromDataStore())
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /*public string GenerateHash(string userID, string password)
@@ -52,18 +59,21 @@ namespace RoomAid.ServiceLayer
 
             return passwordToCheck;
         }
-*/
-        public string DataStoreHash()
+        */
+
+        // QUERY TO FIND ASSOCIATED ACCOUNT, THEN GRAB HASH AND SALT
+
+        public string RetrieveHashFromDataStore()
         {
             string storedHash;
             try
             {
-                //Retrieve hash connected to user ID from pw file
-                storedHash = "f8qÈessKÉü`\u0002æça'\u0014éãPHê\u008d¥çE\u0005\u0004Kc²e";
+                // Query to retrieve hash from datastore
+                storedHash = "tempHash"; // temp hash
             }
             catch (Exception)
             {
-                //If hashed pw cannot be retrieved, authentication will fail because
+                //If hashed pw cannot be retrieved, AuthenticationService will fail because
                 //the comparison will fail
                 storedHash = "";
             }
@@ -71,19 +81,19 @@ namespace RoomAid.ServiceLayer
             return storedHash;
         }
 
-        public byte[] GetSalt(string userID)
+        public string GetSalt(string userID)
         {
             try
             {
-                //pull salt from pw file
-                return Encoding.ASCII.GetBytes("AE2012DEWE193241"); //test salt
+                // Query to retrieve salt from datastore
+                return Encoding.ASCII.GetBytes("AE2012DEWE193241").ToString(); //test salt
             }
             catch (Exception)
             {
                 //Catch error handling.
                 //Returns error back to login screen if salt doesn't exist 
                 //which means account doesn't exist.
-                return Encoding.ASCII.GetBytes("");
+                return Encoding.ASCII.GetBytes("").ToString();
             }
         }
 
