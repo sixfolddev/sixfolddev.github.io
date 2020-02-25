@@ -8,6 +8,8 @@ namespace RoomAid.ServiceLayer
 {
     public interface ICreateAccountDAO
     {
-         IResult Create(User newUser);
+        IResult CreateAccount(string connectionString);
+        IResult CreateUser(string connectionString);
+        IResult CreateMapping(string connectionString);    
     }
 }

@@ -105,13 +105,9 @@
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />
     <Compile Include="UserManagement\ICreateAccountService.cs" />
-    <Compile Include="UserManagement\ICreateMappingDAO.cs" />
-    <Compile Include="UserManagement\ICreateUserDAO.cs" />
     <Compile Include="UserManagement\ICreateAccountDAO.cs" />
     <Compile Include="UserManagement\IUpdateAccountService.cs" />
     <Compile Include="UserManagement\SqlCreateAccountDAO.cs" />
-    <Compile Include="UserManagement\SqlCreateMappingDAO.cs" />
-    <Compile Include="UserManagement\SqlCreateUserDAO.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="UserManagement\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />

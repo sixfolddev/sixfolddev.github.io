@@ -9,8 +9,6 @@ namespace RoomAid.CreateAccount.Tests
     [TestClass]
     public class CreateAccountTests
     {
-        private ICreateAccountDAO sqlDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnection"]);
-
         //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
         [TestMethod]
         public void CreateAccountPass()

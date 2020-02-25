@@ -7,39 +7,44 @@ namespace RoomAid.ServiceLayer
 {
     public class SqlCreateAccountService : ICreateAccountService
     {
-        private ICreateAccountDAO accountDAO;
-        private ICreateUserDAO userDAO;
-        private ICreateMappingDAO mappingDAO;
         public SqlCreateAccountService()
         {
-            accountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-            userDAO = new SqlCreateUserDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
-            mappingDAO = new SqlCreateMappingDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+           
         }
-
         public IResult Create(User newUser)
         {
             IResult addUser = null;
             int retryLimit = Int32.Parse(ConfigurationManager.AppSettings["retryLimit"]);
             string message = "";
             bool ifSuccess = true;
-            int retryTimes = 0;
+            ICreateAccountDAO accountDAO = new SqlCreateAccountDAO(newUser);
+
+            // ConfigurationManager.AppSettings["sqlConnectionMapping"]
 
             if (IfExist(newUser))
             {
-                addUser = accountDAO.Create(newUser);
+                addUser = accountDAO.CreateAccount(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
                 if (!addUser.IsSuccess)
                 {
-                    addUser = Retry(accountDAO.Create, newUser);
+                    addUser = Retry(accountDAO.CreateUser, ConfigurationManager.AppSettings["sqlConnectionAccount"]);
                 }
 
                 if (addUser.IsSuccess)
                 {
-                    addUser = userDAO.Create(newUser);
+                    addUser = accountDAO.CreateUser(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
 
                     if (!addUser.IsSuccess)
                     {
-                        addUser = Retry(userDAO.Create, newUser);
+                        addUser = Retry(accountDAO.CreateUser, ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+                    } 
+                }
+
+                if (addUser.IsSuccess)
+                {
+                    addUser = accountDAO.CreateMapping(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+                    if (!addUser.IsSuccess)
+                    {
+                        addUser = Retry(accountDAO.CreateMapping, ConfigurationManager.AppSettings["sqlConnectionMapping"]);
                     }
                 }
             }
@@ -92,7 +97,7 @@ namespace RoomAid.ServiceLayer
             }
         }
 
-        private IResult Retry(Func<User, IResult> method, User newUser)
+        private IResult Retry(Func<string, IResult> method, string input)
         {
             //Set a bool as the retry result
             IResult retryResult = new CheckResult("", false);
@@ -102,7 +107,7 @@ namespace RoomAid.ServiceLayer
             for (int i = 0; i < retryLimit; i++)
             {
                 //Call method again to check if certain method can be executed successfully
-                retryResult = method(newUser);
+                retryResult = method(input);
 
                 //If the result is true, then stop the retry, set retrySuccess as true
                 if (retryResult.IsSuccess == true)
