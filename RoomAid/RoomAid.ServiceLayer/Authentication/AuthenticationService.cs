@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RoomAid.ServiceLayer
 {
-    public class Authentication
+    public class AuthenticationService
     {
         private string userID;
         private string password;
@@ -12,7 +12,7 @@ namespace RoomAid.ServiceLayer
         private Hasher hasher = new Hasher(new SHA256Cng());
         
         //Create object when user tries to log in
-        public Authentication(string userID, string password)
+        public AuthenticationService(string userID, string password)
         {
             //Get salt from database tied to input account ID
             //Call method to hash input password and salt
