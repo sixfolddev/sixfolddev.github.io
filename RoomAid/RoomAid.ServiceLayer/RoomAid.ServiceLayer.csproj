@@ -92,7 +92,7 @@
     <Compile Include="Logging\ILogFormatter.cs" />
     <Compile Include="Logging\ILogHandler.cs" />
     <Compile Include="Logging\LogManager.cs" />
-    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\LogLevels.cs" />
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\SingleLineFormatter.cs" />
@@ -104,6 +104,8 @@
     <Compile Include="Registration\ValidationService.cs" />
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />
+    <Compile Include="UserManagement\IUpdateAccountService.cs" />
+    <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="UserManagement\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
     <Compile Include="UserManagement\CreateAccountService.cs" />

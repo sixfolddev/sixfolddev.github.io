@@ -16,6 +16,18 @@ namespace RoomAid.ServiceLayer
         private readonly IUpdateAccountDAO _update;
 
         /// <summary>
+        /// Service that crafts queries for updating a single user related to a sql database
+        /// </summary>
+        /// <param name="newUsers"></param>
+        /// <param name="update"></param>
+        public UpdateAccountSqlService(User newUser, IUpdateAccountDAO update)
+        {
+            this._newUsers = new List<User>();
+            this._newUsers.Add(newUser);
+            this._update = update;
+        }
+
+        /// <summary>
         /// Service that crafts queries for updating users related to a sql database
         /// </summary>
         /// <param name="newUsers"></param>
@@ -25,6 +37,7 @@ namespace RoomAid.ServiceLayer
             this._newUsers = newUsers;
             this._update = update;
         }
+
         /// <summary>
         /// this is the publicly accessed interface method that returns an IResult based on success of updating all accounts
         /// </summary>

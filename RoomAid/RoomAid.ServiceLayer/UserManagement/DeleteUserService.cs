@@ -31,7 +31,7 @@ namespace RoomAid.ServiceLayer
                     connection.Close();
                     //Logs that a user has been deleted from the Users database
                     //TODO: Acquire encrypted email for logs
-                    Logger.Log("User (encrypted email) successfully deleted from User Database");
+                    LogService.Log("User (encrypted email) successfully deleted from User Database");
                 }
             }
             catch(Exception e)
@@ -60,7 +60,7 @@ namespace RoomAid.ServiceLayer
                     connection.Close();
                     //Logs that a user has been deleted from the UserLogin database
                     //TODO: Acquire encrypted email for logs
-                    Logger.Log("User (encrypted email) successfully deleted from UserLogin Database");
+                    LogService.Log("User (encrypted email) successfully deleted from UserLogin Database");
                 }
             }
             catch (Exception e)

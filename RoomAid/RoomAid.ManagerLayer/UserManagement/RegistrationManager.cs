@@ -69,13 +69,10 @@ namespace RoomAid.ManagerLayer
 
             if (ifSuccess)
             {
-                // TODO: store email in separate mapping table?
-                // Hash email and store hashed value
-                Hasher hasher = new Hasher(algorithm);
-                string hashedEmail = hasher.GenerateHash(email);
-                User newUser = new User(hashedEmail, fname, lname, "Enable", dob, gender);
+                User newUser = new User(email, fname, lname, "Enable", dob, gender);
 
                 // Generate salt and hash password
+                Hasher hasher = new Hasher(algorithm);
                 HashObject hash = hasher.GenerateSaltedHash(password);
                 string hashedPw = hash.HashedValue;
                 string salt = hash.Salt;
@@ -86,11 +83,16 @@ namespace RoomAid.ManagerLayer
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
 
-                // TODO: If success, call UpdateUser() function to add pw and salt into db
+                // TODO: If success, call UpdateAccountSqlService() function to add pw and salt into db (?)
+                IUpdateAccountDAO updateDAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnection"]);
+                UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, updateDAO);
+                checkResult = updateAccount.Update();
+                message = message + checkResult.Message;
+                ifSuccess = checkResult.IsSuccess;
             }
 
             //log
-            Logger.Log(message);
+            LogService.Log(message);
             return new CheckResult(message, ifSuccess);
         }
 

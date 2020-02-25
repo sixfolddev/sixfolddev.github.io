@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace RoomAid.ServiceLayer
 {
-    public class Logger
+    public class LogService
     {
         private static LogLevels.Levels _defaultLevel = LogLevels.Levels.Info;
 

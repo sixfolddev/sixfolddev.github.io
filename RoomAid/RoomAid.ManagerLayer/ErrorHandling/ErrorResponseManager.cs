@@ -35,7 +35,7 @@ namespace RoomAid.ManagerLayer
             }
             try
             {
-                Logger.Log(Err.ToString());
+                LogService.Log(Err.ToString());
             }
             catch (Exception caught)
             {
