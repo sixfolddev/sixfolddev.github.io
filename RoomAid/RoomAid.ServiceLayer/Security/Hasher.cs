@@ -28,6 +28,12 @@ namespace RoomAid.ServiceLayer
             return hashString;
         }
 
+        public string GenerateSaltedHash(string value, string salt)
+        {
+            string saltedValue = value + salt;
+            return GenerateHash(saltedValue);
+        }
+
         public HashObject GenerateSaltedHash(string value)
         {
             string salt = SaltGenerator.GenerateSalt();

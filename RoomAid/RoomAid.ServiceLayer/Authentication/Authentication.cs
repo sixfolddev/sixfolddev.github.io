@@ -41,7 +41,7 @@ namespace RoomAid.ServiceLayer
             return _authenticated;
         }
 
-        public string GenerateHash(string userID, string password)
+        /*public string GenerateHash(string userID, string password)
         {
             int iterations = 100000;
             //concatenate salt and input password to run through hashing
@@ -52,7 +52,7 @@ namespace RoomAid.ServiceLayer
 
             return passwordToCheck;
         }
-
+*/
         public string DataStoreHash()
         {
             string storedHash;
