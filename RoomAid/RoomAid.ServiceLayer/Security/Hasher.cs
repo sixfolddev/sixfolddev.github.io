@@ -37,5 +37,11 @@ namespace RoomAid.ServiceLayer
             HashObject hash = new HashObject { HashedValue = hashString, Salt = salt };
             return hash;
         }
+
+        public string GenerateSaltedHash(string value, string salt)
+        {
+            string saltedValue = value + salt;
+            return GenerateHash(saltedValue);
+        }
     }
 }
