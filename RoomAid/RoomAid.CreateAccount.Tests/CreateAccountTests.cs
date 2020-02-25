@@ -9,7 +9,7 @@ namespace RoomAid.CreateAccount.Tests
     [TestClass]
     public class CreateAccountTests
     {
-        private ICreationAccountDAO sqlDAO = new SqlCreateAccountDAO();
+        private ICreateAccountDAO sqlDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnection"]);
 
         //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
         [TestMethod]
@@ -19,16 +19,16 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = true;
 
             //Act
-            User testUser = new User("testingemail@email.com","testerFname", "testerLname","enable", new DateTime(2008, 5, 1),"male");
-            CreateAccountService cas = new CreateAccountService(sqlDAO);
-            if (sqlDAO.IfUserExist(testUser.UserEmail))
-                DeleteRow(testUser.UserEmail);
+            User testUser = new User("testingemail@email.com","testingPassword","testingSalt","testerFname", "testerLname","enable", new DateTime(2008, 5, 1),"male");
+            ICreateAccountService cas = new SqlCreateAccountService();
+            if (cas.IfExist(testUser))
+                DeleteAccount(testUser.UserEmail);
 
-            IResult testResult = cas.CreateAccount(testUser);
+            IResult testResult = cas.Create(testUser);
             Console.WriteLine(testResult.Message);
 
             bool actual = testResult.IsSuccess;
-            DeleteRow(testUser.UserEmail);
+            DeleteAccount(testUser.UserEmail);
 
             //Assert
             Assert.AreEqual(expected, actual);
@@ -43,23 +43,23 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = false;
 
             //Act
-            User testUser = new User("testingemail@email.com", "testerFname", "testerLname", "enable", new DateTime(2008, 5, 1), "male");
-            CreateAccountService cas = new CreateAccountService(sqlDAO);
-            if (!sqlDAO.IfUserExist(testUser.UserEmail))
-                cas.CreateAccount(testUser);
+            User testUser = new User("testingemail@email.com", "testingPassword", "testingSalt", "testerFname", "testerLname", "enable", new DateTime(2008, 5, 1), "male");
+            ICreateAccountService cas = new SqlCreateAccountService();
+            if (!cas.IfExist(testUser))
+                cas.Create(testUser);
 
-            IResult testResult = cas.CreateAccount(testUser);
+            IResult testResult = cas.Create(testUser);
             Console.WriteLine(testResult.Message);
 
             bool actual = testResult.IsSuccess;
-            DeleteRow(testUser.UserEmail);
+            DeleteAccount(testUser.UserEmail);
 
             //Assert
             Assert.AreEqual(expected, actual);
         }
 
         //Tool method to clean testing account created by the test method
-        public void DeleteRow(string userEmail)
+        public void DeleteAccount(string userEmail)
         {
             try
             {

@@ -8,30 +8,31 @@ using System.Threading.Tasks;
 
 namespace RoomAid.ServiceLayer
 {
-
-    /// <summary>
-    /// Method CreateAccount will use query to insert new user and password into the database
-    /// <param name="user">The user object that is already created</param>
-    /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-    /// 
     /// <summary>
     /// Method CreateUser will use query to insert a new user into the table
     /// <param name="user">The new user which is created</param>
     /// <returns>Iresult result the object that contains a message and if the check is true or false</returns>
-    public class SqlCreateAccountDAO : ICreationAccountDAO
+    public class SqlCreateAccountDAO : ICreateAccountDAO
     {
+        private string connectionString;
+        public SqlCreateAccountDAO(string sqlConnection)
+        {
+            connectionString = sqlConnection;
+        }
         public IResult Create(User newUser)
         {
-            IResult result = new CheckResult("Successfully added new user!", true);
+            IResult result = new CheckResult("Successfully added new Account!", true);
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnection"]))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "INSERT INTO dbo.Users (UserEmail) VALUES (@email)";
+                    string query = "INSERT INTO dbo.Accounts (UserEmail, HashedPassword, Salt) VALUES (@email, @hashedPw, @salt)";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@email", newUser.UserEmail);
+                        command.Parameters.AddWithValue("@hashedPw", newUser.Password);
+                        command.Parameters.AddWithValue("@salt", newUser.Salt);
                         connection.Open();
                         command.ExecuteNonQuery();
                     }
@@ -42,31 +43,6 @@ namespace RoomAid.ServiceLayer
                 result = new CheckResult(e.Message, false);
             }
             return result;
-        }
-
-        /// <summary>
-        /// Method IfUserExist will use query to check if the email is already registered in database
-        /// <param name="email">The email you want to check</param>
-        /// <returns>true if exist, false if the email is not registered</returns>
-        public bool IfUserExist(string email)
-        {
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnection"]))
-            {
-                SqlCommand command = new SqlCommand("SELECT UserEmail FROM dbo.Users WHERE UserEmail = @userEmail", connection);
-                command.Parameters.AddWithValue("@userEmail", email);
-                connection.Open();
-
-                var UserEmail = command.ExecuteScalar();
-
-                if (UserEmail != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
         }
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace RoomAid.ServiceLayer
 {
-    public interface ICreationAccountDAO
+    public interface ICreateMappingDAO
     {
-         IResult Create(User newUser);
-         bool IfUserExist(string input);
+        IResult Create(User newUser);
     }
 }
