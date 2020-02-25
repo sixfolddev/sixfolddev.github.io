@@ -4,51 +4,44 @@ using System.Text;
 
 namespace RoomAid.ServiceLayer
 {
-    public class AuthenticationService
+    public class Authentication
     {
-        private string _userEmail;
-        private string _password;
+        private string userID;
+        private string password;
         private bool _authenticated;
         private Hasher hasher = new Hasher(new SHA256Cng());
-
-        //CreateAccount object when user tries to log in
-        public AuthenticationService(string email, string password)
+        
+        //Create object when user tries to log in
+        public Authentication(string userID, string password)
         {
-            //Get salt from database tied to input email
+            //Get salt from database tied to input account ID
             //Call method to hash input password and salt
             //Call method to retrieve stored hash password
             //Compare generated password with stored password
             //Don't store into variables
-            this._userEmail = email;
-            this._password = password;
+            this.userID = userID;
+            this.password = password;
             _authenticated = false;
-        }
-
-        public bool Authenticate()
-        {
             if (CompareHashes())
                 _authenticated = true;
+            else
+                _authenticated = false;
+        }
+        public bool CompareHashes()
+        {
+            // var emailhash = hasher.GenerateHash(userID);
+            // Grab associated pw from database
+            if (GenerateHash(userID, password) == DataStoreHash())
+            {
+                _authenticated = true;
+            }
             else
                 _authenticated = false;
 
             return _authenticated;
         }
 
-        public bool CompareHashes()
-        {
-            // TODO: Get salt from db
-            string salt = GetSalt(_userEmail);
-
-            // Compare hashed passwords
-            if (hasher.GenerateSaltedHash(_password, salt) == RetrieveHashFromDataStore())
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        /*public string GenerateHash(string userID, string password)
+        public string GenerateHash(string userID, string password)
         {
             int iterations = 100000;
             //concatenate salt and input password to run through hashing
@@ -59,21 +52,18 @@ namespace RoomAid.ServiceLayer
 
             return passwordToCheck;
         }
-        */
 
-        // QUERY TO FIND ASSOCIATED ACCOUNT, THEN GRAB HASH AND SALT
-
-        public string RetrieveHashFromDataStore()
+        public string DataStoreHash()
         {
             string storedHash;
             try
             {
-                // Query to retrieve hash from datastore
-                storedHash = "tempHash"; // temp hash
+                //Retrieve hash connected to user ID from pw file
+                storedHash = "f8qÈessKÉü`\u0002æça'\u0014éãPHê\u008d¥çE\u0005\u0004Kc²e";
             }
             catch (Exception)
             {
-                //If hashed pw cannot be retrieved, AuthenticationService will fail because
+                //If hashed pw cannot be retrieved, authentication will fail because
                 //the comparison will fail
                 storedHash = "";
             }
@@ -81,19 +71,19 @@ namespace RoomAid.ServiceLayer
             return storedHash;
         }
 
-        public string GetSalt(string userID)
+        public byte[] GetSalt(string userID)
         {
             try
             {
-                // Query to retrieve salt from datastore
-                return Encoding.ASCII.GetBytes("AE2012DEWE193241").ToString(); //test salt
+                //pull salt from pw file
+                return Encoding.ASCII.GetBytes("AE2012DEWE193241"); //test salt
             }
             catch (Exception)
             {
                 //Catch error handling.
                 //Returns error back to login screen if salt doesn't exist 
                 //which means account doesn't exist.
-                return Encoding.ASCII.GetBytes("").ToString();
+                return Encoding.ASCII.GetBytes("");
             }
         }
 

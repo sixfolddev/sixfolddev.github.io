@@ -23,7 +23,7 @@ namespace UserManagementTests
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var newUsers = new List<User>();
             var date = new DateTime(1998, 11, 13);
-            var user = new User("boi@gmail.com", "testingPassword", "testingSalt", "daniel", "gione", "enabled", date, "Male");
+            var user = new User(1, "boi@gmail.com","daniel", "gione", "enabled", date, "Male");
             newUsers.Add(user);
             var dao = new UpdateAccountDAOTestSuccess(date);
             var update = new UpdateAccountSqlService(newUsers, dao);
@@ -41,7 +41,7 @@ namespace UserManagementTests
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var newUsers = new List<User>();
             var date = new DateTime(1998, 11, 13);
-            var user = new User("boi@gmail.com", "testingPassword", "testingSalt", "daniel", "gione", "disabled", date, "Male");
+            var user = new User(1, "boi@gmail.com",  "daniel", "gione", "disabled", date, "Male");
             newUsers.Add(user);
             var dao = new UpdateAccountDAOTestSuccess(date);
             var update = new UpdateAccountSqlService(newUsers, dao);
