@@ -1,0 +1,44 @@
+title Permissions Update
+
+participant "Manager" as m
+participant "PermissionRetrievalSqlService" as rs
+participant "PermissionUpdateSqlService" as us
+participant "UpdateSqlDAO" as ud
+participant "RetreiveSqlDAO" as rd
+
+
+m->ud:var retrieveDao = new RetrieveSqlDao(String connection)
+ud-->m: return instance
+m->rd:var updateDao = new UpdateSqlDAO(String connection)
+rd-->m: return instance
+note over rs,us:Permission object stores a user ID integer and a string[] of permissions associated with them
+
+note over rs: PermissionsRetrievalSqlService will have a constructor accepting both one user and a list of users
+m->rs: var retrieveService = new PermissionsRetrievalSqlService(IRetrieveDao retrieveDao, List<User> users)
+rs-->m: return instance
+m->rs: var permissionList = retrieveService.Retrieve()
+
+
+
+
+
+note over us: PermissionUpdateSqlService will have constructor accepting both one permissionobject and a list
+m->us: var updateService = new PermissionUpdateSqlService(IUpdateDAO updateDao, List<PermissionObject> permissions)
+us-->m: return instance
+m->us: var usersUpdated = updateService.Update()
+
+
+
+
+
+
+
+
+
+
+
+
+
+us-->m: return rowsChanged
+
+
