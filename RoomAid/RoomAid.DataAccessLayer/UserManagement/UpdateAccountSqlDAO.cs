@@ -42,9 +42,6 @@ namespace RoomAid.DataAccessLayer
                     throw;
                 }
             }
-
-
-
             return rowsChanged;
         }
 

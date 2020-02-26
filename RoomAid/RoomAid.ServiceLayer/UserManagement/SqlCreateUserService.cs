@@ -31,6 +31,7 @@ namespace RoomAid.ServiceLayer
             bool isSuccess = true;
             List<SqlCommand> commands = new List<SqlCommand>();
             var cmd = new SqlCommand(ConfigurationManager.AppSettings["queryCreateUser"]);
+            cmd.Parameters.AddWithValue("@sysId", _newUser.SystemID);
             cmd.Parameters.AddWithValue("@email", _newUser.UserEmail);
             cmd.Parameters.AddWithValue("@fName", _newUser.FirstName);
             cmd.Parameters.AddWithValue("@lName", _newUser.LastName);
