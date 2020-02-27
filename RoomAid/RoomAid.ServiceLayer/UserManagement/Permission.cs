@@ -52,19 +52,6 @@ namespace RoomAid.ServiceLayer.UserManagement
             return -1;
         }
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }
