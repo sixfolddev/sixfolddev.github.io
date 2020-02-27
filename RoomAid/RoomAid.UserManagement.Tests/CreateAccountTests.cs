@@ -133,6 +133,7 @@ namespace RoomAid.CreateAccount.Tests
         }
 
 
+        //Cleanning tools
         public void DeleteMapping(string userEmail)
         {
             try
