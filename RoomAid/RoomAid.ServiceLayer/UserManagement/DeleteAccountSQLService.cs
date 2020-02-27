@@ -37,15 +37,51 @@ namespace RoomAid.ServiceLayer.UserManagement
         {
             string message = "";
             bool isSuccess = true;
+            int totalSuccess = 0;
             List<SqlCommand> commands = new List<SqlCommand>();
-            foreach(User targetUser in _targetUsers)
+            IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+            foreach (User targetUser in _targetUsers)
             {
-                var cmd = new SqlCommand(ConfigurationManager.AppSettings["deleteCmd"]);
-                cmd.Parameters.AddWithValue("@email", targetUser.UserEmail);
+                var cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteSystem"]);
+                cmd.Parameters.AddWithValue("@sysID", targetUser.SystemID);
                 commands.Add(cmd);
+
+                int rowsDeleted = _delete.Delete(commands);
+                if(rowsDeleted > 0)
+                {
+                    cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteMapping"]);
+                    cmd.Parameters.AddWithValue("@sysID", mapperDAO.GetSysID(targetUser.UserEmail));
+                    commands.Add(cmd);
+                    rowsDeleted = _delete.Delete(commands);
+                    if(rowsDeleted > 0)
+                    {
+                        cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteAccount"]);
+                        cmd.Parameters.AddWithValue("@email", targetUser.UserEmail);
+                        commands.Add(cmd);
+                        rowsDeleted = _delete.Delete(commands);
+                        if(rowsDeleted > 0)
+                        {
+                            totalSuccess += 1;
+                        }
+                        else
+                        {
+                            message += "Failed to delete from Accounts!";
+                            isSuccess = false;
+                        }
+                    }
+                    else
+                    {
+                        message += "Failed to delete from Mapping!";
+                        isSuccess = false;
+                    }
+                }
+                else
+                {
+                    message += "Failed to delete from System!";
+                    isSuccess = false;
+                }
             }
-            int rowsDeleted = _delete.Delete(commands);
-            if(rowsDeleted == commands.Count)
+            if(totalSuccess == _targetUsers.Count)
             {
                 message += ConfigurationManager.AppSettings["DeleteAccountSuccess"];
             }
