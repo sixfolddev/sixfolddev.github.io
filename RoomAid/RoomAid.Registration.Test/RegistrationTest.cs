@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.ServiceLayer;
 namespace RoomAid.Registration.Test
@@ -7,7 +8,8 @@ namespace RoomAid.Registration.Test
     [TestClass]
     public class RegistrationTest
     {
-        //Get the instance of registration service
+        //Part A ValidationService test
+        //Get the instance of validation service
         private ValidationService testVs = new ValidationService();
         //The success condition for Name Check
         [TestMethod]
@@ -300,6 +302,99 @@ namespace RoomAid.Registration.Test
 
             //Assert
             Assert.AreEqual(expected, actual);
+        }
+
+        //partB test to see if the whole RegistrationService can work
+
+        //The success function for age validation
+        //if age is < 18, should return false
+        [TestMethod]
+        public void RegistrationPass()
+        {
+            //Arrange
+            bool expected = true;
+
+            //Act
+            RegistrationRequestDTO testDTO = new RegistrationRequestDTO("Tester@email.com","testerFname", "testerLname", DateTime.Today, "Male", "testpassword", "testpassword");
+            DeleteUser(testDTO.Email);
+            DeleteMapping(testDTO.Email);
+            DeleteAccount(testDTO.Email);
+            RegistrationService rs = new RegistrationService(testDTO);
+            IResult checkResult = rs.RegisterUser();
+            bool actual = checkResult.IsSuccess;
+            DeleteUser(testDTO.Email);
+            DeleteMapping(testDTO.Email);
+            DeleteAccount(testDTO.Email);
+            Console.WriteLine(checkResult.Message);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Cleanning tools
+        public void DeleteMapping(string userEmail)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionMapping"]))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM dbo.Mapping Where UserEmail = @userEmail", connection);
+                    command.Parameters.AddWithValue("@userEmail", userEmail);
+                    using (command)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SystemException)
+            {
+                throw;
+            }
+        }
+        public void DeleteAccount(string userEmail)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionAccount"]))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM dbo.Accounts Where UserEmail = @userEmail", connection);
+                    command.Parameters.AddWithValue("@userEmail", userEmail);
+                    using (command)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SystemException)
+            {
+                throw;
+            }
+        }
+        //Tool method to clean testing account created by the test method
+        public void DeleteUser(string userEmail)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionSystem"]))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM dbo.Users Where UserEmail = @userEmail", connection);
+                    command.Parameters.AddWithValue("@userEmail", userEmail);
+                    using (command)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SystemException)
+            {
+                throw;
+            }
         }
     }
 }

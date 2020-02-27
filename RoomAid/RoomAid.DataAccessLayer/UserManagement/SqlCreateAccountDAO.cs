@@ -19,7 +19,7 @@ namespace RoomAid.DataAccessLayer
         /// <summary>
         /// Executes the list of queries that is passed in with a single transaction in order to lessen performance hit
         /// </summary>
-        /// <param name="queries"></param>
+        /// <param name="command"></param>
         /// <returns></returns>
         public int RunQuery(SqlCommand command)
         {
