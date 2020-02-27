@@ -101,6 +101,7 @@
     <Compile Include="Registration\CheckResult.cs" />
     <Compile Include="Registration\IResult.cs" />
     <Compile Include="Registration\RegistrationRequestDTO.cs" />
+    <Compile Include="Registration\RegistrationService.cs" />
     <Compile Include="Registration\ValidationService.cs" />
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />

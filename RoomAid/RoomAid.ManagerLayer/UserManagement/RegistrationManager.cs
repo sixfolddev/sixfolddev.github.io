@@ -83,8 +83,6 @@ namespace RoomAid.ManagerLayer
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
      
-                
-
                 // TODO: user the return ID to update User
                 IUpdateAccountDAO updateDAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnection"]);
                 //UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, updateDAO);
