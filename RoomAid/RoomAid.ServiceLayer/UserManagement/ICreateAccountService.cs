@@ -1,7 +1,9 @@
-﻿namespace RoomAid.ServiceLayer
+﻿using System.Collections.Generic;
+
+namespace RoomAid.ServiceLayer
 {
     public interface ICreateAccountService
     {
-       IResult Create();
+        IResult Create();
     }
 }

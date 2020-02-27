@@ -78,26 +78,11 @@ namespace RoomAid.ManagerLayer
                 Account newAccount = new Account(email, hashedPw, salt);
                 // Call the service to create Account
                 IUpdateAccountDAO DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-                ICreateAccountService cas = new SqlCreateAccountService(newAccount, DAO);
+                ICreateAccountService cas = new SqlCreateAccountService(newAccount);
                 checkResult = cas.Create();
                 message = message + checkResult.Message;
                 ifSuccess = checkResult.IsSuccess;
-                if (ifSuccess)
-                {
-                    DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-                    ICreateMappingService cms = new SqlCreateMappingService(newAccount, DAO);
-                    sysID = cms.CreateMapping();
-                }
-
-                if (sysID >= 0)
-                {
-                    User newUser = new User(sysID, email, fname, lname, "Enable", dob, gender);
-                    DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
-                    ICreateUserService cus = new SqlCreateUserService(newUser,DAO);
-                    checkResult = cus.CreateUser();
-                    message = message + checkResult.Message;
-                    ifSuccess = checkResult.IsSuccess;
-                }
+     
                 
 
                 // TODO: user the return ID to update User

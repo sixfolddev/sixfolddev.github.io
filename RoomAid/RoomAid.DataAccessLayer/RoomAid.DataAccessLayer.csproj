@@ -43,7 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserManagement\ICreateAccountDAO.cs" />
+    <Compile Include="UserManagement\IMapperDAO.cs" />
     <Compile Include="UserManagement\IUpdateAccountDAO.cs" />
+    <Compile Include="UserManagement\SqlCreateAccountDAO.cs" />
+    <Compile Include="UserManagement\SqlMapperDAO.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlDAO.cs" />
   </ItemGroup>
   <ItemGroup>
