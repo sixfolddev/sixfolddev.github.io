@@ -52,10 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreateAccountTests.cs" />
+    <Compile Include="PermissionUpdateSqlServiceTest.cs" />
+    <Compile Include="DeleteAccountSqlServiceTest.cs" />
     <Compile Include="UpdateAccountSqlDAOTest.cs" />
     <Compile Include="UpdateAccountSqlServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-	<Compile Include="PasswordUpdateSqlServiceTest.cs" />
+    <Compile Include="PasswordUpdateSqlServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\RoomAid.ServiceLayer\App.config">
@@ -72,6 +74,9 @@
       <Project>{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}</Project>
       <Name>RoomAid.ServiceLayer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

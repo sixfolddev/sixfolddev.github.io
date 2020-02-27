@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoomAid.ServiceLayer.UserManagement
+namespace RoomAid.ServiceLayer
 {
     public class PermissionUpdateSqlService:IUpdateAccountService
     {
