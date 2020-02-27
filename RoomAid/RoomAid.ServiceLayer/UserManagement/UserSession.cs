@@ -5,12 +5,12 @@ namespace RoomAid.ServiceLayer
 {
     public class UserSession
     {
-        // Private backing fields
-        private string _token;
-        private string _sessionId;
-        private Int64 _issueTime;
-        private Int64 _expirationTime;
-        private string _userEmail;
+    //    // Private backing fields
+    //    private string _token;
+    //    private string _sessionId;
+    //    private Int64 _issueTime;
+    //    private Int64 _expirationTime;
+    //    private string _userEmail;
 
         // Public accessors
         public string Token { get; set; }
@@ -20,16 +20,16 @@ namespace RoomAid.ServiceLayer
         public string UserEmail { get; set; }
         public User UserCurrentSession { get; set; }
 
-        // Empty default constructor
-        public UserSession()
-        {
-            Token = _token;
-            SessionId = _sessionId;
-            IssueTime = _issueTime;
-            ExpirationTime = _expirationTime;
-            UserEmail = _userEmail;
-            UserCurrentSession = new User();
-        }
+        //// Empty default constructor
+        //public UserSession()
+        //
+        //    Token = _token;
+        //    SessionId = _sessionId;
+        //    IssueTime = _issueTime;
+        //    ExpirationTime = _expirationTime;
+        //    UserEmail = _userEmail;
+        //    UserCurrentSession = new User();
+        //}
 
         public UserSession(string token, string sid, Int64 iat, Int64 exp, string email, User user)
         {
