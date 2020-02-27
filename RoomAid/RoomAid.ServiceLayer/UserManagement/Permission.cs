@@ -10,8 +10,8 @@ namespace RoomAid.ServiceLayer.UserManagement
     
     public class Permission
     {
-        private readonly String _userID;
-        private readonly List<Tuple<String, bool>> _permissions;
+        public String UserID { get; }
+        public List<Tuple<String, bool>> Permissions { get; }
         
 
         /// <summary>
@@ -21,12 +21,12 @@ namespace RoomAid.ServiceLayer.UserManagement
 
         public Permission(String userID)
         {
-            this._userID = userID;
-            _permissions = new List<Tuple<String, bool>>();
+            this.UserID = userID;
+            Permissions = new List<Tuple<String, bool>>();
             foreach(AuthZ auth in (AuthZ[])Enum.GetValues(typeof(AuthZ)))
             {
                 String authStr = auth.ToString();
-                _permissions.Add(new Tuple<String, bool>(authStr,false));
+                Permissions.Add(new Tuple<String, bool>(authStr,false));
             }
 
         }
@@ -36,15 +36,15 @@ namespace RoomAid.ServiceLayer.UserManagement
             int index = FindPermission(str);
             if(index >= 0)
             {
-                _permissions[index] = new Tuple<string, bool>(str, true);
+                Permissions[index] = new Tuple<string, bool>(str, true);
             }
         }
 
         private int FindPermission(String str)
         {
-            for(int i = 0; i < _permissions.Count; i++)
+            for(int i = 0; i < Permissions.Count; i++)
             {
-                if(_permissions[i].Item1.Equals(str))
+                if(Permissions[i].Item1.Equals(str))
                 {
                     return i;
                 }
