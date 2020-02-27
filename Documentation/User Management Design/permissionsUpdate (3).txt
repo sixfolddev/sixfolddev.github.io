@@ -1,0 +1,136 @@
+title Permissions Update
+
+participant "Manager" as m
+participant "PermissionRetrievalSqlService" as rs
+participant "PermissionUpdateSqlService" as us
+//participant "PermissionComparisonService" as ps
+participant "UpdateSqlDAO" as ud
+participant "RetreiveSqlDAO" as rd
+
+
+m->ud:var retrieveDao = new RetrieveSqlDao(String connection)
+ud-->m: return instance
+m->rd:var updateDao = new UpdateSqlDAO(String connection)
+rd-->m: return instance
+note over rs,us:Permission object stores a user ID integer and a string[] of permissions associated with them
+
+note over rs: PermissionsRetrievalSqlService will have a constructor accepting both one user and a list of users
+m->rs: var retrieveService = new PermissionsRetrievalSqlService(IRetrieveDao retrieveDao, List<User> users)
+rs-->m: return instance
+m->rs: var permissionList = retrieveService.Retrieve()
+rs->rs: var permissionList = new List<Permission>()
+rs->rs: var commands = new List<SqlCommand>()
+alt foreach User user in users
+
+rs->rs:var cmd = new SqlCommand("SELECT @perm FROM @tableName WHERE UserID = @userID)
+rs->rs: cmd.Parameters.AddWithValue("@perm", ConfigurationManager.AppSettings["PermissionColumn"]
+rs->rs: cmd.Parameters.AddWithValue("@tableName", ConfigurationManager.AppSettings["tableNamePermissions"]
+rs->rs:cmd.Parameters.AddWithValue("@userID", user.userID)
+rs->rs: commands.Add(cmd)
+
+end 
+
+rs->rd:List<Permssions> retrieveDao.Retrieve(List<SqlCommand> commands)
+
+note over rd:IRetrieveSqlDao will have method that returns List<T> list called Retrieve(List<SqlCommand> commands)
+
+alt using(SqlConnection connection =new SqlConnection(connection))
+
+rd->rd: connection.Open()
+rd->rd: var trans = connection.BeginTransaction()
+rd->rd:var permissionList = new List<Permission>()
+
+alt try
+
+alt foreach(SqlCommand cmd in commands)
+
+alt using SqlReader reader = cmd.ExecuteReader()
+alt if reader.HasRows()
+alt while reader.Read()
+rd->rd: var person = new Permission()
+rd->rd: person.AddPermission(reader.GetString(reader.GetOrdinal("Permission")))
+rd->rd:permissionList.add(person)
+end
+end
+end 
+end 
+rd->rd: trans.Commit()
+end 
+else catch
+rd->rd: trans.Rollback()
+rd-->rs: return new List<Permission>()
+end 
+rd-->rs:return permissionList
+rs-->m: return permissionList
+
+
+
+
+note over us: PermissionUpdateSqlService will have constructor accepting both one permissionobject and a list
+m->us: var updateService = new PermissionUpdateSqlService(IUpdateDAO updateDao, List<PermissionObject> permissions)
+us-->m: return instance
+m->us: var result = IResult updateService.Update()
+us->us: String message = \""
+us->us: bool isSuccess = true
+us->us: var commands = new List<SqlCommand>()
+
+alt foreach Permission per in permissions
+alt foreach Tuple tup in per
+alt if(tup.Item2 == true)
+us->us:var action = "INSERT"
+else 
+us->us:var action = "DELETE"
+end
+
+us->us: var cmd = new SqlCommand("@action @singlePermission FROM @tableName WHERE userID = @userID")
+us->us:cmd.Parameters.AddWithValue("@action", action)
+us->us:cmd.Parameters.AddWithValue("@singlePermission",tup.Item1)
+us->us:cmd.Parameters.AddWithValue("@tableName", ConfigurationManager.AppSettings["permissionTable"]
+us->us:cmd.Parameters.AddWithValue("@userID", per.UserID)
+us->us: commands.Add(cmd)
+end 
+end 
+
+us->ud: updateDao.Update(commands)
+
+ud->ud: int rowsChanged = 0
+alt try
+alt foreach(Sqlcommand cmd in commands)
+ud->ud:cmd.Connection = connection
+ud->ud:cmd.Transaction = trans
+ud->ud:rowsChanged+=cmd.ExecuteNonQuery()
+end 
+ud->ud:trans.Commit()
+else catch(Exception e)
+
+ud->ud: trans.Rollback()
+end 
+
+ud-->us: return rowsChanged
+
+alt if rowsChanged!=commands.Count
+us->us: isSuccess = false
+us->us: message += ConfigurationManager.AppSettings["FailedUpdateMessage"]
+else 
+us->us: message += ConfigurationManager.AppSettings["SuccessfulUpdateMessage"]
+end 
+us-->m: return new CheckResult(message, isSuccess)
+
+us-->m: return instance
+m->us: var usersUpdated = updateService.Update()
+
+
+
+
+
+
+
+
+
+
+
+
+
+us-->m: return rowsChanged
+
+

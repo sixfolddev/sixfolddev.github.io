@@ -36,13 +36,13 @@ namespace RoomAid.ServiceLayer
         public bool CompareHashes()
         {
             string salt = GetSalt(_userEmail);
-
             if (hasher.GenerateSaltedHash(_password, salt) == RetrieveDataStoreHash())
             {
                 return true;
             }
             return false;
         }
+
         /*
         public string GenerateHash(string _userEmail, string _password)
         {
@@ -62,7 +62,7 @@ namespace RoomAid.ServiceLayer
             try
             {
                 //Retrieve hash connected to user ID from pw file
-                storedHash = "f8qÈessKÉü`\u0002æça'\u0014éãPHê\u008d¥çE\u0005\u0004Kc²e";
+                storedHash = "tempHash";/*"f8qÈessKÉü`\u0002æça'\u0014éãPHê\u008d¥çE\u0005\u0004Kc²e";*/
             }
             catch (Exception)
             {

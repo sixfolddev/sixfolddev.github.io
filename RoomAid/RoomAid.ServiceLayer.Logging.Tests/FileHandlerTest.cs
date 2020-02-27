@@ -28,7 +28,6 @@ namespace RoomAid.Logging.Tests
         public void WriteLog_NewFileIsCreatedAndWrites_Pass()
         {
             //Arrange
-            //Arrange
             string path = Path.Combine(_logStorage, _fileName);
             var expected = true;
             var actual = false;
