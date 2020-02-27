@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RoomAid.DataAccessLayer
 {
-    public class UpdateAccountSqlDAO :IUpdateAccountDAO
+    public class SqlCreateAccountDAO : ICreateAccountDAO
     {
-        private readonly String _connection;
+        private readonly string _connection;
 
-        public UpdateAccountSqlDAO(String connection)
+        public SqlCreateAccountDAO(string connection)
         {
             this._connection = connection;
         }
@@ -19,7 +21,7 @@ namespace RoomAid.DataAccessLayer
         /// </summary>
         /// <param name="queries"></param>
         /// <returns></returns>
-        public int Update(List<SqlCommand> commands)
+        public int RunQuery(SqlCommand command)
         {
             int rowsChanged = 0;
             using (SqlConnection connection = new SqlConnection(_connection))
@@ -28,11 +30,11 @@ namespace RoomAid.DataAccessLayer
                 SqlTransaction trans = connection.BeginTransaction();
                 try
                 {
-                    foreach(SqlCommand cmd in commands)
+                    using (command)
                     {
-                        cmd.Connection =connection;
-                        cmd.Transaction = trans;
-                        rowsChanged += cmd.ExecuteNonQuery();
+                        command.Connection = connection;
+                        command.Transaction = trans;
+                        rowsChanged =command.ExecuteNonQuery();
                     }
                     trans.Commit();
                 }
@@ -44,6 +46,6 @@ namespace RoomAid.DataAccessLayer
             }
             return rowsChanged;
         }
-
     }
 }
+

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,38 +11,127 @@ namespace RoomAid.CreateAccount.Tests
     [TestClass]
     public class CreateAccountTests
     {
+
         //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
         [TestMethod]
         public void CreateAccountPass()
         {
             //Arrange
             bool expected = true;
-
             //Act
             Account testAccount = new Account("testerEmail","testHashedPassword", "testSalt");
-            IUpdateAccountDAO DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-            ICreateAccountService cas = new SqlCreateAccountService(testAccount, DAO);
+            
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount);
             IResult result = cas.Create();
             bool actual = result.IsSuccess;
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
+            Console.WriteLine(result.Message);
             //Assert
             Assert.AreEqual(expected, actual);
         }
 
-        //Test to check if the CreateAccoutnService can correctly return false and error message when failed creating a user account because
-        //the user email is already registered
+        //Test to check if the CreateAccoutnService can successfully connect to the database and create mutiple user accounts
         [TestMethod]
+        public void CreateMultipleAccountPass()
+        {
+            //Arrange
+            bool expected = true;
+            //Act
+            List<Account> testAccounts = new List<Account>();
+
+            for (int i=0;i<10;i++)
+            {
+                Account testAccount = new Account("testerEmail"+i, "testHashedPassword", "testSalt");
+                testAccounts.Add(testAccount);
+                DeleteUser(testAccount.UserEmail);
+                DeleteMapping(testAccount.UserEmail);
+                DeleteAccount(testAccount.UserEmail);
+            }
+            
+            ICreateAccountService cas = new SqlCreateAccountService(testAccounts);
+            IResult result = cas.Create();
+            bool actual = result.IsSuccess;
+
+            foreach (Account testAccount in testAccounts)
+            {
+                DeleteUser(testAccount.UserEmail);
+                DeleteMapping(testAccount.UserEmail);
+                DeleteAccount(testAccount.UserEmail);
+            }
+            
+            Console.WriteLine(result.Message);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Test that if an email is already registered, the system should throw an exception
+        [TestMethod]
+        [ExpectedException(typeof(SqlException))]
         public void CreateAccountNotPass()
         {
             //Arrange
             bool expected = false;
 
             //Act
-            User testUser = new User(1, "testingemail@email.com", "testerFname", "testerLname", "enable", new DateTime(2008, 5, 1), "male");
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount);
+            cas.Create();
+            IResult result = cas.Create();
+            bool actual = result.IsSuccess;
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+            Console.WriteLine(result.Message);
             //Assert
-            bool actual = false;
             Assert.AreEqual(expected, actual);
         }
+
+        //Test for failure condition of creating multiple Accounts, the system should throw an exception
+        [TestMethod]
+        [ExpectedException(typeof(SqlException))]
+        public void CreateMultipleAccountNotPass()
+        {
+            //Arrange
+            bool expected = false;
+            //Act
+            List<Account> testAccounts = new List<Account>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                Account testAccount = new Account("testerEmail" + i, "testHashedPassword", "testSalt");
+                testAccounts.Add(testAccount);
+                DeleteUser(testAccount.UserEmail);
+                DeleteMapping(testAccount.UserEmail);
+                DeleteAccount(testAccount.UserEmail);
+            }
+
+            testAccounts.Add(new Account("testerEmail" + 0, "testHashedPassword", "testSalt"));
+
+
+            ICreateAccountService cas = new SqlCreateAccountService(testAccounts);
+            IResult result = cas.Create();
+            bool actual = result.IsSuccess;
+
+            foreach (Account testAccount in testAccounts)
+            {
+                DeleteUser(testAccount.UserEmail);
+                DeleteMapping(testAccount.UserEmail);
+                DeleteAccount(testAccount.UserEmail);
+            }
+
+            Console.WriteLine(result.Message);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
 
         public void DeleteMapping(string userEmail)
         {
