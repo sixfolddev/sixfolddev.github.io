@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="CreateAccountTests.cs" />
     <Compile Include="PermissionUpdateSqlServiceTest.cs" />
+    <Compile Include="DeleteAccountSqlServiceTest.cs" />
     <Compile Include="UpdateAccountSqlDAOTest.cs" />
     <Compile Include="UpdateAccountSqlServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
