@@ -11,6 +11,12 @@ namespace RoomAid.ServiceLayer
     {
         private readonly List<Account> _newAccounts;
         private readonly IUpdateAccountDAO _sqlDAO;
+
+        /// <summary>
+        /// Service that crafts queries for inserting a new row in the account table for new account
+        /// </summary>
+        /// <param name="newAccount"></param>
+        /// <param name="sqlDAO"></param>
         public SqlCreateAccountService(Account newAccount, IUpdateAccountDAO sqlDAO)
         {
             this._newAccounts = new List<Account>();
@@ -18,12 +24,22 @@ namespace RoomAid.ServiceLayer
             _sqlDAO = sqlDAO;  
         }
 
-        public SqlCreateAccountService(List<User> newAccounts, IUpdateAccountDAO sqlDAO)
+        /// <summary>
+        /// Service that crafts queries for inserting multiple rows in account table
+        /// </summary>
+        /// <param name="newAccounts"></param>
+        /// <param name="sqlDAO"></param>
+        public SqlCreateAccountService(List<Account> newAccounts, IUpdateAccountDAO sqlDAO)
         {
-            this._newAccounts = new List<Account>();
+            this._newAccounts = newAccounts;
             _sqlDAO = sqlDAO;
         }
 
+
+        /// <summary>
+        /// Service that crafts queries for insert new ros in the account table for the new account
+        /// </summary>
+        ///<returns>IResult true or false with error message</returns>
         public IResult Create()
         {
             string message = "";

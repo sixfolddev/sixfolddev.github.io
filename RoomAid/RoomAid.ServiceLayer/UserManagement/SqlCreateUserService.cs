@@ -9,22 +9,23 @@ namespace RoomAid.ServiceLayer
     public class SqlCreateUserService : ICreateUserService
     {
         private readonly User _newUser;
-        private readonly IUpdateAccountDAO _update;
+        private readonly IUpdateAccountDAO _sqlDAO;
 
         /// <summary>
-        /// Service that crafts queries for updating a single user related to a sql database
+        /// Service that crafts queries for inserting a new row in the user table 
         /// </summary>
         /// <param name="newUsers"></param>
-        /// <param name="update"></param>
-        public SqlCreateUserService(User newUser, IUpdateAccountDAO update)
+        /// <param name="sqlDAO"></param>
+        public SqlCreateUserService(User newUser, IUpdateAccountDAO sqlDAO)
         {
             this._newUser = newUser;
-            this._update = update;
+            this._sqlDAO = sqlDAO;
         }
         /// <summary>
-        /// this is the publicly accessed interface method that returns an IResult based on success of updating all accounts
+        /// this is the publicly accessed interface method that returns an IResult based on success of excute the query
+        /// to insert a new row in the user table
         /// </summary>
-        /// <returns>CheckResult</returns>
+        /// <returns>IResult true or false with error message</returns>
         public IResult CreateUser()
         {
             String message = "";
@@ -42,7 +43,7 @@ namespace RoomAid.ServiceLayer
 
 
             //changing result based upon if all accounts were updated successfully
-            int rowsChanged = _update.Update(commands);
+            int rowsChanged = _sqlDAO.Update(commands);
             if (rowsChanged == commands.Count)
             {
                 message += ConfigurationManager.AppSettings["successMessage"];

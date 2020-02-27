@@ -20,7 +20,6 @@ namespace RoomAid.CreateAccount.Tests
         {
             //Arrange
             bool expected = true;
-
             //Act
             Account testAccount = new Account("testerEmail","testHashedPassword", "testSalt");
             DeleteAccount(testAccount.UserEmail);
@@ -62,10 +61,6 @@ namespace RoomAid.CreateAccount.Tests
             bool actual = false;
             //Act
             Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
-            DeleteMapping(testAccount.UserEmail);
-            DeleteAccount(testAccount.UserEmail);
-            ICreateAccountService cas = new SqlCreateAccountService(testAccount, createAccountDAO);
-            cas.Create();
             ICreateMappingService cms = new SqlCreateMappingService(testAccount, createMappingDAO);
             int userID = cms.CreateMapping();
 
@@ -76,7 +71,32 @@ namespace RoomAid.CreateAccount.Tests
             }
 
             DeleteMapping(testAccount.UserEmail);
-            DeleteAccount(testAccount.UserEmail);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Test to check if the CreateAccoutnService can successfully connect to the database and create mapping row
+        //Should return a userID which is >=0;
+        [TestMethod]
+        public void CreateMappingNotPass()
+        {
+            //Arrange
+            bool expected = false;
+            bool actual = false;
+            //Act
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            ICreateMappingService cms = new SqlCreateMappingService(testAccount, createMappingDAO);
+            cms.CreateMapping();
+            int userID = cms.CreateMapping();
+
+            if (userID >=0)
+            {
+                actual = true;
+                Console.WriteLine("New ID is: " + userID);
+            }
+
+            DeleteMapping(testAccount.UserEmail);
+
             //Assert
             Assert.AreEqual(expected, actual);
         }
@@ -89,14 +109,14 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = true;
             //Act
             Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
-            DeleteUser(testAccount.UserEmail);
-            DeleteMapping(testAccount.UserEmail);
-            DeleteAccount(testAccount.UserEmail);
             ICreateAccountService cas = new SqlCreateAccountService(testAccount, createAccountDAO);
+            DeleteAccount(testAccount.UserEmail);
             cas.Create();
             ICreateMappingService cms = new SqlCreateMappingService(testAccount, createMappingDAO);
+            DeleteMapping(testAccount.UserEmail);
             int userID = cms.CreateMapping();
             User testUser = new User(userID, "TesterEmail@testmail.com", "Albert", "Du", "Enable", DateTime.Today,"Male");
+            DeleteUser(testUser.UserEmail);
             ICreateUserService cus = new SqlCreateUserService(testUser, createUserDAO);
             bool actual = cus.CreateUser().IsSuccess;
             DeleteUser(testUser.UserEmail);
@@ -104,6 +124,25 @@ namespace RoomAid.CreateAccount.Tests
             DeleteAccount(testAccount.UserEmail);
             //Assert
             Assert.AreEqual(expected, actual);
+        }
+
+        //Test for fail condition When an email/ID is already used, the service should not create a new user again
+        [TestMethod]
+        [ExpectedException(typeof(SqlException))]
+        public void CreateUserNotPass()
+        {
+            //Act
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");    
+            DeleteMapping(testAccount.UserEmail);
+            ICreateMappingService cms = new SqlCreateMappingService(testAccount, createMappingDAO);
+            int userID = cms.CreateMapping();
+            User testUser = new User(userID, "TesterEmail@testmail.com", "Albert", "Du", "Enable", DateTime.Today, "Male");
+            DeleteUser(testUser.UserEmail);
+            ICreateUserService cus = new SqlCreateUserService(testUser, createUserDAO);
+            cus.CreateUser();
+            bool actual = cus.CreateUser().IsSuccess;
+            DeleteUser(testUser.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
         }
 
         public void DeleteMapping(string userEmail)
