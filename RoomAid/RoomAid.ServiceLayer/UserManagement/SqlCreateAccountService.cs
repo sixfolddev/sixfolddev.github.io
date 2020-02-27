@@ -60,11 +60,11 @@ namespace RoomAid.ServiceLayer
                     rowsChanged = newMappingDAO.RunQuery(cmd);
                     if (rowsChanged > 0)
                     {
-                        int userID = mapperDAO.GetSysID(newAccount.UserEmail);
-                        if (userID!=-1)
+                        int sysID = mapperDAO.GetSysID(newAccount.UserEmail);
+                        if (sysID!=-1)
                         {
                             cmd = new SqlCommand(ConfigurationManager.AppSettings["queryCreateUser"]);
-                            cmd.Parameters.AddWithValue("@sysId", userID);
+                            cmd.Parameters.AddWithValue("@sysId", sysID);
                             cmd.Parameters.AddWithValue("@email", newAccount.UserEmail);
                             cmd.Parameters.AddWithValue("@status", "Enable");
                             rowsChanged = newUserDAO.RunQuery(cmd);
