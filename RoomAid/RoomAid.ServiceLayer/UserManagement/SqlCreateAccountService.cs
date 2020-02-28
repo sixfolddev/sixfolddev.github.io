@@ -10,24 +10,37 @@ namespace RoomAid.ServiceLayer
     public class SqlCreateAccountService : ICreateAccountService
     {
         private readonly List<Account> _newAccounts;
+        private readonly ICreateAccountDAO newAccountDAO; 
+        private readonly ICreateAccountDAO newMappingDAO;
+        private readonly IMapperDAO mapperDAO; 
+        private readonly ICreateAccountDAO newUserDAO; 
 
         /// <summary>
         /// Service that crafts queries for inserting a new row in the account table for new account
         /// </summary>
         /// <param name="newAccount"></param>
-        public SqlCreateAccountService(Account newAccount)
+        public SqlCreateAccountService(Account newAccount, CreateAccountDAOs daos)
         {
             this._newAccounts = new List<Account>();
             this._newAccounts.Add(newAccount);
+            newAccountDAO = daos.CreateAccountDAO;
+            newMappingDAO = daos.CreateMappingDAO;
+            mapperDAO = daos.MapperDAO;
+            newUserDAO = daos.CreateUserDAO;
+
         }
 
         /// <summary>
         /// Service that crafts queries for inserting multiple rows in account table
         /// </summary>
         /// <param name="newAccounts"></param>
-        public SqlCreateAccountService(List<Account> newAccounts)
+        public SqlCreateAccountService(List<Account> newAccounts, CreateAccountDAOs daos)
         {
             this._newAccounts = newAccounts;
+            newAccountDAO = daos.CreateAccountDAO;
+            newMappingDAO = daos.CreateMappingDAO;
+            mapperDAO = daos.MapperDAO;
+            newUserDAO = daos.CreateUserDAO;
         }
 
 
@@ -37,10 +50,6 @@ namespace RoomAid.ServiceLayer
         ///<returns>IResult true or false with error message</returns>
         public IResult Create()
         {
-            ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-            ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-            IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-            ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
 
             string message = "";
             bool isSuccess = true;
@@ -61,6 +70,7 @@ namespace RoomAid.ServiceLayer
                     if (rowsChanged > 0)
                     {
                         int sysID = mapperDAO.GetSysID(newAccount.UserEmail);
+
                         if (sysID!=-1)
                         {
                             cmd = new SqlCommand(ConfigurationManager.AppSettings["queryCreateUser"]);

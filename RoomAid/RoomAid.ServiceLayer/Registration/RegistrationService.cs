@@ -45,14 +45,20 @@ namespace RoomAid.ServiceLayer
             string salt = hash.Salt;
             Account newAccount = new Account(email, hashedPw, salt);
 
-            ICreateAccountService cas = new SqlCreateAccountService(newAccount);
+            ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
+            ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+            IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+            ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO,mapperDAO);
+           ICreateAccountService cas = new SqlCreateAccountService(newAccount, daos);
             IResult checkResult = cas.Create();
             message = message + checkResult.Message;
             bool  ifSuccess = checkResult.IsSuccess;
 
             if (ifSuccess)
             {
-                IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+                 mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
                 int sysID = mapperDAO.GetSysID(email);
                 if (sysID!=-1)
                 {
