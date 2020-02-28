@@ -11,6 +11,10 @@ namespace RoomAid.CreateAccount.Tests
     [TestClass]
     public class CreateAccountTests
     {
+       private ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
+       private ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+       private  IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+       private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
 
         //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
         [TestMethod]
@@ -24,7 +28,9 @@ namespace RoomAid.CreateAccount.Tests
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
-            ICreateAccountService cas = new SqlCreateAccountService(testAccount);
+
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount,daos);
             IResult result = cas.Create();
             bool actual = result.IsSuccess;
             DeleteUser(testAccount.UserEmail);
@@ -52,8 +58,9 @@ namespace RoomAid.CreateAccount.Tests
                 DeleteMapping(testAccount.UserEmail);
                 DeleteAccount(testAccount.UserEmail);
             }
-            
-            ICreateAccountService cas = new SqlCreateAccountService(testAccounts);
+
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccounts, daos);
             IResult result = cas.Create();
             bool actual = result.IsSuccess;
 
@@ -82,7 +89,8 @@ namespace RoomAid.CreateAccount.Tests
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
-            ICreateAccountService cas = new SqlCreateAccountService(testAccount);
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
             cas.Create();
             IResult result = cas.Create();
             bool actual = result.IsSuccess;
@@ -116,7 +124,8 @@ namespace RoomAid.CreateAccount.Tests
             testAccounts.Add(new Account("testerEmail" + 0, "testHashedPassword", "testSalt"));
 
 
-            ICreateAccountService cas = new SqlCreateAccountService(testAccounts);
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccounts, daos);
             IResult result = cas.Create();
             bool actual = result.IsSuccess;
 

@@ -6,12 +6,11 @@ namespace RoomAid.ServiceLayer
 {
     public class AuthenticationService
     {
-        private string _userEmail;
-        private string _password;
+        private readonly string _userEmail;
         private bool _authenticated;
-        private Hasher hasher = new Hasher(new SHA256Cng());
+        private readonly Hasher hasher = new Hasher(new SHA256Cng());
 
-        public AuthenticationService(string email, string _password)
+        public AuthenticationService(string email)
         {
             //Get salt from database tied to input account ID
             //Call method to hash input _password and salt
@@ -19,13 +18,12 @@ namespace RoomAid.ServiceLayer
             //Compare generated _password with stored _password
             //Don't store into variables
             this._userEmail = email;
-            this._password = _password;
             _authenticated = false;
         }
 
-        public bool Authenticate()
+        public bool Authenticate(string password)
         {
-            if (CompareHashes())
+            if (CompareHashes(password))
                 _authenticated = true;
             else
                 _authenticated = false;
@@ -33,10 +31,10 @@ namespace RoomAid.ServiceLayer
             return _authenticated;
         }
 
-        public bool CompareHashes()
+        public bool CompareHashes(string password)
         {
             string salt = GetSalt(_userEmail);
-            if (hasher.GenerateSaltedHash(_password, salt) == RetrieveDataStoreHash())
+            if (hasher.GenerateSaltedHash(password, salt) == RetrieveDataStoreHash())
             {
                 return true;
             }

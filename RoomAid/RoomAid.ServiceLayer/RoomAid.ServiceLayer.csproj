@@ -106,6 +106,7 @@
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />
     <Compile Include="UserManagement\Account.cs" />
+    <Compile Include="UserManagement\CreateAccountDAOs.cs" />
     <Compile Include="UserManagement\DeleteAccountSQLService.cs" />
     <Compile Include="UserManagement\ICreateAccountService.cs" />
     <Compile Include="UserManagement\IDeleteAccountService.cs" />
