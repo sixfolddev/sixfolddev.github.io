@@ -8,20 +8,20 @@ namespace RoomAid.ServiceLayer
 {
     public class Account
     {
-        private string _userEmail;
-        private string _hashedPassword;
-        private string _salt;
+        //private string _userEmail;
+        //private string _hashedPassword;
+        //private string _salt;
 
         public string UserEmail { get; set; }
         public string HashedPassword { get; set; }
         public string Salt { get; set; }
 
-        public Account()
-        {
-            UserEmail = _userEmail;
-            HashedPassword = _hashedPassword;
-            Salt = _salt;
-        }
+        //public Account()
+        //{
+        //    UserEmail = _userEmail;
+        //    HashedPassword = _hashedPassword;
+        //    Salt = _salt;
+        //}
 
         public Account(string email, string password, string salt)
         {

@@ -8,7 +8,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using RoomAid.DataAccessLayer;
 
-namespace RoomAid.ServiceLayer.UserManagement
+namespace RoomAid.ServiceLayer
 {
     public class DeleteAccountSQLService : IDeleteAccountService
     {

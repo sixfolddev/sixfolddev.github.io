@@ -6,7 +6,7 @@ namespace UnitTestAuthentication
     [TestClass]
     public class UnitTestAuthN
     {
-        AuthenticationService authService = new AuthenticationService("tester01", "password1");
+        private readonly AuthenticationService authService = new AuthenticationService("tester01");
 
         /*[TestMethod]
         public void hashing()
@@ -28,7 +28,7 @@ namespace UnitTestAuthentication
             var actual = true;
 
             //Act
-            if (!authService.Authenticate())
+            if (!authService.Authenticate("password1"))
             {
                 actual = false;
             }

@@ -106,10 +106,13 @@
     <Compile Include="Security\Hasher.cs" />
     <Compile Include="Security\HashObject.cs" />
     <Compile Include="UserManagement\Account.cs" />
+    <Compile Include="UserManagement\CreateAccountDAOs.cs" />
     <Compile Include="UserManagement\DeleteAccountSQLService.cs" />
     <Compile Include="UserManagement\ICreateAccountService.cs" />
     <Compile Include="UserManagement\IDeleteAccountService.cs" />
     <Compile Include="UserManagement\IUpdateAccountService.cs" />
+    <Compile Include="UserManagement\Permission.cs" />
+    <Compile Include="UserManagement\PermissionUpdateSqlService.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="Security\SaltGenerator.cs" />
     <Compile Include="UserManagement\Base64UrlConverter.cs" />
