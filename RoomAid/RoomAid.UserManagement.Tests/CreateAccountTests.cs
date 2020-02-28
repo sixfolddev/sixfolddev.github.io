@@ -12,7 +12,7 @@ namespace RoomAid.CreateAccount.Tests
     public class CreateAccountTests
     {
 
-        //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
+        //Test to check if the CreateAccountService can successfully connect to the database and create a user account
         [TestMethod]
         public void CreateAccountPass()
         {
@@ -20,7 +20,6 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = true;
             //Act
             Account testAccount = new Account("testerEmail","testHashedPassword", "testSalt");
-            
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
