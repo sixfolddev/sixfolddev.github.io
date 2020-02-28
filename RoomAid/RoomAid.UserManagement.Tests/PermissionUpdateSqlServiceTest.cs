@@ -24,11 +24,15 @@ namespace UserManagementTests
             var dao = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
             try
             {
-                var permUpdate = new PermissionUpdateSqlService(dao, new Permission(-1));
+                var permission = new Permission(-1);
+                permission.AddPermission("None");
+                var permUpdate = new PermissionUpdateSqlService(dao,permission);
+                var result =permUpdate.Update();
+                Assert.Equals(result.IsSuccess, true);
             }
             catch(Exception)
             {
-
+                Assert.Fail();
             }
         }
 

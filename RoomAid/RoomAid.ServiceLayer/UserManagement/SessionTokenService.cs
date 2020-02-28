@@ -30,15 +30,9 @@ namespace RoomAid.ServiceLayer
                 sessionToken = _jwt.GenerateJWT(user);
             }
 
-            UserSession session = new UserSession(sessionToken, seshId, iat, exp, uid, user)
-            {
-                Token = sessionToken,
-                SessionId = "", // TODO: generate session id
-                IssueTime = iat,
-                ExpirationTime = exp,
-                UserId = uid,
-                UserCurrentSession = user
-            };
+            UserSession session = new UserSession(sessionToken, seshId, iat, exp, uid, user);
+           
+            
         }
 
         // TODO: Complete method
