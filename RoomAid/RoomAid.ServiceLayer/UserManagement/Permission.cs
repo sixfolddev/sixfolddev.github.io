@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using static RoomAid.Authorization.AuthZEnum;
 
-namespace RoomAid.ServiceLayer.UserManagement
+namespace RoomAid.ServiceLayer
 {
     
     public class Permission
     {
-        public String UserID { get; }
+        public int UserID { get; }
         public List<Tuple<String, bool>> Permissions { get; }
         
 
@@ -19,7 +19,7 @@ namespace RoomAid.ServiceLayer.UserManagement
         /// </summary>
         /// <param name="userID"></param>
 
-        public Permission(String userID)
+        public Permission(int userID)
         {
             this.UserID = userID;
             Permissions = new List<Tuple<String, bool>>();
