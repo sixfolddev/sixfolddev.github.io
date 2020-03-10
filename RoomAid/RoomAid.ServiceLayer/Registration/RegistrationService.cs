@@ -51,14 +51,13 @@ namespace RoomAid.ServiceLayer
             ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
 
             CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO,mapperDAO);
-           ICreateAccountService cas = new SqlCreateAccountService(newAccount, daos);
+            ICreateAccountService cas = new SqlCreateAccountService(newAccount, daos);
             IResult checkResult = cas.Create();
             message = message + checkResult.Message;
             bool  ifSuccess = checkResult.IsSuccess;
 
             if (ifSuccess)
             {
-                 mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
                 int sysID = mapperDAO.GetSysID(email);
                 if (sysID!=-1)
                 {
