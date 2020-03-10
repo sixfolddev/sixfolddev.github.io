@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace RoomAid.ServiceLayer
 {
     public class UserSession
     {
+
         //    // Private backing fields
         private string _token;
         private string _sessionId;
@@ -17,8 +18,9 @@ namespace RoomAid.ServiceLayer
         public string SessionId { get; set; }
         public Int64 IssueTime { get; set; }
         public Int64 ExpirationTime { get; set; }
-        public string UserEmail { get; set; }
+        public string UserId { get; set; }
         public User UserCurrentSession { get; set; }
+
 
         // Empty default constructor
         public UserSession()
@@ -39,7 +41,7 @@ namespace RoomAid.ServiceLayer
             SessionId = sid;
             IssueTime = iat;
             ExpirationTime = exp;
-            UserEmail = email;
+            UserId = uid;
             UserCurrentSession = user;
         }
     }

@@ -8,7 +8,7 @@ namespace RoomAid.ServiceLayer
 {
     public class SessionTokenService
     {
-        private JWTService _jwt;
+        private readonly JWTService _jwt;
         public SessionTokenService()
         {
 
@@ -17,19 +17,26 @@ namespace RoomAid.ServiceLayer
         public void StartSession(User user)
         {
             string sessionToken = null;
+            string seshId = "";
+            string uid = "";
+            Int64 iat = _jwt.getTimeNowInSeconds();
+            Int64 exp = iat + Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]);
             // Setup sessions in database to check for active session
             bool ActiveSessionExists = false; // temp placeholder
-            if(!ActiveSessionExists)
+            
+            
+            if (!ActiveSessionExists)
             {
                 sessionToken = _jwt.GenerateJWT(user);
             }
-            UserSession session = new UserSession()
+
+            UserSession session = new UserSession(sessionToken, seshId, iat, exp, uid, user)
             {
                 Token = sessionToken,
                 SessionId = "", // TODO: generate session id
-                IssueTime = _jwt.getTimeNowInSeconds(),
-                ExpirationTime = _jwt.getTimeNowInSeconds() + Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]),
-                UserEmail = user.UserEmail,
+                IssueTime = iat,
+                ExpirationTime = exp,
+                UserId = uid,
                 UserCurrentSession = user
             };
         }
