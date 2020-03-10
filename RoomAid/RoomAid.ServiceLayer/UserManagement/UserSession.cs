@@ -15,7 +15,7 @@ namespace RoomAid.ServiceLayer
         public User UserCurrentSession { get; set; }
 
   
-    public UserSession(string token, string sid, Int64 iat, Int64 exp, string email, User user)
+    public UserSession(string token, string sid, Int64 iat, Int64 exp, string uid, User user)
         {
             Token = token;
             SessionId = sid;
