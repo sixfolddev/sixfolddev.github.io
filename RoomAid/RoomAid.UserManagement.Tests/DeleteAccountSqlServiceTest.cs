@@ -50,7 +50,6 @@ namespace UserManagementTests
             //Arrange
             bool expected = true;
 
-            Account test c
         }
     }
 }

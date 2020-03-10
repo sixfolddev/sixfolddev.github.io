@@ -78,6 +78,7 @@
     <Compile Include="ErrorHandling\ErrorController.cs" />
     <Compile Include="ErrorHandling\ErrorResponseManager.cs" />
     <Compile Include="ErrorHandling\ErrorThreatManager.cs" />
+    <Compile Include="HouseholdSearch\HouseholdSearchManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

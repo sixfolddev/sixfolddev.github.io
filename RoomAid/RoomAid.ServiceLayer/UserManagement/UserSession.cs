@@ -21,7 +21,6 @@ namespace RoomAid.ServiceLayer
             SessionId = sid;
             IssueTime = iat;
             ExpirationTime = exp;
-            UserId = uid;
             UserCurrentSession = user;
         }
     }
