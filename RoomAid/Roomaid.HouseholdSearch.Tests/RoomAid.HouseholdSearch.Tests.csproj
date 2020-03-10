@@ -56,6 +56,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RoomAid.DataAccessLayer\RoomAid.DataAccessLayer.csproj">
+      <Project>{5E8E8769-AF6B-49C7-A61C-AA85B747EF93}</Project>
+      <Name>RoomAid.DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RoomAid.ManagerLayer\RoomAid.ManagerLayer.csproj">
       <Project>{15565B36-4B3F-411F-B173-96ABD103153C}</Project>
       <Name>RoomAid.ManagerLayer</Name>
