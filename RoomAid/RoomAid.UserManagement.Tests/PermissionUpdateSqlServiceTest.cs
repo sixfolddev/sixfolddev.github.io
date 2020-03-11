@@ -28,7 +28,7 @@ namespace UserManagementTests
                 permission.AddPermission("None");
                 var permUpdate = new PermissionUpdateSqlService(dao,permission);
                 var result =permUpdate.Update();
-                Assert.Equals(result.IsSuccess, true);
+                Assert.Equals(result.IsSuccess, false);
             }
             catch(Exception)
             {

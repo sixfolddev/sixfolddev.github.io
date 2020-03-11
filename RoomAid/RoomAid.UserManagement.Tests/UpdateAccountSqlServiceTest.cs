@@ -44,7 +44,7 @@ namespace UserManagementTests
 
             var compare = update.Update();
 
-            Assert.IsFalse(compare.IsSuccess);
+            Assert.AreNotEqual(compare.IsSuccess, result.IsSuccess);
             Assert.AreNotEqual(compare.Message, result.Message);
         }
 
