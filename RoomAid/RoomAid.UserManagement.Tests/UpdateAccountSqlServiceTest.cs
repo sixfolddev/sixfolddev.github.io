@@ -44,8 +44,8 @@ namespace UserManagementTests
 
             var compare = update.Update();
 
-            Assert.IsFalse(compare.IsSuccess);
-            Assert.AreEqual(compare.Message, result.Message);
+            Assert.AreNotEqual(compare.IsSuccess, result.IsSuccess);
+            Assert.AreNotEqual(compare.Message, result.Message);
         }
 
         public class UpdateAccountDAOTestSuccess: IUpdateAccountDAO
