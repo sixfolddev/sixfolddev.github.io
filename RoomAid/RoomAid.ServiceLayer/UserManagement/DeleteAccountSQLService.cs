@@ -49,7 +49,7 @@ namespace RoomAid.ServiceLayer
             bool isSuccess = true;
             int totalSuccess = 0;
             List<SqlCommand> commands = new List<SqlCommand>();
-            IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+            IMapperDAO mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
             foreach (User targetUser in _targetUsers)
             {
                 var cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteSystem"]);

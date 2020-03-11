@@ -48,7 +48,7 @@ namespace RoomAid.ServiceLayer
             ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
             ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
             IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-            ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+            ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
 
             CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO,mapperDAO);
             ICreateAccountService cas = new SqlCreateAccountService(newAccount, daos);
@@ -61,7 +61,7 @@ namespace RoomAid.ServiceLayer
                 int sysID = mapperDAO.GetSysID(email);
                 if (sysID!=-1)
                 {
-                    IUpdateAccountDAO DAO = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+                    IUpdateAccountDAO DAO = new UpdateAccountSqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
                     User newUser = new User(sysID, email, fname, lname, "Enable", dob, gender);
                     UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, DAO);
                     checkResult = updateAccount.Update();
