@@ -29,7 +29,7 @@ namespace UserManagementTests
             ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
             cas.Create();
             User testUser = new User(mapperDAO.GetSysID(testAccount.UserEmail), "testerEmail", "Collin", "Damarines", "Activated", DateTime.Now, "Male");
-           
+
             //Act
             IDeleteAccountDAO systemDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
             IDeleteAccountDAO mappingDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
@@ -38,7 +38,7 @@ namespace UserManagementTests
             IResult deleteResult = deleter.Delete();
             bool actual = deleteResult.IsSuccess;
             Console.WriteLine(deleteResult.Message);
-            
+
             //Assert
             Assert.AreEqual(expected, actual);
         }
@@ -50,7 +50,34 @@ namespace UserManagementTests
             //Arrange
             bool expected = true;
 
-            Account test c
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
+            cas.Create();
+            User testUser = new User(mapperDAO.GetSysID(testAccount.UserEmail), "testerEmail", "Collin", "Damarines", "Activated", DateTime.Now, "Male");
+
+            Account testAccount2 = new Account("testerEmail2", "testHashedPassword2", "testSalt");
+            CreateAccountDAOs daos2 = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas2 = new SqlCreateAccountService(testAccount, daos);
+            cas.Create();
+            User testUser2 = new User(mapperDAO.GetSysID(testAccount2.UserEmail), "testerEmail2", "Woodrow", "Buthavenopaddle", "Activated", DateTime.Now, "Male");
+
+            List<User> testUsers = new List<User>();
+            testUsers.Add(testUser);
+            testUsers.Add(testUser2);
+
+            //Act
+            IDeleteAccountDAO systemDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+            IDeleteAccountDAO mappingDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+            IDeleteAccountDAO accountDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
+            IDeleteAccountService deleter = new DeleteAccountSQLService(testUsers, systemDB, mappingDB, accountDB);
+            IResult deleteResult = deleter.Delete();
+            bool actual = deleteResult.IsSuccess;
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+
+
         }
     }
 }

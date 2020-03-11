@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Configuration;
 using RoomAid.ServiceLayer;
 using RoomAid.ManagerLayer;
+using System.Threading;
 
 namespace RoomAid.Archive.Tests
 {
@@ -34,8 +35,18 @@ namespace RoomAid.Archive.Tests
             //For testing, make sure directory exists then delete it
             if (Directory.Exists(logStorage))
             {
+
                DirClean();
-               Directory.Delete(logStorage);
+                try
+                {
+                    Directory.Delete(logStorage, true);
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(0);
+                    Directory.Delete(logStorage, true);
+                }
+                //Directory.Delete(logStorage);
             }
             
             //Act
