@@ -16,7 +16,7 @@ namespace RoomAid.CreateAccount.Tests
        private  IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
        private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
 
-        //Test to check if the CreateAccoutnService can successfully connect to the database and create a user account
+        //Test to check if the CreateAccountService can successfully connect to the database and create a user account
         [TestMethod]
         public void CreateAccountPass()
         {
@@ -24,7 +24,6 @@ namespace RoomAid.CreateAccount.Tests
             bool expected = true;
             //Act
             Account testAccount = new Account("testerEmail","testHashedPassword", "testSalt");
-            
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);

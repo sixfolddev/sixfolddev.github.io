@@ -13,52 +13,66 @@ namespace RoomAid.ServiceLayer
     public class DeleteAccountSQLService : IDeleteAccountService
     {
         private readonly List<User> _targetUsers;
-        private readonly IDeleteAccountDAO _delete;
+        private readonly IDeleteAccountDAO _deleteAccountdb;
+        private readonly IDeleteAccountDAO _deleteMappingdb;
+        private readonly IDeleteAccountDAO _deleteSystemdb;
         /// <summary>
         /// Craft queries based off a single user
         /// </summary>
         /// <returns></returns>
-        public DeleteAccountSQLService(User targetUser, IDeleteAccountDAO delete)
+        public DeleteAccountSQLService(User targetUser, IDeleteAccountDAO deleteSystem, IDeleteAccountDAO deleteMapping, IDeleteAccountDAO deleteAccount)
         {
             this._targetUsers = new List<User>();
             this._targetUsers.Add(targetUser);
-            this._delete = delete;
+            this._deleteAccountdb = deleteAccount;
+            this._deleteMappingdb = deleteMapping;
+            this._deleteSystemdb = deleteSystem;
         }
         /// <summary>
         /// Craft queries based off of multiple users
         /// </summary>
         /// <returns></returns>
-        public DeleteAccountSQLService(List<User> targetUsers, IDeleteAccountDAO delete)
+        public DeleteAccountSQLService(List<User> targetUsers, IDeleteAccountDAO deleteSystem, IDeleteAccountDAO deleteMapping, IDeleteAccountDAO deleteAccount)
         {
             this._targetUsers = targetUsers;
-            this._delete = delete;
+            this._deleteAccountdb = deleteAccount;
+            this._deleteMappingdb = deleteMapping;
+            this._deleteSystemdb = deleteSystem;
         }
+        /// <summary>
+        /// Delete a user, starting with their system information, 
+        /// </summary>
+        /// <returns></returns>
         public IResult Delete()
         {
             string message = "";
             bool isSuccess = true;
             int totalSuccess = 0;
-            List<SqlCommand> commands = new List<SqlCommand>();
             IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
             foreach (User targetUser in _targetUsers)
             {
+                List<SqlCommand> deleteUserCommands = new List<SqlCommand>();
                 var cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteSystem"]);
                 cmd.Parameters.AddWithValue("@sysID", targetUser.SystemID);
-                commands.Add(cmd);
+                deleteUserCommands.Add(cmd);
 
-                int rowsDeleted = _delete.Delete(commands);
+                int rowsDeleted = _deleteSystemdb.Delete(deleteUserCommands);
                 if(rowsDeleted > 0)
                 {
+                    List<SqlCommand> deleteMapperCommands = new List<SqlCommand>();
+                    deleteMapperCommands = new List<SqlCommand>();
                     cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteMapping"]);
                     cmd.Parameters.AddWithValue("@sysID", mapperDAO.GetSysID(targetUser.UserEmail));
-                    commands.Add(cmd);
-                    rowsDeleted = _delete.Delete(commands);
+                    deleteMapperCommands.Add(cmd);
+                    rowsDeleted = _deleteMappingdb.Delete(deleteMapperCommands);
                     if(rowsDeleted > 0)
                     {
+                        List<SqlCommand> deleteAccountCommands = new List<SqlCommand>();
+                        deleteAccountCommands = new List<SqlCommand>();
                         cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteAccount"]);
                         cmd.Parameters.AddWithValue("@email", targetUser.UserEmail);
-                        commands.Add(cmd);
-                        rowsDeleted = _delete.Delete(commands);
+                        deleteAccountCommands.Add(cmd);
+                        rowsDeleted = _deleteAccountdb.Delete(deleteAccountCommands);
                         if(rowsDeleted > 0)
                         {
                             totalSuccess += 1;
