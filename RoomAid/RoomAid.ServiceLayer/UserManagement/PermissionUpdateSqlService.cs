@@ -56,7 +56,7 @@ namespace RoomAid.ServiceLayer
                     else
                         action = "DELETE";
 
-                    var cmd = new SqlCommand("@action @singlePermission FROM @tableName WHERE userID = @userID");
+                    var cmd = new SqlCommand("@action @singlePermission FROM @tableName WHERE SysID = @userID");
                     cmd.Parameters.AddWithValue("@action", action);
                     cmd.Parameters.AddWithValue("@singlePermission", tup.Item1);
                     cmd.Parameters.AddWithValue("@tableName", ConfigurationManager.AppSettings["tableNamePermissions"]);
