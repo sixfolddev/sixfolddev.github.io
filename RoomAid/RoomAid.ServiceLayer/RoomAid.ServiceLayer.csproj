@@ -87,6 +87,8 @@
     <Compile Include="ErrorHandling\FatalResponseService.cs" />
     <Compile Include="ErrorHandling\IErrorResponseService.cs" />
     <Compile Include="ErrorHandling\WarningResponseService.cs" />
+    <Compile Include="HouseHoldManagement\HouseHoldCreationRequestDTO.cs" />
+    <Compile Include="HouseHoldManagement\HouseHoldService.cs" />
     <Compile Include="Logging\DataStoreHandler.cs" />
     <Compile Include="Logging\FileHandler.cs" />
     <Compile Include="Logging\ILogFormatter.cs" />
