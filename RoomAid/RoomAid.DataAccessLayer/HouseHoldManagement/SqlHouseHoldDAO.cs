@@ -15,7 +15,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
         {
             this._connection = connection;
         }
-        public int RunQuery(SqlCommand command)
+        public int Insert(SqlCommand command)
         {
             int rowsChanged = 0;
             using (SqlConnection connection = new SqlConnection(_connection))
@@ -39,7 +39,33 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
                 }
             }
             return rowsChanged;
-        } 
-  
+        }
+
+
+        public int Retrive(SqlCommand command)
+        {
+            int result = 0;
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+                connection.Open();
+                SqlTransaction trans = connection.BeginTransaction();
+                try
+                {
+                    using (command)
+                    {
+                        command.Connection = connection;
+                        command.Transaction = trans;
+                        result = (int)command.ExecuteScalar();
+                    }
+                    trans.Commit();
+                }
+                catch (Exception)
+                {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+            return result;
+        }
     }
 }

@@ -336,7 +336,7 @@ namespace RoomAid.Registration.Test
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionMapping"]))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User)))
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("DELETE FROM dbo.Mapping Where UserEmail = @userEmail", connection);
@@ -357,7 +357,7 @@ namespace RoomAid.Registration.Test
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionAccount"]))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User)))
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("DELETE FROM dbo.Accounts Where UserEmail = @userEmail", connection);
@@ -379,7 +379,7 @@ namespace RoomAid.Registration.Test
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionSystem"]))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)))
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("DELETE FROM dbo.Users Where UserEmail = @userEmail", connection);

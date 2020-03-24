@@ -20,16 +20,18 @@ namespace RoomAid.ServiceLayer.HouseHoldManagement
         public int CreateHouseHold(HouseHoldCreationRequestDTO request)
         {
             bool ifExist = IfHouseHoldExist(request.StreetAddress, request.Zip);
-
-            if (!ifExist)
+            bool ifZipValid = IfZipExist(request.Zip);
+            if (!ifExist&& ifZipValid)
             {
                 SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["queryCreateHouseHold"]);
                 command.Parameters.AddWithValue("@rent", request.Rent);
                 command.Parameters.AddWithValue("@streetAddress", request.StreetAddress);
                 command.Parameters.AddWithValue("@zipCode", request.Zip);
                 command.Parameters.AddWithValue("@isAvailable", request.IsAvailable);
+                return dao.Retrive(command);
             }
-            return 0;
+            else
+                return 0;
         }
 
         //should check if the address is already used for new household 
@@ -38,10 +40,21 @@ namespace RoomAid.ServiceLayer.HouseHoldManagement
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectHouseHold"]);
             command.Parameters.AddWithValue("@streetAddress", streetAddress);
             command.Parameters.AddWithValue("@zipCode", zip);
-            if (dao.RunQuery(command) > 0)            
+            if (dao.Retrive(command) > 0)            
                 return true;           
             else
-            return false;
+                return false;
+        }
+
+        //Check if 
+        private bool IfZipExist( int zip)
+        {
+            SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectZip"]);
+            command.Parameters.AddWithValue("@zipCode", zip);
+            if (dao.Retrive(command) > 0)
+                return true;
+            else
+                return false;
         }
         public int UpdateHouseHold(int hId)
         {
@@ -52,25 +65,11 @@ namespace RoomAid.ServiceLayer.HouseHoldManagement
         {
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteHouseHold"]);
             command.Parameters.AddWithValue("@HID", hId);
-            if (dao.RunQuery(command) > 0)
+            if (dao.Insert(command) > 0)
                 return true;
             else
                 return false;
         }
 
-        public IResult CreateResident(int sysId, int hId)
-        {
-            return null;
-        }
-
-        public IResult UpdateResident(int sysId, int hId)
-        {
-            return null;
-        }
-
-        public IResult DeleteResident(int sysId, int hId)
-        {
-            return null;
-        }
     }
 }

@@ -9,6 +9,8 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
 {
     public interface IHouseHoldDAO
     {
-        int RunQuery(SqlCommand command);
+        int Insert(SqlCommand command);
+
+        int Retrive(SqlCommand command);
     }
 }
