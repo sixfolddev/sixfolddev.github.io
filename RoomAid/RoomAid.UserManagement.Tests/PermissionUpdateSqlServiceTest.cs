@@ -12,9 +12,37 @@ namespace UserManagementTests
     [TestClass]
     public class PermissionUpdateSqlServiceTest
     {
+
+        private ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
+        private ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+        private IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+        private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+
         [TestMethod]
         public void UpdateTestSuccess()
         {
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
+            IResult result = cas.Create();
+            Assert.IsTrue(result.IsSuccess);
+
+            var dao = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+            try
+            {
+                var id = mapperDAO.GetSysID("testerEmail");
+                var perm = new Permission(id);
+                perm.AddPermission("None");
+                var permUpdate = new PermissionUpdateSqlService(dao, perm);
+                var res = permUpdate.Update();
+                Assert.IsTrue(res.IsSuccess);
+
+
+            }
+            catch
+            {
+                Assert.Fail();
+            }
 
         }
 
