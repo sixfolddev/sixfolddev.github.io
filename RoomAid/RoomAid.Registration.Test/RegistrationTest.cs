@@ -304,6 +304,33 @@ namespace RoomAid.Registration.Test
             Assert.AreEqual(expected, actual);
         }
 
+        //Success Condition for Decimal Check, if decimal places are less than the input limit, then it will return true
+        [TestMethod]
+        public void DecimalCheckPass()
+        {
+            //Arrange
+            bool expected = true;
+
+            //Act
+            bool actual = testVs.DecimalValidation(4.66, 2);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Failndition for Decimal Check, if decimal places are more than the input limit, then it will return false
+        [TestMethod]
+        public void DecimalCheckNOTPass()
+        {
+            //Arrange
+            bool expected = false;
+
+            //Act
+            bool actual = testVs.DecimalValidation(4.66666, 1);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
         //partB test to see if the whole RegistrationService can work
 
         //The success function for age validation

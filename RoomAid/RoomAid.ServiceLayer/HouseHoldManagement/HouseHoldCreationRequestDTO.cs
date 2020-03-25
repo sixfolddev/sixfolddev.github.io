@@ -4,24 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoomAid.ServiceLayer.HouseHoldManagement
+namespace RoomAid.ServiceLayer
 {
+    
     public class HouseHoldCreationRequestDTO
     {
-        public User User { get; }
-        public double Rent { get; }
-        public string StreetAddress { get; }
-        public int Zip { get; }
+       public User Requester { get; }
+       public string StreetAddress { get; }
+       public string City { get; }
+       public int Zip { get; }
+       public string SuiteNumber { get; }
+       public double Rent { get; }
 
-        public bool IsAvailable { get; }
-
-        public HouseHoldCreationRequestDTO(User user, double rent, string streetAddress, int zip, bool isAvailable)
+        public HouseHoldCreationRequestDTO(User user, string streetAddress, string city, int zip, string suiteNumber, double rent)
         {
-            User = user;
-            Rent = rent;
+            Requester = user;
+
             StreetAddress = streetAddress;
+
+            City = city;
+
             Zip = zip;
-            IsAvailable = isAvailable;
+
+            SuiteNumber = suiteNumber;
+
+            Rent = rent;
         }
     }
 }

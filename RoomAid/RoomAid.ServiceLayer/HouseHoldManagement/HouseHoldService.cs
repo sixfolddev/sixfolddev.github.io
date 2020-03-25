@@ -1,4 +1,4 @@
-﻿using RoomAid.DataAccessLayer.HouseHoldManagement;
+﻿using RoomAid.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoomAid.ServiceLayer.HouseHoldManagement
+namespace RoomAid.ServiceLayer
 {
     public class HouseHoldService
     {
@@ -17,7 +17,7 @@ namespace RoomAid.ServiceLayer.HouseHoldManagement
         {
             this.dao = dao;
         }
-        public int CreateHouseHold(HouseHoldCreationRequestDTO request)
+        public int CreateHouseHold(HouseHold request)
         {
             bool ifExist = IfHouseHoldExist(request.StreetAddress, request.Zip);
             bool ifZipValid = IfZipExist(request.Zip);

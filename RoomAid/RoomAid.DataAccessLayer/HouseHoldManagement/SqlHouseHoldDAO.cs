@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RoomAid.DataAccessLayer.HouseHoldManagement
+namespace RoomAid.DataAccessLayer
 {
     public class SqlHouseHoldDAO : IHouseHoldDAO
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RoomAid.DataAccessLayer.HouseHoldManagement;
-using RoomAid.ServiceLayer.HouseHoldManagement;
+using RoomAid.DataAccessLayer;
+using RoomAid.ServiceLayer;
 
 namespace RoomAid.HouseHoldManagement.Tests
 {
@@ -19,7 +19,7 @@ namespace RoomAid.HouseHoldManagement.Tests
             bool actual = false;
             //Act
             HouseHoldService hhs = new HouseHoldService(hdao);
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(null, 1000.00, "Testing address", 92868 , true);
+            HouseHold request = new HouseHold(1000.00, "Testing address", 92868 , false);
             
             int newID = hhs.CreateHouseHold(request);
             if (newID > 0)
@@ -39,7 +39,7 @@ namespace RoomAid.HouseHoldManagement.Tests
             bool actual = false;
             //Act
             HouseHoldService hhs = new HouseHoldService(hdao);
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(null, 1000.00, "Testing address", 92868, true);
+            HouseHold request = new HouseHold(1000.00, "Testing address", 92868, false);
             int newHouse1 = hhs.CreateHouseHold(request);
             int newHouse2 = hhs.CreateHouseHold(request);
             if (newHouse2 > 0)
@@ -61,7 +61,7 @@ namespace RoomAid.HouseHoldManagement.Tests
             bool actual = false;
             //Act
             HouseHoldService hhs = new HouseHoldService(hdao);
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(null, 1000.00, "Testing address", 999999, true);
+            HouseHold request = new HouseHold(1000.00, "Testing address", 999999, false);
             int newID = hhs.CreateHouseHold(request);
             if (newID > 0)
                 actual = true;
