@@ -304,6 +304,33 @@ namespace RoomAid.Registration.Test
             Assert.AreEqual(expected, actual);
         }
 
+        //Success Condition for Decimal Check, if decimal places are less than the input limit, then it will return true
+        [TestMethod]
+        public void DecimalCheckPass()
+        {
+            //Arrange
+            bool expected = true;
+
+            //Act
+            bool actual = testVs.DecimalValidation(4.66, 2);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Failndition for Decimal Check, if decimal places are more than the input limit, then it will return false
+        [TestMethod]
+        public void DecimalCheckNOTPass()
+        {
+            //Arrange
+            bool expected = false;
+
+            //Act
+            bool actual = testVs.DecimalValidation(4.66666, 1);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
         //partB test to see if the whole RegistrationService can work
 
         //The success function for age validation
@@ -336,7 +363,7 @@ namespace RoomAid.Registration.Test
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionMapping"]))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User)))
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("DELETE FROM dbo.Mapping Where UserEmail = @userEmail", connection);
@@ -357,7 +384,7 @@ namespace RoomAid.Registration.Test
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionAccount"]))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User)))
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("DELETE FROM dbo.Accounts Where UserEmail = @userEmail", connection);
@@ -379,7 +406,7 @@ namespace RoomAid.Registration.Test
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.AppSettings["sqlConnectionSystem"]))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)))
                 {
                     connection.Open();
                     SqlCommand command = new SqlCommand("DELETE FROM dbo.Users Where UserEmail = @userEmail", connection);
