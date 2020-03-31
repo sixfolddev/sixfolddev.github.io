@@ -313,7 +313,7 @@ namespace RoomAid.Registration.Test
 
             //Act
             bool actual = testVs.DecimalValidation(4.66, 2);
-
+            Console.WriteLine(4.00.ToString());
             //Assert
             Assert.AreEqual(expected, actual);
         }

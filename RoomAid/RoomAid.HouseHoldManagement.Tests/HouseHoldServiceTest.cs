@@ -6,7 +6,7 @@ using RoomAid.ServiceLayer;
 namespace RoomAid.HouseHoldManagement.Tests
 {
     [TestClass]
-    public class CreateHouseHoldServiceTest
+    public class HouseHoldServiceTest
     {
         private IHouseHoldDAO hdao = new SqlHouseHoldDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
         
@@ -30,7 +30,7 @@ namespace RoomAid.HouseHoldManagement.Tests
             Assert.AreEqual(expected, actual);
         }
 
-        //Failure condition for HouseHoldCreation, when an address with Zip is already used, the new household should not be created
+        //Failure condition for HouseHoldCreation, when an address with Description is already used, the new household should not be created
         [TestMethod]
         public void HouseHoldCreateNotPassA()
         {
@@ -52,7 +52,7 @@ namespace RoomAid.HouseHoldManagement.Tests
 
         }
 
-        //Failure condition for HouseHoldCreation, when the input Zip is not valid should not create new HouseHold
+        //Failure condition for HouseHoldCreation, when the input Description is not valid should not create new HouseHold
         [TestMethod]
         public void HouseHoldCreateNotPassB()
         {
@@ -70,6 +70,49 @@ namespace RoomAid.HouseHoldManagement.Tests
             //Assert
             Assert.AreEqual(expected, actual);
 
+        }
+
+        //=============================================CreateHouseHoldListing test============================================================================
+
+        //Success condition for HouseHoldCreationListing
+        [TestMethod]
+        public void HouseHoldListingCreatePass()
+        {
+            //Arrange
+            bool expected = true;
+            //Act
+            HouseHoldService hhs = new HouseHoldService(hdao);
+            HouseHold request = new HouseHold(1000.00, "Testing address", 92868, false);
+
+            int newID = hhs.CreateHouseHold(request);
+            IResult result = hhs.CreateHouseHoldListing(newID);
+            bool actual = result.IsSuccess;
+            Console.WriteLine(result.Message);
+            hhs.DeleteHouseHoldListing(newID);
+            hhs.DeleteHouseHold(newID);
+            
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Failure condition for HouseHoldCreationListing, if the HID does not exist, a HouseHoldlisting should not be created.
+        [TestMethod]
+        public void HouseHoldListingCreateNotPass()
+        {
+            //Arrange
+            bool expected = false;
+            //Act
+            HouseHoldService hhs = new HouseHoldService(hdao);
+            HouseHold request = new HouseHold(1000.00, "Testing address", 92868, false);
+
+            int newID = hhs.CreateHouseHold(request);
+            IResult result = hhs.CreateHouseHoldListing(newID+1);
+            bool actual = result.IsSuccess;
+            Console.WriteLine(result.Message);
+            hhs.DeleteHouseHold(newID);
+
+            //Assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }

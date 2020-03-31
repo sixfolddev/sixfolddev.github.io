@@ -340,16 +340,13 @@ namespace RoomAid.ServiceLayer
 
         public bool DecimalValidation(double input, int limit)
         {
-            string number = input.ToString(); // Convert to string
-
-            int length = number.Substring(number.IndexOf(".")).Length-1;
-
-            if (length <= limit)
-                return true;
-            else
+            int i = 0;
+            while (Math.Round(input, i) != input)
+                i++;
+            if (i > limit)
                 return false;
+            else
+                return true;
         }
-
-
     }
 }
