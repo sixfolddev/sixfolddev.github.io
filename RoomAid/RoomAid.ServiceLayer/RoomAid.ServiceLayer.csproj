@@ -89,6 +89,7 @@
     <Compile Include="ErrorHandling\WarningResponseService.cs" />
     <Compile Include="HouseHoldManagement\HouseHold.cs" />
     <Compile Include="HouseHoldManagement\HouseHoldCreationRequestDTO.cs" />
+    <Compile Include="HouseHoldManagement\HouseHoldListing.cs" />
     <Compile Include="HouseHoldManagement\HouseHoldService.cs" />
     <Compile Include="Logging\DataStoreHandler.cs" />
     <Compile Include="Logging\FileHandler.cs" />
