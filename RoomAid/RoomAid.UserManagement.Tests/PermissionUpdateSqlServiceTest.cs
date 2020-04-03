@@ -12,21 +12,34 @@ namespace UserManagementTests
     [TestClass]
     public class PermissionUpdateSqlServiceTest
     {
+        private readonly IUpdateAccountDAO _dao = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+
         [TestMethod]
         public void UpdateTestSuccess()
         {
-
+            
+            try
+            {
+                var permission = new Permission(0);
+                permission.AddPermission("None");
+                var permUpdate = new PermissionUpdateSqlService(_dao, permission);
+                var result = permUpdate.Update();
+                Assert.Equals(result.IsSuccess, true);
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
         }
 
         [TestMethod]
         public void UpdateTestFailure()
         {
-            var dao = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
             try
             {
                 var permission = new Permission(-1);
                 permission.AddPermission("None");
-                var permUpdate = new PermissionUpdateSqlService(dao,permission);
+                var permUpdate = new PermissionUpdateSqlService(_dao,permission);
                 var result =permUpdate.Update();
                 Assert.Equals(result.IsSuccess, false);
             }
@@ -40,9 +53,10 @@ namespace UserManagementTests
         public void UpdateTestException()
         {
             var dao = new UpdateAccountSqlDAO("false");
+            var permUpdate = new PermissionUpdateSqlService(dao, new Permission(-1));
             try
             {
-                dao.Update(new List<SqlCommand>());
+                permUpdate.Update();
                 Assert.Fail();
             }
             catch (Exception e)

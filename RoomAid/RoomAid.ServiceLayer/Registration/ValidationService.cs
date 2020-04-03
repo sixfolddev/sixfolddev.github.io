@@ -338,6 +338,15 @@ namespace RoomAid.ServiceLayer
             return false;
         }
 
-
+        public bool DecimalValidation(double input, int limit)
+        {
+            int i = 0;
+            while (Math.Round(input, i) != input)
+                i++;
+            if (i > limit)
+                return false;
+            else
+                return true;
+        }
     }
 }

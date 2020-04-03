@@ -12,13 +12,13 @@ namespace UserManagementTests
     [TestClass]
     public class DeleteAccountSqlServiceTest
     {
-        private ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
-        private ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-        private IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-        private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
-        private IDeleteAccountDAO systemDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
-        private IDeleteAccountDAO mappingDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
-        private IDeleteAccountDAO accountDB = new SqlDeleteAccountDAO(ConfigurationManager.AppSettings["sqlConnectionAccount"]);
+        private ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
+        private ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private IMapperDAO mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+        private IDeleteAccountDAO systemDB = new SqlDeleteAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+        private IDeleteAccountDAO mappingDB = new SqlDeleteAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private IDeleteAccountDAO accountDB = new SqlDeleteAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
 
         [TestMethod]
         //Create a new acccount and a matching user. Execute deletion for a single user.
