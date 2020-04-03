@@ -338,6 +338,10 @@ namespace RoomAid.ServiceLayer
             return false;
         }
 
+        /// <summary>
+        /// Method DecimalValidation will check if the input have more decimal places than required
+        /// <param name="input">a double</param>
+        /// <returns>true/false</returns>
         public bool DecimalValidation(double input, int limit)
         {
             int i = 0;

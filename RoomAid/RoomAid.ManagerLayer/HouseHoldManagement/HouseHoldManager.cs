@@ -10,8 +10,17 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
 {
     public class HouseHoldManager
     {
-        private IHouseHoldDAO dao = new SqlHouseHoldDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
-    
+        private IHouseHoldDAO dao;
+        private HouseHoldService houseHoldService;
+
+        public HouseHoldManager()
+        {
+            dao = new SqlHouseHoldDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+            houseHoldService = new HouseHoldService(dao);
+        }
+
+        //Create a new HouseHold with an empty HouseHoldListing, if failed, return reasons that failed.
+        // if successed return the new HouseHoldID
         public IResult CreateNewHouseHold(HouseHoldCreationRequestDTO request)
         {
             User requester = request.Requester;
@@ -61,25 +70,27 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
             }
             else
             {
-                ifValid = false;
-                message += "\nThe Requester's ID doese not exist";
+                message += "\nThe User's ID doese not exist";
             }
             
             if (ifValid)
             {
-                HouseHoldService hhs = new HouseHoldService(dao);
+              
                 streetAddress = streetAddress + ", " + city + ", " + suiteNumber;
                 //by defaut new household will be 'unavailable'
                 HouseHold newHouseHold = new HouseHold(rent, streetAddress, zip, false);
-                int hId = hhs.CreateHouseHold(newHouseHold);
+                int hId = houseHoldService.CreateHouseHold(newHouseHold);
 
                 if (hId > 0)
                 {
-                    message += "\nHouseHold Created Successfully!";
-                    IResult createEmptyHouseHoldListing = hhs.CreateHouseHoldListing(hId);
-
+                    message =hId.ToString();
+                    IResult createEmptyHouseHoldListing = houseHoldService.CreateHouseHoldListing(hId);
                     ifValid = createEmptyHouseHoldListing.IsSuccess;
-                    message += createEmptyHouseHoldListing.Message;
+                    if (!ifValid)
+                    {
+                        message = createEmptyHouseHoldListing.Message;
+                    }
+                             
                 }
                 else
                 {
@@ -100,6 +111,26 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
                 return true;
             else
                 return false;
+        }
+
+        //Delete HouseHoldListing first and then delete HouseHold 
+        public IResult DeleteHouseHold(int hID)
+        {
+            bool ifSuccess = houseHoldService.DeleteHouseHoldListing(hID);
+            if (ifSuccess)
+            {
+                ifSuccess = houseHoldService.DeleteHouseHold(hID);
+
+                if (ifSuccess)
+                    return new CheckResult("Delete Successed!", true);
+                else
+                    return new CheckResult("Delete Failed!", false);
+            }
+            else
+            {
+                return new CheckResult("Delete Failed! Cannot delete HouseHoldListing!", false);
+            }
+
         }
     }
 }

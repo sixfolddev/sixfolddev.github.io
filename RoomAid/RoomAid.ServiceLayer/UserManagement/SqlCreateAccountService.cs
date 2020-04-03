@@ -45,7 +45,8 @@ namespace RoomAid.ServiceLayer
 
 
         /// <summary>
-        /// Service that crafts queries for insert new ros in the account table for the new account
+        /// Method that gonna craft query for account, mapping and user table. After a new account is created, the new
+        /// sysID will be used to create a mapping and then based on the mapping, a new user will be created.
         /// </summary>
         ///<returns>IResult true or false with error message</returns>
         public IResult Create()
