@@ -20,6 +20,7 @@ namespace RoomAid.HouseHoldManagement.Tests
         private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
 
         //Success condition for HouseHoldCreation
+        //test
         [TestMethod]
         public void HouseHoldCreatePass()
         {
@@ -30,6 +31,7 @@ namespace RoomAid.HouseHoldManagement.Tests
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
+
             CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
             ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
             HouseHoldManager mr = new HouseHoldManager();
@@ -37,6 +39,110 @@ namespace RoomAid.HouseHoldManagement.Tests
             int sid = mapperDAO.GetSysID("testerEmail");
             User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
             HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity",92868,"TestSuiteNumber", 1500.00);
+            IResult result = mr.CreateNewHouseHold(request);
+            Console.WriteLine("New HouseHold ID is: " + result.Message);
+            int hID = Int32.Parse(result.Message);
+            Console.WriteLine("New HouseHold ID is: "+result.Message);
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+            mr.DeleteHouseHold(hID);
+            bool actual = result.IsSuccess;
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Failure condition for HouseHoldCreation, if the request user does not exist, HouseHold Creation should not start
+        [TestMethod]
+        public void HouseHoldCreateNotPassA()
+        {
+            //Arrange
+            bool expected = false;
+            //Act
+            //Create a new testing user and then delete it
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
+            HouseHoldManager mr = new HouseHoldManager();
+            cas.Create();
+            int sid = mapperDAO.GetSysID("testerEmail");
+
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+
+            User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
+            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity", 92868, "TestSuiteNumber", 1500.00);
+            IResult result = mr.CreateNewHouseHold(request);
+            Console.WriteLine(result.Message);
+            bool actual = result.IsSuccess;
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Failure condition for HouseHoldCreation, if the HouseHold Already exist, should now create this Household
+        [TestMethod]
+        public void HouseHoldCreateNotPassB()
+        {
+            //Arrange
+            bool expected = false;
+            //Act
+            //Create a new testing user and then delete it
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
+            HouseHoldManager mr = new HouseHoldManager();
+            cas.Create();
+            int sid = mapperDAO.GetSysID("testerEmail");
+
+            User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
+            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity", 92868, "TestSuiteNumber", 1500.00);
+            IResult result = mr.CreateNewHouseHold(request);
+            int hID = Int32.Parse(result.Message);
+            result = mr.CreateNewHouseHold(request);
+            Console.WriteLine(result.Message);
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+            mr.DeleteHouseHold(hID);
+            bool actual = result.IsSuccess;
+
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Failure condition for HouseHoldCreation, if the input zip is out of CA then it should not create the HouseHold
+        [TestMethod]
+        public void HouseHoldCreateNotPassC()
+        {
+            //Arrange
+            bool expected = false;
+            //Act
+            //Create a new testing user and then delete it
+            Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            DeleteUser(testAccount.UserEmail);
+            DeleteMapping(testAccount.UserEmail);
+            DeleteAccount(testAccount.UserEmail);
+
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
+            HouseHoldManager mr = new HouseHoldManager();
+            cas.Create();
+            int sid = mapperDAO.GetSysID("testerEmail");
+
+            User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
+            //using zip for New York
+            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity", 10001, "TestSuiteNumber", 1500.00);
             IResult result = mr.CreateNewHouseHold(request);
             Console.WriteLine(result.Message);
             DeleteUser(testAccount.UserEmail);
@@ -47,7 +153,6 @@ namespace RoomAid.HouseHoldManagement.Tests
             //Assert
             Assert.AreEqual(expected, actual);
         }
-
         public void DeleteMapping(string userEmail)
         {
             try
