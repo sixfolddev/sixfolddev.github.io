@@ -55,15 +55,15 @@ namespace RoomAid.ServiceLayer
                     SqlCommand cmd;
                     if (tup.Item2 == true)
                     {
-                        cmd = new SqlCommand("INSERT INTO @tableName (SysID, Permission) VALUES (@userID, @singlePermission)");
+                        cmd = new SqlCommand($"INSERT INTO {Environment.GetEnvironmentVariable("tableNamePermissions", EnvironmentVariableTarget.User)} (SysID, Permission) VALUES (@userID, @singlePermission)");
                     }
                     else
                     {
-                       cmd = new SqlCommand( "DELETE FROM @tableName WHERE SysID = @userID AND Permission = @singlePermission") ;
+                       cmd = new SqlCommand($"DELETE FROM {Environment.GetEnvironmentVariable("tableNamePermissions", EnvironmentVariableTarget.User)} WHERE SysID = @userID AND Permission = @singlePermission") ;
                     }
 
                     //cmd.Parameters.AddWithValue("@action", action);
-                    cmd.Parameters.AddWithValue("@tableName", Environment.GetEnvironmentVariable("tableNamePermissions", EnvironmentVariableTarget.User));
+                    //cmd.Parameters.AddWithValue("@tableName", Environment.GetEnvironmentVariable("tableNamePermissions", EnvironmentVariableTarget.User));
                     cmd.Parameters.AddWithValue("@singlePermission", tup.Item1);
                     cmd.Parameters.AddWithValue("@userID", per.UserID);
                     commands.Add(cmd);  

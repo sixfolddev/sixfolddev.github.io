@@ -62,7 +62,7 @@ namespace UserManagementTests
         [TestMethod]
         public void UpdateTestFailure()
         {
-            //DeleteDummyAccount();
+            DeleteDummyAccount();
             //CreateDummyAccount();
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);

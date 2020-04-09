@@ -23,11 +23,11 @@ namespace RoomAid.ServiceLayer
         {
             this.UserID = userID;
             Permissions = new List<Tuple<String, bool>>();
-            foreach(AuthZ auth in (AuthZ[])Enum.GetValues(typeof(AuthZ)))
-            {
-                String authStr = auth.ToString();
-                Permissions.Add(new Tuple<String, bool>(authStr,false));
-            }
+            //foreach(AuthZ auth in (AuthZ[])Enum.GetValues(typeof(AuthZ)))
+            //{
+            //    String authStr = auth.ToString();
+            //    Permissions.Add(new Tuple<String, bool>(authStr,false));
+            //}
 
         }
 
@@ -37,6 +37,15 @@ namespace RoomAid.ServiceLayer
             if(index >= 0)
             {
                 Permissions[index] = new Tuple<string, bool>(str, true);
+            }
+        }
+
+        public void RemovePermission(String str)
+        {
+            int index = FindPermission(str);
+            if(index >= 0)
+            {
+                Permissions[index] = new Tuple<string, bool>(str, false);
             }
         }
 
