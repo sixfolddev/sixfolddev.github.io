@@ -51,26 +51,21 @@ namespace RoomAid.ServiceLayer
             {
                 foreach(Tuple<String, bool> tup in per.Permissions)
                 {
-                    var action = "";
-                    var second = "";
+                    //var action = "";
+                    SqlCommand cmd;
                     if (tup.Item2 == true)
                     {
-                        action = "INSERT INTO";
-                        second = "(SysID, Permission) VALUES ('" + per.UserID + "','" + tup.Item1 + "')";
-                        
+                        cmd = new SqlCommand("INSERT INTO @tableName (SysID, Permission) VALUES (@userID, @singlePermission)");
                     }
                     else
                     {
-                        action = "DELETE FROM";
-                        second = "WHERE SysID = '" + per.UserID + "' AND Permission = '" + tup.Item1 + "'";
+                       cmd = new SqlCommand( "DELETE FROM @tableName WHERE SysID = @userID AND Permission = @singlePermission") ;
                     }
 
-                    var cmd = new SqlCommand("@action @tableName @secondPart");
-                    cmd.Parameters.AddWithValue("@action", action);
-                    cmd.Parameters.AddWithValue("@tableName", ConfigurationManager.AppSettings["tableNamePermissions"]);
-                    cmd.Parameters.AddWithValue("@secondPart", second);
-                    //cmd.Parameters.AddWithValue("@singlePermission", tup.Item1);
-                    //cmd.Parameters.AddWithValue("@userID", per.UserID);
+                    //cmd.Parameters.AddWithValue("@action", action);
+                    cmd.Parameters.AddWithValue("@tableName", Environment.GetEnvironmentVariable("tableNamePermissions", EnvironmentVariableTarget.User));
+                    cmd.Parameters.AddWithValue("@singlePermission", tup.Item1);
+                    cmd.Parameters.AddWithValue("@userID", per.UserID);
                     commands.Add(cmd);  
                 }
             }
