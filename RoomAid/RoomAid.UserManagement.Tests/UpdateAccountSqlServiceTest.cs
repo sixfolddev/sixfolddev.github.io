@@ -62,8 +62,8 @@ namespace UserManagementTests
         [TestMethod]
         public void UpdateTestFailure()
         {
-            DeleteDummyAccount();
-            CreateDummyAccount();
+            //DeleteDummyAccount();
+            //CreateDummyAccount();
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
@@ -74,7 +74,7 @@ namespace UserManagementTests
 
             var compare = update.Update();
 
-            DeleteDummyAccount();
+            //DeleteDummyAccount();
 
             Assert.AreNotEqual(compare.IsSuccess, result.IsSuccess);
             Assert.AreNotEqual(compare.Message, result.Message);
