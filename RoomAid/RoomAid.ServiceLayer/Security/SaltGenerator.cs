@@ -14,7 +14,10 @@ namespace RoomAid.ServiceLayer
                 random.GetBytes(saltbytes);
             }
 
-            return BitConverter.ToString(saltbytes);
+            var salt = BitConverter.ToString(saltbytes); // Returns hyphenated base 16 string
+            salt = salt.Replace("-", "");
+
+            return salt;
         }
     }
 }

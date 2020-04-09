@@ -48,7 +48,10 @@ namespace RoomAid.ServiceLayer
             string message = "";
             bool isSuccess = true;
             int totalSuccess = 0;
-            IMapperDAO mapperDAO = new SqlMapperDAO(ConfigurationManager.AppSettings["sqlConnectionMapping"]);
+
+            List<SqlCommand> commands = new List<SqlCommand>();
+            IMapperDAO mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+
             foreach (User targetUser in _targetUsers)
             {
                 List<SqlCommand> deleteUserCommands = new List<SqlCommand>();
