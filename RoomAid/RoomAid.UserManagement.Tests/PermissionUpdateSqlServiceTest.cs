@@ -12,7 +12,7 @@ namespace UserManagementTests
     [TestClass]
     public class PermissionUpdateSqlServiceTest
     {
-        private readonly IUpdateAccountDAO _dao = new UpdateAccountSqlDAO(ConfigurationManager.AppSettings["sqlConnectionSystem"]);
+        private readonly IUpdateAccountDAO _dao = new UpdateAccountSqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
         private ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
         private ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
         private IMapperDAO mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
@@ -35,8 +35,9 @@ namespace UserManagementTests
 
                 Assert.Equals(result.IsSuccess, true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Trace.WriteLine(e.ToString());
                 Assert.Fail();
             }
 
@@ -59,8 +60,9 @@ namespace UserManagementTests
 
                 Assert.Equals(result.IsSuccess, false);
             }
-            catch(Exception)
+            catch(Exception e)
             {
+                Trace.WriteLine(e.ToString());
                 Assert.Fail();
             }
 
