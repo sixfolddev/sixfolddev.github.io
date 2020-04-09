@@ -20,6 +20,7 @@ namespace RoomAid.HouseHoldManagement.Tests
         private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
 
         //Success condition for HouseHoldCreation
+        //test
         [TestMethod]
         public void HouseHoldCreatePass()
         {
