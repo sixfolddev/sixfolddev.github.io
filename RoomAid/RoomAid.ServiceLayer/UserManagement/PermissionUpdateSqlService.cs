@@ -52,18 +52,25 @@ namespace RoomAid.ServiceLayer
                 foreach(Tuple<String, bool> tup in per.Permissions)
                 {
                     var action = "";
+                    var second = "";
                     if (tup.Item2 == true)
-                        action = "INSERT";
+                    {
+                        action = "INSERT INTO";
+                        second = "(SysID, Permission) VALUES ('" + per.UserID + "','" + tup.Item1 + "')";
+                        
+                    }
                     else
-                        action = "DELETE";
+                    {
+                        action = "DELETE FROM";
+                        second = "WHERE SysID = '" + per.UserID + "' AND Permission = '" + tup.Item1 + "'";
+                    }
 
-                    var cmd = new SqlCommand("@action @singlePermission FROM @tableName WHERE SysID = @userID");
+                    var cmd = new SqlCommand("@action @tableName @secondPart");
                     cmd.Parameters.AddWithValue("@action", action);
-                    cmd.Parameters.AddWithValue("@singlePermission", tup.Item1);
                     cmd.Parameters.AddWithValue("@tableName", ConfigurationManager.AppSettings["tableNamePermissions"]);
-                    cmd.Parameters.AddWithValue("@userID", per.UserID);
-
-
+                    cmd.Parameters.AddWithValue("@secondPart", second);
+                    //cmd.Parameters.AddWithValue("@singlePermission", tup.Item1);
+                    //cmd.Parameters.AddWithValue("@userID", per.UserID);
                     commands.Add(cmd);  
                 }
             }
