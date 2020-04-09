@@ -17,10 +17,16 @@ namespace UserManagementTests
         //All targeted rows have been updated successfully!
         //Not all targeted rows have been updated, please review which rows were attempted at updates
         private readonly IUpdateAccountDAO _dao = new UpdateAccountSqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+        private ICreateAccountDAO newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
+        private ICreateAccountDAO newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private IMapperDAO mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private ICreateAccountDAO newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
 
         [TestMethod]
         public void UpdateTestSuccessful()
         {
+            CreateDummyAccount();
+
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
             var user = new User(1, "boi@gmail.com","daniel", "gione", "enabled", date, "Male");
@@ -31,11 +37,31 @@ namespace UserManagementTests
             Assert.IsTrue(compare.IsSuccess);
             Assert.AreEqual(compare.Message, result.Message);
 
+
+            DeleteDummyAccount();
+        }
+
+        private void CreateDummyAccount()
+        {
+            Account testAccount = new Account("boi@gmail.com", "testHashedPassword", "testSalt");
+            CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
+            cas.Create();
+        }
+
+        private void DeleteDummyAccount()
+        {
+            DeleteUser("boi@gmail.com");
+            DeleteMapping("boi@gmail.com");
+            DeleteAccount("boi@gmail.com");
         }
 
         [TestMethod]
         public void UpdateTestFailure()
         {
+
+            CreateDummyAccount();
+
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
             var user = new User(1, "boi@gmail.com", "daniel", "gione", "disabled", date, "Male");
@@ -47,38 +73,77 @@ namespace UserManagementTests
 
             Assert.AreNotEqual(compare.IsSuccess, result.IsSuccess);
             Assert.AreNotEqual(compare.Message, result.Message);
+
+            DeleteDummyAccount();
         }
 
-        //public class UpdateAccountDAOTestSuccess: IUpdateAccountDAO
-        //{
-        //    public DateTime date;
-        //    public UpdateAccountDAOTestSuccess(DateTime date)
-        //    {
-        //        this.date = date;
-        //    }
+        //Cleanning tools
+        public void DeleteMapping(string userEmail)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User)))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM dbo.Mapping Where UserEmail = @userEmail", connection);
+                    command.Parameters.AddWithValue("@userEmail", userEmail);
+                    using (command)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SystemException)
+            {
+                throw;
+            }
+        }
+        public void DeleteAccount(string userEmail)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User)))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM dbo.Accounts Where UserEmail = @userEmail", connection);
+                    command.Parameters.AddWithValue("@userEmail", userEmail);
+                    using (command)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SystemException)
+            {
+                throw;
+            }
+        }
+        //Tool method to clean testing account created by the test method
+        public void DeleteUser(string userEmail)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("DELETE FROM dbo.Users Where UserEmail = @userEmail", connection);
+                    command.Parameters.AddWithValue("@userEmail", userEmail);
+                    using (command)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (SystemException)
+            {
+                throw;
+            }
+        }
 
-        //    public int Update(List<SqlCommand> commands)
-        //    {
 
-        //        var cmd = new SqlCommand();
-        //        cmd.CommandText= "UPDATE dbo.Users SET FirstName = @fName, LastName = @lName, DateOfBirth = @dob, Gender = @gender, AccountStatus = @status WHERE UserEmail = @email";
-        //        cmd.Parameters.AddWithValue("@email", "boi@gmail.com");
-        //        cmd.Parameters.AddWithValue("@fName", "daniel");
-        //        cmd.Parameters.AddWithValue("@lName", "gione");
-        //        cmd.Parameters.AddWithValue("@dob", date);
-        //        cmd.Parameters.AddWithValue("@gender", "Male");
-        //        cmd.Parameters.AddWithValue("@status", "enabled");
-                
-        //        Trace.WriteLine(cmd.CommandText);
-        //        Trace.WriteLine(commands[0].CommandText);
-        //        if (commands[0].CommandText.Equals(cmd.CommandText))
-        //            return 1;
-        //        else
-        //            return 0;
-        //    }
-        //}
-
-        
 
 
     }

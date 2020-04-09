@@ -13,6 +13,7 @@ namespace RoomAid.ServiceLayer
     {
         private readonly IUpdateAccountDAO _dao;
         private readonly List<Permission> _permissions;
+       
 
 
         /// <summary>
