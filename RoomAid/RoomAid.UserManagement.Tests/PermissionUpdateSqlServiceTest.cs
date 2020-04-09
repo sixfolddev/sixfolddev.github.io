@@ -21,6 +21,7 @@ namespace UserManagementTests
         [TestMethod]
         public void UpdateTestSuccess()
         {
+            DeleteDummyAccount();
             CreateDummyAccount();
 
             try
@@ -29,6 +30,9 @@ namespace UserManagementTests
                 permission.AddPermission("None");
                 var permUpdate = new PermissionUpdateSqlService(_dao, permission);
                 var result = permUpdate.Update();
+
+                DeleteDummyAccount();
+
                 Assert.Equals(result.IsSuccess, true);
             }
             catch (Exception)
@@ -36,12 +40,12 @@ namespace UserManagementTests
                 Assert.Fail();
             }
 
-            DeleteDummyAccount();
         }
 
         [TestMethod]
         public void UpdateTestFailure()
         {
+            DeleteDummyAccount();
             CreateDummyAccount();
 
             try
@@ -50,6 +54,9 @@ namespace UserManagementTests
                 permission.AddPermission("None");
                 var permUpdate = new PermissionUpdateSqlService(_dao,permission);
                 var result =permUpdate.Update();
+
+                DeleteDummyAccount();
+
                 Assert.Equals(result.IsSuccess, false);
             }
             catch(Exception)
@@ -57,7 +64,7 @@ namespace UserManagementTests
                 Assert.Fail();
             }
 
-            DeleteDummyAccount();
+     
 
         }
 

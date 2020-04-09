@@ -25,6 +25,7 @@ namespace UserManagementTests
         [TestMethod]
         public void UpdateTestSuccessful()
         {
+            DeleteDummyAccount();
             CreateDummyAccount();
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
@@ -34,11 +35,13 @@ namespace UserManagementTests
             
             var compare = update.Update();
 
+            DeleteDummyAccount();
+
             Assert.IsTrue(compare.IsSuccess);
             Assert.AreEqual(compare.Message, result.Message);
 
 
-            DeleteDummyAccount();
+            
         }
 
         private void CreateDummyAccount()
@@ -59,22 +62,24 @@ namespace UserManagementTests
         [TestMethod]
         public void UpdateTestFailure()
         {
-
+            DeleteDummyAccount();
             CreateDummyAccount();
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
             var user = new User(1, "boi@gmail.com", "daniel", "gione", "disabled", date, "Male");
-            var dao = new UpdateAccountSqlDAO("fakeConnect");
+            //var dao = new UpdateAccountSqlDAO("fakeConnect");
 
-            var update = new UpdateAccountSqlService(user,dao );
+            var update = new UpdateAccountSqlService(user,_dao );
 
             var compare = update.Update();
+
+            DeleteDummyAccount();
 
             Assert.AreNotEqual(compare.IsSuccess, result.IsSuccess);
             Assert.AreNotEqual(compare.Message, result.Message);
 
-            DeleteDummyAccount();
+
         }
 
         //Cleanning tools
