@@ -4,6 +4,8 @@ CREATE TABLE UserStatus(
 	CONSTRAINT pk_UserStatus PRIMARY KEY (AccountStatus)
 );
 
+INSERT INTO UserStatus (AccountStatus) VALUES ('Enable');
+INSERT INTO UserStatus (AccountStatus) VALUES ('Disable');
 -- User Information
 CREATE TABLE Users(
 	SysID INT NOT NULL,

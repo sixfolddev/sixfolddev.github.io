@@ -30,7 +30,7 @@ namespace UserManagementTests
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
-            var user = new User(1, "boi@gmail.com","daniel", "gione", "enabled", date, "Male");
+            var user = new User(1, "boi@gmail.com","daniel", "gione", "Enable", date, "Male");
             var update = new UpdateAccountSqlService(user, _dao);
             
             var compare = update.Update();
@@ -67,7 +67,7 @@ namespace UserManagementTests
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
-            var user = new User(1, "boi@gmail.com", "daniel", "gione", "disabled", date, "Male");
+            var user = new User(1, "boi@gmail.com", "daniel", "gione", "Disable", date, "Male");
             //var dao = new UpdateAccountSqlDAO("fakeConnect");
 
             var update = new UpdateAccountSqlService(user,_dao );
