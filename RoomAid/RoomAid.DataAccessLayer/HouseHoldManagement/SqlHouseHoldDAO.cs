@@ -42,7 +42,7 @@ namespace RoomAid.DataAccessLayer
         }
 
 
-        public int Retrive(SqlCommand command)
+        public int Retrieve(SqlCommand command)
         {
             int result = 0;
             using (SqlConnection connection = new SqlConnection(_connection))

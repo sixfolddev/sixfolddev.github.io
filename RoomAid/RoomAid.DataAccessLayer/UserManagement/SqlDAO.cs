@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RoomAid.DataAccessLayer
 {
-    public class UpdateAccountSqlDAO :IUpdateAccountDAO
+    public class SqlDAO : ISqlDAO
     {
         private readonly String _connection;
-
-        public UpdateAccountSqlDAO(String connection)
+        public SqlDAO(String connection)
         {
             this._connection = connection;
         }
-
         /// <summary>
-        /// Executes the list of queries that is passed in with a single transaction in order to lessen performance hit
+        /// Execution of the list of queries provided by the service
         /// </summary>
-        /// <param name="queries"></param>
+        /// <param name="commands"></param>
         /// <returns></returns>
-        public int Update(List<SqlCommand> commands)
+        public int RunCommand(List<SqlCommand> commands)
         {
-            int rowsChanged = 0;
+            int rowsDeleted = 0;
             using (SqlConnection connection = new SqlConnection(_connection))
             {
                 connection.Open();
@@ -30,20 +30,19 @@ namespace RoomAid.DataAccessLayer
                 {
                     foreach(SqlCommand cmd in commands)
                     {
-                        cmd.Connection =connection;
+                        cmd.Connection = connection;
                         cmd.Transaction = trans;
-                        rowsChanged += cmd.ExecuteNonQuery();
+                        rowsDeleted += cmd.ExecuteNonQuery();
                     }
                     trans.Commit();
                 }
-                catch (Exception)
+                catch(Exception)
                 {
                     trans.Rollback();
                     throw;
                 }
             }
-            return rowsChanged;
+            return rowsDeleted;
         }
-
     }
 }

@@ -4,8 +4,8 @@ using System.Data.SqlClient;
 
 namespace RoomAid.DataAccessLayer
 {
-    public interface IUpdateAccountDAO
+    public interface ISqlDAO
     {
-        int Update(List<SqlCommand> queries);
+        int RunCommand(List<SqlCommand> queries);
     }
 }

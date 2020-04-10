@@ -70,7 +70,7 @@
       <Name>RoomAid.DataAccessLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\RoomAid.ServiceLayer\RoomAid.ServiceLayer.csproj">
-      <Project>{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}</Project>
+      <Project>{3fe754d4-2138-454a-9de6-c7e3301e8d6c}</Project>
       <Name>RoomAid.ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>

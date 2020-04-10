@@ -28,7 +28,7 @@ namespace RoomAid.ServiceLayer
                 command.Parameters.AddWithValue("@streetAddress", newHouseHold.StreetAddress);
                 command.Parameters.AddWithValue("@zipCode", newHouseHold.Zip);
                 command.Parameters.AddWithValue("@isAvailable", newHouseHold.IsAvailable);
-                return dao.Retrive(command);
+                return dao.Retrieve(command);
             }
             else
                 return 0;
@@ -67,7 +67,7 @@ namespace RoomAid.ServiceLayer
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectHouseHold"]);
             command.Parameters.AddWithValue("@streetAddress", streetAddress);
             command.Parameters.AddWithValue("@zipCode", zip);
-            if (dao.Retrive(command) > 0)            
+            if (dao.Retrieve(command) > 0)            
                 return true;           
             else
                 return false;
@@ -78,7 +78,7 @@ namespace RoomAid.ServiceLayer
         {
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectZip"]);
             command.Parameters.AddWithValue("@zipCode", zip);
-            if (dao.Retrive(command) > 0)
+            if (dao.Retrieve(command) > 0)
                 return true;
             else
                 return false;
@@ -89,7 +89,7 @@ namespace RoomAid.ServiceLayer
         {
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectHID"]);
             command.Parameters.AddWithValue("@hid", hID);
-            if (dao.Retrive(command) > 0)
+            if (dao.Retrieve(command) > 0)
                 return true;
             else
                 return false;

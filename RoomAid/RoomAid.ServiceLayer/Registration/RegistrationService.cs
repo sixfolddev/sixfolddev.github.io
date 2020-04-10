@@ -61,7 +61,7 @@ namespace RoomAid.ServiceLayer
                 int sysID = mapperDAO.GetSysID(email);
                 if (sysID!=-1)
                 {
-                    IUpdateAccountDAO DAO = new UpdateAccountSqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+                    ISqlDAO DAO = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
                     User newUser = new User(sysID, email, fname, lname, "Enable", dob, gender);
                     UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, DAO);
                     checkResult = updateAccount.Update();
@@ -71,7 +71,7 @@ namespace RoomAid.ServiceLayer
                 else
                 {
                     ifSuccess = false;
-                    message = message + "failed to retrive sysID";
+                    message = message + "failed to Retrieve sysID";
                 }
                
             }
