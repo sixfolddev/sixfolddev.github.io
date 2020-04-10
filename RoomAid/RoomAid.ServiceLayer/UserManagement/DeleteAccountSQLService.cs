@@ -13,14 +13,14 @@ namespace RoomAid.ServiceLayer
     public class DeleteAccountSQLService : IDeleteAccountService
     {
         private readonly List<User> _targetUsers;
-        private readonly IDeleteAccountDAO _deleteAccountdb;
-        private readonly IDeleteAccountDAO _deleteMappingdb;
-        private readonly IDeleteAccountDAO _deleteSystemdb;
+        private readonly ISqlDAO _deleteAccountdb;
+        private readonly ISqlDAO _deleteMappingdb;
+        private readonly ISqlDAO _deleteSystemdb;
         /// <summary>
         /// Craft queries based off a single user
         /// </summary>
         /// <returns></returns>
-        public DeleteAccountSQLService(User targetUser, IDeleteAccountDAO deleteSystem, IDeleteAccountDAO deleteMapping, IDeleteAccountDAO deleteAccount)
+        public DeleteAccountSQLService(User targetUser, ISqlDAO deleteSystem, ISqlDAO deleteMapping, ISqlDAO deleteAccount)
         {
             this._targetUsers = new List<User>();
             this._targetUsers.Add(targetUser);
@@ -32,7 +32,7 @@ namespace RoomAid.ServiceLayer
         /// Craft queries based off of multiple users
         /// </summary>
         /// <returns></returns>
-        public DeleteAccountSQLService(List<User> targetUsers, IDeleteAccountDAO deleteSystem, IDeleteAccountDAO deleteMapping, IDeleteAccountDAO deleteAccount)
+        public DeleteAccountSQLService(List<User> targetUsers, ISqlDAO deleteSystem, ISqlDAO deleteMapping, ISqlDAO deleteAccount)
         {
             this._targetUsers = targetUsers;
             this._deleteAccountdb = deleteAccount;
@@ -59,7 +59,7 @@ namespace RoomAid.ServiceLayer
                 cmd.Parameters.AddWithValue("@sysID", targetUser.SystemID);
                 deleteUserCommands.Add(cmd);
 
-                int rowsDeleted = _deleteSystemdb.Delete(deleteUserCommands);
+                int rowsDeleted = _deleteSystemdb.RunCommand(deleteUserCommands);
                 if(rowsDeleted > 0)
                 {
                     List<SqlCommand> deleteMapperCommands = new List<SqlCommand>();
@@ -67,7 +67,7 @@ namespace RoomAid.ServiceLayer
                     cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteMapping"]);
                     cmd.Parameters.AddWithValue("@sysID", mapperDAO.GetSysID(targetUser.UserEmail));
                     deleteMapperCommands.Add(cmd);
-                    rowsDeleted = _deleteMappingdb.Delete(deleteMapperCommands);
+                    rowsDeleted = _deleteMappingdb.RunCommand(deleteMapperCommands);
                     if(rowsDeleted > 0)
                     {
                         List<SqlCommand> deleteAccountCommands = new List<SqlCommand>();
@@ -75,7 +75,7 @@ namespace RoomAid.ServiceLayer
                         cmd = new SqlCommand(ConfigurationManager.AppSettings["queryDeleteAccount"]);
                         cmd.Parameters.AddWithValue("@email", targetUser.UserEmail);
                         deleteAccountCommands.Add(cmd);
-                        rowsDeleted = _deleteAccountdb.Delete(deleteAccountCommands);
+                        rowsDeleted = _deleteAccountdb.RunCommand(deleteAccountCommands);
                         if(rowsDeleted > 0)
                         {
                             totalSuccess += 1;

@@ -107,7 +107,7 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
         {
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectSysID"]);
             command.Parameters.AddWithValue("@sysID", sID);
-            if (dao.Retrive(command) > 0)
+            if (dao.Retrieve(command) > 0)
                 return true;
             else
                 return false;

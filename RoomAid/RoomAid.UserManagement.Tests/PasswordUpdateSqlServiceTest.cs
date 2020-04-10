@@ -25,10 +25,10 @@ namespace UserManagementTests
         [TestMethod]
         public void UpdateTestException()
         {
-            var dao = new UpdateAccountSqlDAO("false");
+            var dao = new SqlDAO("false");
             try
             {
-                dao.Update(new List<SqlCommand>());
+                dao.RunCommand(new List<SqlCommand>());
                 Assert.Fail();
             }
             catch (Exception e)

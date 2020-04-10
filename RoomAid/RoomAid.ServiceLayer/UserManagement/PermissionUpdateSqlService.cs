@@ -11,7 +11,7 @@ namespace RoomAid.ServiceLayer
 {
     public class PermissionUpdateSqlService:IUpdateAccountService
     {
-        private readonly IUpdateAccountDAO _dao;
+        private readonly ISqlDAO _dao;
         private readonly List<Permission> _permissions;
        
 
@@ -21,13 +21,13 @@ namespace RoomAid.ServiceLayer
         /// </summary>
         /// <param name="dao"></param>
         /// <param name="permissions"></param>
-        public PermissionUpdateSqlService(IUpdateAccountDAO dao, List<Permission> permissions)
+        public PermissionUpdateSqlService(ISqlDAO dao, List<Permission> permissions)
         {
             _dao = dao;
             _permissions = permissions;
         }
 
-        public PermissionUpdateSqlService(IUpdateAccountDAO dao, Permission permission)
+        public PermissionUpdateSqlService(ISqlDAO dao, Permission permission)
         {
             _dao = dao;
             _permissions = new List<Permission>();
@@ -70,7 +70,7 @@ namespace RoomAid.ServiceLayer
                 }
             }
 
-           var rowsChanged = _dao.Update(commands);
+           var rowsChanged = _dao.RunCommand(commands);
 
            if(rowsChanged!=commands.Count)
             {

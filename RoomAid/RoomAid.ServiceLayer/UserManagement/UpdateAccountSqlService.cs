@@ -13,14 +13,14 @@ namespace RoomAid.ServiceLayer
     public class UpdateAccountSqlService : IUpdateAccountService
     {
         private readonly List<User> _newUsers;
-        private readonly IUpdateAccountDAO _update;
+        private readonly ISqlDAO _update;
 
         /// <summary>
         /// Service that crafts queries for updating a single user related to a sql database
         /// </summary>
         /// <param name="newUsers"></param>
         /// <param name="update"></param>
-        public UpdateAccountSqlService(User newUser, IUpdateAccountDAO update)
+        public UpdateAccountSqlService(User newUser, ISqlDAO update)
         {
             this._newUsers = new List<User>();
             this._newUsers.Add(newUser);
@@ -32,7 +32,7 @@ namespace RoomAid.ServiceLayer
         /// </summary>
         /// <param name="newUsers"></param>
         /// <param name="update"></param>
-        public UpdateAccountSqlService(List<User> newUsers, IUpdateAccountDAO update)
+        public UpdateAccountSqlService(List<User> newUsers, ISqlDAO update)
         {
             this._newUsers = newUsers;
             this._update = update;
@@ -64,7 +64,7 @@ namespace RoomAid.ServiceLayer
             }
 
             //changing result based upon if all accounts were updated successfully
-            int rowsChanged = _update.Update(commands);
+            int rowsChanged = _update.RunCommand(commands);
             if(rowsChanged == commands.Count)
             {
                 message += ConfigurationManager.AppSettings["successMessage"];

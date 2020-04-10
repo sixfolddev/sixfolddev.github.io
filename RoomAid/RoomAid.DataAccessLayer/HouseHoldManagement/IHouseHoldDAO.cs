@@ -11,6 +11,6 @@ namespace RoomAid.DataAccessLayer
     {
         int Insert(SqlCommand command);
 
-        int Retrive(SqlCommand command);
+        int Retrieve(SqlCommand command);
     }
 }
