@@ -30,13 +30,14 @@ namespace UserManagementTests
 
             var result = new CheckResult("All targeted rows have been updated successfully!", true);
             var date = new DateTime(1998, 11, 13);
-            var user = new User(1, "boi@gmail.com","daniel", "gione", "Enable", date, "Male");
+            var user = new User(1, "boi@gmail.com","daniel", "gione", "Enable", date, "Male"); //separate service for enable/disable bc frequent use
             var update = new UpdateAccountSqlService(user, _dao);
             
             var compare = update.Update();
 
             DeleteDummyAccount();
 
+            //Assert.IsNotNull(compare)
             Assert.IsTrue(compare.IsSuccess);
             Assert.AreEqual(compare.Message, result.Message);
 
