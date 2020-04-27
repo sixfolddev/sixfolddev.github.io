@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoomAid.ServiceLayer.Messaging
 {
-    public class GeneralMessage : IMessage
+    class Invitation : IMessage
     {
         public string SysID { get; set; }
         public string MessageID { get; set; }
@@ -14,6 +14,9 @@ namespace RoomAid.ServiceLayer.Messaging
         public string SenderID { get; set; }
         public DateTime SentDate { get; set; }
         public bool IsRead { get; set; }
-        
+        public enum Response
+        {
+            
+        }
     }
 }

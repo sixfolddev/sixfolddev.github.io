@@ -7,25 +7,23 @@ using System.Text;
 
 namespace RoomAid.ServiceLayer.Messaging
 {
-    public class DbToQueueManager
+    public class QueueToDbManager
     {
-        public DbToQueueManager()
+        public QueueToDbManager()
         {
 
         }
 
-        [SqlProcedure]
-        public static void Send(SqlString queueName, SqlString message)
+        public static void Send(string queueName, string message)
         {
-            var queue = queueName.Value;
-            if (queueName == null || queue == null)
+            if (queueName == null)
             {
                 throw new Exception("The message queue name cannot be null.");
             }
-            CreateQueue(queue); // Creates the queue on the system
+            CreateQueue(queueName); // Creates the queue on the system
             try
             {
-                using (var messageQueue = new MessageQueue(queue, QueueAccessMode.Send))
+                using (var messageQueue = new MessageQueue(queueName, QueueAccessMode.Send))
                 {
                     
                 }

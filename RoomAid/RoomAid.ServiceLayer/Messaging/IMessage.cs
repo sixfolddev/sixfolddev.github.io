@@ -4,6 +4,8 @@ namespace RoomAid.ServiceLayer.Messaging
 {
     interface IMessage
     {
+        // ID of the user receiving the message
+        string SysID { get; set; }
         // ID of the current message
         string MessageID { get; set; }
         // ID of the message that was replied to (if any)
