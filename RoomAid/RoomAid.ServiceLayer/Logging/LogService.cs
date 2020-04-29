@@ -20,7 +20,7 @@ namespace RoomAid.ServiceLayer
 
         public static void Log(string text, LogLevels.Levels level)
         {
-            var time = DateTime.UtcNow;
+            var time = GetDateTime.GetUTCNow();
             string className = GetCallingMethod().ReflectedType.Name; // Base class
             string methodName = GetCallingMethod().Name;
             // TODO: Grab session id and user id

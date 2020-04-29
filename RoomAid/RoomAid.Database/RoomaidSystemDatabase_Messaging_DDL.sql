@@ -1,8 +1,12 @@
+DROP TABLE dbo.GeneralMessages;
+DROP TABLE dbo.Invitations;
+DROP TABLE dbo.InboxMessages;
+
 CREATE TABLE InboxMessages(
 	SysID INT NOT NULL,
-	MessageID INT NOT NULL,
+	MessageID INT NOT NULL IDENTITY,
 	PrevMessageID INT,
-	SenderID INT,
+	SenderID INT NOT NULL,
 	IsRead BIT NOT NULL DEFAULT(0),
 	SentDate DATETIME NOT NULL,
 	CONSTRAINT pk_Messages PRIMARY KEY (SysID, MessageID),
@@ -20,7 +24,8 @@ CREATE TABLE GeneralMessages(
 CREATE TABLE Invitations(
 	SysID INT NOT NULL,
 	MessageID INT NOT NULL,
-	Response VARCHAR(100),
+	-- IsAccepted used to be Response VARCHAR, but unnecessary to store actual invitation msg; only need yes/no
+	IsAccepted BIT NOT NULL DEFAULT(0),
 	CONSTRAINT pk_Invitations PRIMARY KEY (SysID, MessageID),
 	CONSTRAINT fk_Invitations_InboxMessages FOREIGN KEY(SysID, MessageID) REFERENCES InboxMessages(SysID, MessageID)
 );

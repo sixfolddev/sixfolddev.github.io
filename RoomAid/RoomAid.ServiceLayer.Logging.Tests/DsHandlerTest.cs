@@ -10,7 +10,7 @@ namespace RoomAid.Logging.Tests
     public class DsHandlerTest
     {
         private static readonly LogMessage _msg = new LogMessage(
-            DateTime.UtcNow,
+            GetDateTime.GetUTCNow(),
             ConfigurationManager.AppSettings["testClass"],
             ConfigurationManager.AppSettings["testMethod"],
             LogLevels.Levels.None,

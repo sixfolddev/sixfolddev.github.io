@@ -14,7 +14,7 @@ namespace RoomAid.Logging.Tests
         private readonly string _logStorage = ConfigurationManager.AppSettings["logStorage"];
         private readonly ILogFormatter _formatter = new SingleLineFormatter();
         private static readonly LogMessage _msg = new LogMessage(
-            DateTime.UtcNow,
+            GetDateTime.GetUTCNow(),
             ConfigurationManager.AppSettings["testClass"],
             ConfigurationManager.AppSettings["testMethod"],
             LogLevels.Levels.None,

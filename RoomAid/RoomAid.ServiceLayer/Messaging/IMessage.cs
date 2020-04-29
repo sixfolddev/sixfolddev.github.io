@@ -5,13 +5,13 @@ namespace RoomAid.ServiceLayer.Messaging
     interface IMessage
     {
         // ID of the user receiving the message
-        string SysID { get; set; }
+        int ReceiverID { get; set; }
         // ID of the current message
-        string MessageID { get; set; }
+        int MessageID { get; set; }
         // ID of the message that was replied to (if any)
-        string PrevMessageID { get; set; }
+        int PrevMessageID { get; set; }
         // System ID of the user sending the message
-        string SenderID { get; set; }
+        int SenderID { get; set; }
         // Timestamp of when a message is sent
         DateTime SentDate { get; set; }
         // Indicates whether a message is read or unread

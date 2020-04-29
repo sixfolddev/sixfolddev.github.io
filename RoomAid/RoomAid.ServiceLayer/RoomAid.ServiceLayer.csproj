@@ -78,7 +78,10 @@
     <Compile Include="Authorization\AuthZEnum.cs" />
     <Compile Include="Authorization\AuthZService.cs" />
     <Compile Include="Authorization\IAuthZService.cs" />
-    <Compile Include="Messaging\DbToQueueManager.cs" />
+    <Compile Include="GetDateTime.cs" />
+    <Compile Include="Messaging\Invitation.cs" />
+    <Compile Include="Messaging\MessageService.cs" />
+    <Compile Include="Messaging\QueueToDbManager.cs" />
     <Compile Include="Emailing\EmailReady.cs" />
     <Compile Include="Emailing\EmailService.cs" />
     <Compile Include="ErrorHandling\AnalyzedError.cs" />
