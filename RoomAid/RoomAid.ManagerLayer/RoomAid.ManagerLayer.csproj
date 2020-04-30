@@ -79,6 +79,7 @@
     <Compile Include="ErrorHandling\ErrorResponseManager.cs" />
     <Compile Include="ErrorHandling\ErrorThreatManager.cs" />
     <Compile Include="HouseHoldManagement\HouseHoldManager.cs" />
+    <Compile Include="MessageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

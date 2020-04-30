@@ -20,33 +20,58 @@ namespace RoomAid.ServiceLayer.Messaging
             Create(_queuePath);
         }
 
-        public bool Send(string message)
+        public void Send(string message)
         {
             try
             {
                 using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Send)) // Should I be granting exclusive send access..? Benefits? Drawbacks?
                 {
-                    // Is it necessary to set a label for my messagequeue? Read from a book that trying
-                    // to bind and send messages to a queue using the same label "guarantees" problems
-
+                    if(messageQueue.Transactional)
+                    {
+                        using (var transaction = new MessageQueueTransaction())
+                        {
+                            transaction.Begin();
+                            // Is it necessary to set a label for my messagequeue? Read from a book that trying
+                            // to bind and send messages to a queue using the same label "guarantees" problems
+                            messageQueue.Send(message, transaction); // vs. Send(obj, transtype)?
+                            transaction.Commit();
+                        }
+                    }
+                    else
+                    {
+                        messageQueue.Send(message);
+                    }
                 }
-                return true;
             }
-            catch (Exception e)
+            catch (Exception e) // Should catch MessageQueue exceptions/errors as well as Transaction exceptions/errors
             {
                 throw e;
             }
         }
 
-        public bool Receive(string message)
+        public string Receive()
         {
             try
             {
-                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Receive))
+                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Receive)) // Do I need to make this new queue at a different path than the one for sending?
                 {
-
+                    Message incomingMessage;
+                    messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
+                    if (messageQueue.Transactional)
+                    {
+                        using (var transaction = new MessageQueueTransaction())
+                        {
+                            transaction.Begin(); // Begin transaction
+                            incomingMessage = messageQueue.Receive(TimeSpan.FromSeconds(1), transaction); // Recommended time span..?
+                            transaction.Commit(); // Commit transaction
+                        }
+                    }
+                    else
+                    {
+                        incomingMessage = messageQueue.Receive();
+                    }
+                    return incomingMessage.Body.ToString();
                 }
-                return true;
             }
             catch (Exception e)
             {
@@ -62,14 +87,10 @@ namespace RoomAid.ServiceLayer.Messaging
         {
             if (_queuePath == null)
             {
-                throw new Exception("The message queue name cannot be null.");
+                throw new ArgumentNullException();
             }
             try
             {
-                MessageQueue.Create(path, true);
-
-                // "If you try to create an already existing message queue, a MessageQueueException exception is thrown"
-                /*
                 if (!MessageQueue.Exists(path))
                 {
                     MessageQueue.Create(path, true);
@@ -81,7 +102,6 @@ namespace RoomAid.ServiceLayer.Messaging
                     stringBuilder.Append(". Using existing queue.");
                     LogService.Log(stringBuilder.ToString());
                 }
-                */
             }
             catch (MessageQueueException e)
             {
