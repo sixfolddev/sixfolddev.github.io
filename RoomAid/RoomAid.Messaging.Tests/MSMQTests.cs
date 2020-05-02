@@ -50,13 +50,13 @@ namespace RoomAid.Messaging.Tests
         public void SendAndReceiveOneMessage_Invitation_Pass()
         {
             //Arrange
-            IMessage message = new Invitation(1, 2, GetDateTime.GetUTCNow());
+            IMessage invitation = new Invitation(1, 2, GetDateTime.GetUTCNow());
             var incoming = new Invitation();
 
             //Act
             try
             {
-                _msmqHandler.Send(message);
+                _msmqHandler.Send(invitation);
                 incoming = (Invitation)_msmqHandler.Receive();
             }
             catch (Exception e)
@@ -67,7 +67,7 @@ namespace RoomAid.Messaging.Tests
             _msmqHandler.Purge();
 
             //Assert
-            Assert.AreEqual(incoming.ToString(), message.ToString()); // Doesn't pass if not converted to String (even though seemingly equal)
+            Assert.AreEqual(incoming.ToString(), invitation.ToString()); // Doesn't pass if not converted to String (even though seemingly equal)
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace RoomAid.Messaging.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            IList messages = new List<IMessage>();
+            IList invitations = new List<IMessage>();
             var j = 0; // Counter to check number of incoming messages against number of messages sent
 
             //Act
@@ -141,13 +141,13 @@ namespace RoomAid.Messaging.Tests
             {
                 for (int i = 0; i < _numMessages; i++) // Creating 3 invitations to send to queue
                 {
-                    messages.Add(new Invitation(i + 1, i + 2, GetDateTime.GetUTCNow()));
-                    _msmqHandler.Send((IMessage)messages[i]);
+                    invitations.Add(new Invitation(i + 1, i + 2, GetDateTime.GetUTCNow()));
+                    _msmqHandler.Send((IMessage)invitations[i]);
                 }
                 while (_msmqHandler.Peek(1)) // 1 second should be enough to retrieve each message
                 {
                     var incoming = _msmqHandler.Receive();
-                    if (incoming.ToString().Equals(messages[j].ToString())) // Check each incoming message against messages list
+                    if (incoming.ToString().Equals(invitations[j].ToString())) // Check each incoming message against messages list
                     {
                         actual = true;
                     }
@@ -155,7 +155,7 @@ namespace RoomAid.Messaging.Tests
                     {
                         actual = false; // If any are not equal, the messages are not in the same order or did not send properly
                     }
-                    j++; // Increment incoming messages counter
+                    j++; // Increment incoming invitations counter
                 }
                 if (j != _numMessages) // If the number of incoming messages doesn't equal the number of messages sent to the queue
                 {

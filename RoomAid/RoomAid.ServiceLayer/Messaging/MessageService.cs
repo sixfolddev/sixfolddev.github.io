@@ -1,9 +1,11 @@
 ﻿/*
  * This class represents a messaging service that gives functionality for sending a message
- * to a message queue, and reading a message from a database.
+ * to a message queue, and reading the contents of a message from a database.
  */
+using RoomAid.DataAccessLayer;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RoomAid.ServiceLayer
 {
@@ -13,7 +15,7 @@ namespace RoomAid.ServiceLayer
 
         public MessageService()
         {
-            _queue = new MSMQHandler(); // NOTE: No error is thrown if this line is excluded
+            _queue = new MSMQHandler(); // NOTE: No error is thrown if this line is excluded.
         }
 
         public void SendMessage(IMessage message)
@@ -28,10 +30,17 @@ namespace RoomAid.ServiceLayer
             }
         }
 
-        // TODO: implement
-        public void ReadMessage()
+        public IList<string> ReadMessage(MessageDAO dao, int receiverID, int messageID)
         {
-            //read from a database (non-specific)
+            List<string> messageContent = (List<string>)dao.ReadOneFromDB(receiverID, messageID);
+            return messageContent;
+        }
+
+        // TODO: change type void and do something with getinbox() return
+        // NOTE: Flaw in design resulting in need for specification of user-defined message type in service
+        public IList<IList<string>> GetInbox(MessageDAO dao, int receiverID, bool isGeneral)
+        {
+            return dao.ReadMultipleFromDB(receiverID, isGeneral);
         }
     }
 }

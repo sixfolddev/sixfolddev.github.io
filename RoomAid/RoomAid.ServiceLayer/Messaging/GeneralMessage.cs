@@ -7,14 +7,16 @@ namespace RoomAid.ServiceLayer
 {
     public class GeneralMessage : IMessage
     {
+        private const bool _general = true; // Is a general message
         public int ReceiverID { get; set; }
         public int MessageID { get; set; }
         public int PrevMessageID { get; set; }
         public int SenderID { get; set; }
-        public DateTime SentDate { get; set; }
         public bool IsRead { get; set; }
+        public DateTime SentDate { get; set; }
         // Content of a message
         public string MessageBody { get; set; }
+        public bool IsGeneral { get; }
 
         // Default empty constructor
         public GeneralMessage() { }
@@ -29,6 +31,7 @@ namespace RoomAid.ServiceLayer
             SentDate = date;
             IsRead = false; // Is it necessary to set IsRead = false if already set to default 0 in db?
             MessageBody = msg;
+            IsGeneral = _general;
         }
 
         // Constructor to create a new message with no previous message; default unread

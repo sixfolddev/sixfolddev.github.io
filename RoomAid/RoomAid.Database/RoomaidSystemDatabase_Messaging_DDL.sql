@@ -9,6 +9,7 @@ CREATE TABLE InboxMessages(
 	SenderID INT NOT NULL,
 	IsRead BIT NOT NULL DEFAULT(0),
 	SentDate DATETIME NOT NULL,
+	IsGeneral BIT NOT NULL,
 	CONSTRAINT pk_Messages PRIMARY KEY (SysID, MessageID),
 	CONSTRAINT fk_Messages_Users FOREIGN KEY (SysID) REFERENCES Users(SysID)
 );
