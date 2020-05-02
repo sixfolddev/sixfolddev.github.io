@@ -20,7 +20,7 @@ namespace RoomAid.QueueConsumer
                     Thread.Sleep(sleepTime); // Sleep for 10 seconds
                     continue;
                 }
-                IMessage message = queue.Receive();
+                IMessage message = (IMessage)queue.Receive();
             }
         }
     }

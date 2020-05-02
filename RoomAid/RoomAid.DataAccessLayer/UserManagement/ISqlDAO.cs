@@ -6,6 +6,6 @@ namespace RoomAid.DataAccessLayer
 {
     public interface ISqlDAO
     {
-        int RunCommand(List<SqlCommand> queries);
+        int RunCommand(List<SqlCommand> commands);
     }
 }

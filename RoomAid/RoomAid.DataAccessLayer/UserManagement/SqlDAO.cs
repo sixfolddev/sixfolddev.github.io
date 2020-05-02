@@ -21,7 +21,7 @@ namespace RoomAid.DataAccessLayer
         /// <returns></returns>
         public int RunCommand(List<SqlCommand> commands)
         {
-            int rowsDeleted = 0;
+            int rowsAffected = 0;
             using (SqlConnection connection = new SqlConnection(_connection))
             {
                 connection.Open();
@@ -32,7 +32,7 @@ namespace RoomAid.DataAccessLayer
                     {
                         cmd.Connection = connection;
                         cmd.Transaction = trans;
-                        rowsDeleted += cmd.ExecuteNonQuery();
+                        rowsAffected += cmd.ExecuteNonQuery();
                     }
                     trans.Commit();
                 }
@@ -42,7 +42,7 @@ namespace RoomAid.DataAccessLayer
                     throw;
                 }
             }
-            return rowsDeleted;
+            return rowsAffected;
         }
     }
 }
