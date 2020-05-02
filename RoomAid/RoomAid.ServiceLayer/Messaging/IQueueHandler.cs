@@ -1,12 +1,11 @@
-﻿using System;
+﻿using System.Collections;
 
-namespace RoomAid.ServiceLayer.Messaging
+namespace RoomAid.ServiceLayer
 {
-    interface IQueueHandler
+    public interface IQueueHandler
     {
-        void Send(string message);
-        string Receive();
-        void Create(string path);
-        void Delete(string path);
+        bool Peek(double timeout);
+        void Send(IMessage message);
+        IMessage Receive();
     }
 }

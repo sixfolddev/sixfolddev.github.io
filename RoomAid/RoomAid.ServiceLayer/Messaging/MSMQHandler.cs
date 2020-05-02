@@ -1,127 +1,169 @@
-﻿using System;
+﻿/*
+ * This class handles the basic functionality of peeking, sending, receiving, and purging an MSMQ. A queue must be created 
+ * on the system prior to using these methods; otherwise errors are thrown. Implements IQueueHandler.
+ */
+using System;
 using System.Messaging;
-using System.Text;
 
-namespace RoomAid.ServiceLayer.Messaging
+namespace RoomAid.ServiceLayer
 {
     public class MSMQHandler : IQueueHandler
     {
-        private string _queuePath;
+        private readonly string _queuePath; // Path of the queue on the system
+        private readonly Type[] typeArray; // Target types for message queue formatter
 
+        /// <summary>
+        /// Default constructor that sets the path for a message queue and the type array
+        /// that will be used in the message queue formatter
+        /// </summary>
         public MSMQHandler()
         {
             _queuePath = @".\PRIVATE$\MessageQueue"; // Default path
-            Create(_queuePath);
+            typeArray = new Type[] { typeof(GeneralMessage), typeof(Invitation) };
         }
 
-        public MSMQHandler(string qpath)
-        {
-            _queuePath = qpath;
-            Create(_queuePath);
-        }
-
-        public void Send(string message)
+        /// <summary>
+        /// Peeks at the first message in a queue and returns true if one exists
+        /// </summary>
+        /// <param name="timeoutInSeconds">Number of seconds to timeout the peek function if peek doesn't find a message</param>
+        /// <returns>True if peek returns a copy of a message in the queue, false otherwise</returns>
+        public bool Peek(double timeoutInSeconds)
         {
             try
             {
-                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Send)) // Should I be granting exclusive send access..? Benefits? Drawbacks?
+                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Peek))
                 {
-                    if(messageQueue.Transactional)
+                    if (messageQueue.Peek(TimeSpan.FromSeconds(timeoutInSeconds)) != null)
                     {
-                        using (var transaction = new MessageQueueTransaction())
-                        {
-                            transaction.Begin();
-                            // Is it necessary to set a label for my messagequeue? Read from a book that trying
-                            // to bind and send messages to a queue using the same label "guarantees" problems
-                            messageQueue.Send(message, transaction); // vs. Send(obj, transtype)?
-                            transaction.Commit();
-                        }
-                    }
-                    else
-                    {
-                        messageQueue.Send(message);
+                        return true;
                     }
                 }
             }
-            catch (Exception e) // Should catch MessageQueue exceptions/errors as well as Transaction exceptions/errors
+            catch (MessageQueueException) // HACK: Needed for handling queue timeout, but handles all MessageQueueExceptions by returning false
             {
-                throw e;
+                return false;
             }
+            catch (ArgumentException ae) // NOTE: Is it better to use an exception filter (argument and messagequeue exceptions)?
+            {
+                throw ae;
+            }
+            return false;
         }
 
-        public string Receive()
+        /// <summary>
+        /// Sends an IMessage object to a transactional message queue
+        /// </summary>
+        /// <param name="message">Message to send to the queue</param>
+        public void Send(IMessage message)
         {
+            var outgoingMessage = new Message();
             try
             {
-                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Receive)) // Do I need to make this new queue at a different path than the one for sending?
+                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Send))
                 {
-                    Message incomingMessage;
-                    messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
+                    messageQueue.Formatter = new XmlMessageFormatter(typeArray); // Sets the formatter for the outoing message to the queue
+                    outgoingMessage.Body = message;
+
                     if (messageQueue.Transactional)
                     {
                         using (var transaction = new MessageQueueTransaction())
                         {
-                            transaction.Begin(); // Begin transaction
-                            incomingMessage = messageQueue.Receive(TimeSpan.FromSeconds(1), transaction); // Recommended time span..?
-                            transaction.Commit(); // Commit transaction
+                            try
+                            {
+                                transaction.Begin();
+                                messageQueue.Send(outgoingMessage, transaction);
+                                transaction.Commit();
+                            }
+                            catch (MessageQueueException mqe)
+                            {
+                                transaction.Abort();
+                                throw mqe;
+                            }
                         }
                     }
                     else
                     {
-                        incomingMessage = messageQueue.Receive();
+                        messageQueue.Send(outgoingMessage);
                     }
-                    return incomingMessage.Body.ToString();
+                }
+            }
+            catch (MessageQueueException mqe)
+            {
+                throw mqe;
+            }
+            finally
+            {
+                outgoingMessage.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Receives and returns an IMessage object from a transactional message queue
+        /// </summary>
+        /// <returns>An IMessage object</returns>
+        public IMessage Receive()
+        {
+            var incomingMessage = new Message();
+            try
+            {
+                using (var messageQueue = new MessageQueue(_queuePath, QueueAccessMode.Receive))
+                {
+                    messageQueue.Formatter = new XmlMessageFormatter(typeArray); // Sets the formatter for the incoming message from the queue
+
+                    if (messageQueue.Transactional)
+                    {
+                        using (var transaction = new MessageQueueTransaction())
+                        {
+                            try
+                            {
+                                transaction.Begin();
+                                incomingMessage = messageQueue.Receive(TimeSpan.FromSeconds(1), transaction);
+                                transaction.Commit();
+                            }
+                            catch (MessageQueueException mqe)
+                            {
+                                transaction.Abort();
+                                throw mqe;
+                            }  
+                        }
+                    }
+                    else
+                    {
+                        while (messageQueue.Peek(TimeSpan.FromSeconds(1)) != null)
+                        {
+                            incomingMessage = messageQueue.Receive(TimeSpan.FromSeconds(1));
+
+                        }
+                    }
+                    IMessage message = (IMessage)incomingMessage.Body;
+                    return message;
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
+            finally
+            {
+                incomingMessage.Dispose();
+            }
         }
 
         /// <summary>
-        /// Creates a transactional message queue at the specified path
+        /// Deletes all messages in a queue
         /// </summary>
-        /// <param name="path">Path of the queue to create</param>
-        public void Create(string path)
+        public void Purge()
         {
-            if (_queuePath == null)
-            {
-                throw new ArgumentNullException();
-            }
             try
             {
-                if (!MessageQueue.Exists(path))
+                using (var messageQueue = new MessageQueue(_queuePath))
                 {
-                    MessageQueue.Create(path, true);
-                }
-                else
-                {
-                    var stringBuilder = new StringBuilder("A queue already exists at ");
-                    stringBuilder.Append(path);
-                    stringBuilder.Append(". Using existing queue.");
-                    LogService.Log(stringBuilder.ToString());
+                    messageQueue.Purge();
                 }
             }
-            catch (MessageQueueException e)
+            catch (MessageQueueException mqe)
             {
-                throw e;
-            }
-        }
-
-        public void Delete(string path)
-        {
-            if (_queuePath == null)
-            {
-                throw new ArgumentException();
-            }
-            try
-            {
-                MessageQueue.Delete(path);
-            }
-            catch (MessageQueueException e)
-            {
-                throw e;
+                throw mqe;
             }
         }
     }

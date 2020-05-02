@@ -1,8 +1,11 @@
-﻿using System;
+﻿/*
+ * This interface represents the contract for a message object.
+ */
+using System;
 
-namespace RoomAid.ServiceLayer.Messaging
+namespace RoomAid.ServiceLayer
 {
-    interface IMessage
+    public interface IMessage
     {
         // ID of the user receiving the message
         int ReceiverID { get; set; }
@@ -16,6 +19,7 @@ namespace RoomAid.ServiceLayer.Messaging
         DateTime SentDate { get; set; }
         // Indicates whether a message is read or unread
         bool IsRead { get; set; }
-        
+        // Overrriden ToString() method that returns the string represntation of an IMessage
+        string ToString();
     }
 }

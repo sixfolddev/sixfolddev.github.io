@@ -1,52 +1,37 @@
-﻿using System;
+﻿/*
+ * This class represents a messaging service that gives functionality for sending a message
+ * to a message queue, and reading a message from a database.
+ */
+using System;
 using System.Collections;
 
-namespace RoomAid.ServiceLayer.Messaging
+namespace RoomAid.ServiceLayer
 {
-    class MessageService
+    public class MessageService
     {
-        private MSMQHandler _queue;
+        private readonly IQueueHandler _queue;
 
         public MessageService()
         {
+            _queue = new MSMQHandler(); // NOTE: No error is thrown if this line is excluded
         }
 
-        public bool SendMessage(int receiverID, int senderID, DateTime date, string message)
+        public void SendMessage(IMessage message)
         {
-            //create message
-            var newMessage = new GeneralMessage(receiverID, senderID, date, message);
-
-            //send to msmq
-            
-
-            //send to db
-
-            return false; // TODO: implement
+            try
+            {
+                _queue.Send(message); // Send message to queue
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
-        public bool ReadMessage()
+        // TODO: implement
+        public void ReadMessage()
         {
-            return false; // TODO: implement
-        }
-
-        public bool ReplyMessage()
-        {
-            return false; // TODO: implement
-        }
-
-        public bool SendInvitation()
-        {
-            return false; // TODO: implement
-        }
-
-        public bool ReadInvitation()
-        {
-            return false; // TODO: implement
-        }
-
-        public bool ReplyInvitation()
-        {
-            return false; // TODO: implement
+            //read from a database (non-specific)
         }
     }
 }
