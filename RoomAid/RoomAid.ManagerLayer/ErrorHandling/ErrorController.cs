@@ -13,21 +13,18 @@ namespace RoomAid.ManagerLayer
     /// </summary>
     public class ErrorController
     {
-        private readonly Exception _exceptione;
         public AnalyzedError Err
         { get;set; }
-        public ErrorController(Exception e)
-        {
-            _exceptione = e;
-        }
+
+        public ErrorController() {}
 
         /// <summary>
         /// Handles the Exception contained within the object by assigning managers to the different steps of the tasks
         /// </summary>
-        public void Handle()
+        public void Handle(Exception exception)
         {
             
-            var ThreatManager = new ErrorThreatManager(_exceptione);
+            var ThreatManager = new ErrorThreatManager(exception);
             var Error = ThreatManager.GetThreatLevel();
             ErrorResponseManager ResponseManager = new ErrorResponseManager();
             Err = ResponseManager.GetResponse(Error);

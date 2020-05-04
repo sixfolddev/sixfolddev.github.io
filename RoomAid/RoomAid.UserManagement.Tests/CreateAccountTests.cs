@@ -81,22 +81,24 @@ namespace RoomAid.CreateAccount.Tests
         public void CreateAccountNotPass()
         {
             //Arrange
-            bool expected = false;
+            bool expected = false; //var
 
             //Act
             Account testAccount = new Account("testerEmail", "testHashedPassword", "testSalt");
+            //create test initialize method [TestInitialize]
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
             CreateAccountDAOs daos = new CreateAccountDAOs(newAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
-            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos);
-            cas.Create();
-            IResult result = cas.Create();
+            ICreateAccountService cas = new SqlCreateAccountService(testAccount, daos); // expand var name
+            cas.Create(); //creating initial vector
+            IResult result = cas.Create(); //creating duplicate record; rename AccountResult, CreationResult, etc.
             bool actual = result.IsSuccess;
+            //[TestCleanup]
             DeleteUser(testAccount.UserEmail);
             DeleteMapping(testAccount.UserEmail);
             DeleteAccount(testAccount.UserEmail);
-            Console.WriteLine(result.Message);
+            Console.WriteLine(result.Message); //TestContext.Write
             //Assert
             Assert.AreEqual(expected, actual);
         }

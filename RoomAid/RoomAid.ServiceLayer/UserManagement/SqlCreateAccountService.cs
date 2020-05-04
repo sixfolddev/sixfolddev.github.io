@@ -9,7 +9,7 @@ namespace RoomAid.ServiceLayer
 {
     public class SqlCreateAccountService : ICreateAccountService
     {
-        private readonly List<Account> _newAccounts;
+        private readonly List<Account> _newAccounts; //ICollection instead of list for more flexibility
         private readonly ICreateAccountDAO newAccountDAO; 
         private readonly ICreateAccountDAO newMappingDAO;
         private readonly IMapperDAO mapperDAO; 
@@ -84,15 +84,16 @@ namespace RoomAid.ServiceLayer
                                 totalSuccessed +=1;
                             }
                             else
-                                message +="failed create user for "+newAccount.UserEmail + "\n";
+                                message +="failed create user for "+newAccount.UserEmail + "\n"; //Environment.newline
                         }
                     }
                     else
-                        message +="failed create mapping for " +newAccount.UserEmail + "\n";
+                        message +="failed create mapping for " +newAccount.UserEmail + "\n"; //str concat memory inefficient --> stringbuilder
                 }
                 else
                 {
-                    message +=newAccount.UserEmail+"\n";
+                    message +=newAccount.UserEmail+"\n"; //inversion--> if (rowsChanged < 0)
+                    //use break/continue
                 }
             }
 

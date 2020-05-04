@@ -193,8 +193,8 @@ namespace RoomAid.ErrorHandlingTest
         [TestMethod]
         public void TestErrorController()
         {
-            var Control = new ErrorController(new Exception());
-            Control.Handle();
+            var Control = new ErrorController();
+            Control.Handle(new Exception());
             var Analyze = Control.Err;
 
             Assert.AreEqual(Analyze.Lev, LogLevels.Levels.Warning);
