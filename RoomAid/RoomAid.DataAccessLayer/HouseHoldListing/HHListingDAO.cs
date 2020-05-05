@@ -54,6 +54,12 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
             }
         }
 
+        /// <summary>
+        /// Updates a record in the Database with the information provided in the HHListingModel
+        /// Updates DatePosted, HouseholdType, ListingDescription, Price, ZipCode, StreetAddress, and Availability
+        /// </summary>
+        /// <param name="model">HouseholdListing Model provided as a basis to edit a preexisting record.</param>
+        /// <returns></returns>
         public int Update(HHListingModel model)
         {
             using (var connection = new SqlConnection(_dbConnectionString))
@@ -147,6 +153,12 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
             }
         }
 
+        /// <summary>
+        /// Returns a single HHListingModel with the provided hid.
+        /// Retreives ZipCode Availability, DatePosted, ListingDescription, Price, Host First and Last Name.
+        /// </summary>
+        /// <param name="hid">unique identifier of a household.</param>
+        /// <returns></returns>
         public HHListingModel Retrieve(int hid)
         {
             using (var connection = new SqlConnection(_dbConnectionString))
