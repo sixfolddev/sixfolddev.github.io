@@ -42,7 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HouseHoldManagement\HouseholdSearchDAO.cs" />
+    <Compile Include="HouseHoldManagement\HouseholdSearchDTO.cs" />
     <Compile Include="HouseHoldManagement\IHouseHoldDAO.cs" />
+    <Compile Include="HouseHoldManagement\IHouseholdSearchDAO.cs" />
     <Compile Include="HouseHoldManagement\SqlHouseHoldDAO.cs" />
     <Compile Include="MessageDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
