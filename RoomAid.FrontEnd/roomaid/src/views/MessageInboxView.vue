@@ -12,7 +12,7 @@ import HelloWorld from '@/components/HelloWorld.vue'
 export default {
   name: 'MessageInboxView',
   components: {
-    //none for now
+    HelloWorld
   }
 }
 </script>
