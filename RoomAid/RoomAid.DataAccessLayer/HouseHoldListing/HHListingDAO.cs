@@ -6,17 +6,26 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 
-namespace RoomAid.DataAccessLayer.HouseHoldListing 
+namespace RoomAid.DataAccessLayer.HouseHoldListing
 {
-    public class HHListingDAO
+    public class HHListingDAO: IHHListingDAO
     {
         private readonly string _dbConnectionString;
 
-        HHListingDAO(string connection)
+        /// <summary>
+        /// Public constructor for use by the HouseholdListingService.
+        /// </summary>
+        /// <param name="connection">database connection string to be used.</param>
+        public HHListingDAO(string connection)
         {
             this._dbConnectionString = connection;
         }
 
+        /// <summary>
+        /// Inserts a record in the DAtabase with the information provided in the HHListingModel
+        /// </summary>
+        /// <param name="model">Presumably a default HHListingModel used to insert a HHListing record upon household creation.</param>
+        /// <returns></returns>
         public int Insert(HHListingModel model)
         {
             using (var connection = new SqlConnection(_dbConnectionString))
