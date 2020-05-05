@@ -47,16 +47,31 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Messaging" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MSMQTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MessageServiceDatabaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RoomAid.DataAccessLayer\RoomAid.DataAccessLayer.csproj">
+      <Project>{5E8E8769-AF6B-49C7-A61C-AA85B747EF93}</Project>
+      <Name>RoomAid.DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RoomAid.ManagerLayer\RoomAid.ManagerLayer.csproj">
+      <Project>{15565B36-4B3F-411F-B173-96ABD103153C}</Project>
+      <Name>RoomAid.ManagerLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RoomAid.QueueConsumer\RoomAid.QueueConsumer.csproj">
+      <Project>{b3364505-6f05-4523-be94-dd7e0c7f7fef}</Project>
+      <Name>RoomAid.QueueConsumer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RoomAid.ServiceLayer\RoomAid.ServiceLayer.csproj">
       <Project>{3FE754D4-2138-454A-9DE6-C7E3301E8D6C}</Project>
       <Name>RoomAid.ServiceLayer</Name>

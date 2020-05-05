@@ -79,8 +79,7 @@ namespace RoomAid.Messaging.Tests
         public void SendMultipleMessages_RetrieveMessagesInSameOrder_GeneralMessages_Pass()
         {
             //Arrange
-            var expected = true;
-            var actual = false;
+            bool isSuccess = false;
             IList messages = new List<IMessage>();
             var j = 0; // Counter to check number of incoming messages against number of messages sent
 
@@ -97,17 +96,17 @@ namespace RoomAid.Messaging.Tests
                     var incoming = _msmqHandler.Receive();
                     if (incoming.ToString().Equals(messages[j].ToString())) // Check each incoming message against messages list
                     {
-                        actual = true;
+                        isSuccess = true;
                     }
                     else
                     {
-                        actual = false; // If any are not equal, the messages are not in the same order or did not send properly
+                        isSuccess = false; // If any are not equal, the messages are not in the same order or did not send properly
                     }
                     j++; // Increment incoming messages counter
                 }
                 if (j != _numMessages) // If the number of incoming messages doesn't equal the number of messages sent to the queue
                 {
-                    actual = false;
+                    isSuccess = false;
                     Trace.WriteLine("Incorrect number of incoming messages");
                 }
             }
@@ -119,7 +118,7 @@ namespace RoomAid.Messaging.Tests
             _msmqHandler.Purge();
 
             //Assert
-            Assert.IsTrue(expected == actual);
+            Assert.IsTrue(isSuccess);
         }
 
         /// <summary>
@@ -131,8 +130,7 @@ namespace RoomAid.Messaging.Tests
         public void SendMultipleMessages_RetrieveMessagesInSameOrder_Invitations_Pass()
         {
             //Arrange
-            var expected = true;
-            var actual = false;
+            bool isSuccess = false;
             IList invitations = new List<IMessage>();
             var j = 0; // Counter to check number of incoming messages against number of messages sent
 
@@ -149,17 +147,17 @@ namespace RoomAid.Messaging.Tests
                     var incoming = _msmqHandler.Receive();
                     if (incoming.ToString().Equals(invitations[j].ToString())) // Check each incoming message against messages list
                     {
-                        actual = true;
+                        isSuccess = true;
                     }
                     else
                     {
-                        actual = false; // If any are not equal, the messages are not in the same order or did not send properly
+                        isSuccess = false; // If any are not equal, the messages are not in the same order or did not send properly
                     }
                     j++; // Increment incoming invitations counter
                 }
                 if (j != _numMessages) // If the number of incoming messages doesn't equal the number of messages sent to the queue
                 {
-                    actual = false;
+                    isSuccess = false;
                     Trace.WriteLine("Incorrect number of incoming messages");
                 }
             }
@@ -171,7 +169,7 @@ namespace RoomAid.Messaging.Tests
             _msmqHandler.Purge();
 
             //Assert
-            Assert.IsTrue(expected == actual);
+            Assert.IsTrue(isSuccess);
         }
 
         /// <summary>
