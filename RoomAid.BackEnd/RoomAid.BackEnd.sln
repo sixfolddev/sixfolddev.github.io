@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.Messaging.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.QueueConsumer", "RoomAid.QueueConsumer\RoomAid.QueueConsumer.csproj", "{B3364505-6F05-4523-BE94-DD7E0C7F7FEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAid.SPA", "RoomAid.SPA\RoomAid.SPA.csproj", "{BC4518DC-09CD-40B0-932B-317224CD0B70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{B3364505-6F05-4523-BE94-DD7E0C7F7FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3364505-6F05-4523-BE94-DD7E0C7F7FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3364505-6F05-4523-BE94-DD7E0C7F7FEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC4518DC-09CD-40B0-932B-317224CD0B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC4518DC-09CD-40B0-932B-317224CD0B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC4518DC-09CD-40B0-932B-317224CD0B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC4518DC-09CD-40B0-932B-317224CD0B70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
