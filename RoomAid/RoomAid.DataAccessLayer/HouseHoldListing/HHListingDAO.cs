@@ -55,7 +55,55 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
 
         public int Update(HHListingModel model)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_dbConnectionString))
+            {
+                connection.Open();
+                var transaction = connection.BeginTransaction("HouseholdListing Update");
+
+                try
+                { 
+                    var query1 = "Update  dbo.HouseholdListings SET DatePosted = @date, HouseholdType = @hhtype, ListingDescription = @desc, Price = @price WHERE HID = @hid";
+                    var query2 = "Update dbo.Households SET ZipCode = @zipcode, StreetAddress = @address, Availability = @availability, WHERE HID = @hid";
+
+
+                    using (SqlCommand command = new SqlCommand(query1, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@hid", model.HID);
+                        command.Parameters.AddWithValue("@date", model.DatePosted);
+                        command.Parameters.AddWithValue("@availability", model.Availability);
+                        command.Parameters.AddWithValue("@zipcode", model.ZipCode);
+                        command.Parameters.AddWithValue("@address", model.StreetAddress);
+                        command.Parameters.AddWithValue("@hhtype", model.HouseholdType);
+                        command.Parameters.AddWithValue("@desc", model.ListingDescription);
+                        command.Parameters.AddWithValue("@price", model.Price);
+
+                        var result = command.BeginExecuteNonQuery();
+                        var rowsChanged = command.EndExecuteNonQuery(result);
+
+                        if (rowsChanged != 1)
+                        {
+                            throw new Exception("Error in Household Listing Update");
+                        }
+
+                        command.CommandText = query2;
+                        result = command.BeginExecuteNonQuery();
+                        rowsChanged = command.EndExecuteNonQuery(result);
+
+                        if (rowsChanged != 1)
+                        {
+                            throw new Exception("Error in Household Listing Update");
+                        }
+
+                        transaction.Commit();
+                        return rowsChanged;
+                    }
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
         }
 
         public int Delete(int hid)
