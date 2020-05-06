@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="HouseHoldListing\HHListingDAO.cs" />
     <Compile Include="HouseHoldListing\HHListingModel.cs" />
+    <Compile Include="HouseHoldListing\IHHListingDAO.cs" />
     <Compile Include="HouseHoldManagement\IHouseHoldDAO.cs" />
     <Compile Include="HouseHoldManagement\SqlHouseHoldDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
