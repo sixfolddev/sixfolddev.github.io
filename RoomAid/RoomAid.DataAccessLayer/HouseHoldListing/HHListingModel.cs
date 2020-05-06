@@ -20,6 +20,12 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         const string _defaultListingDescription = "";
         const decimal _defaultPrice = decimal.Zero;
 
+        public const int maxHostName = 200;
+        public const int maxZipCode = 5;
+        public const int maxStreetAddress = 200;
+        public const int maxHouseholdType = 30;
+        public const int maxListingDescription = 200;
+
         /// <summary>
         /// Getters for HHListingModel attributes.
         /// </summary>
