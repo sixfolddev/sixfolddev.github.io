@@ -5,15 +5,15 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
     component: () => import('../views/Home.vue')
   },
-  // {
-  //   path: '/householdsearch',
-  //   name: 'HouseholdSearch',
-  //   component: () => import('../views/HouseholdSearchView')
-  // },
+  {
+    path: '/inbox',
+    redirect: '/inbox/messages',
+    name: 'Inbox'
+  },
   {
     path: '/inbox/messages',
     name: 'MessageInbox',
@@ -28,7 +28,17 @@ const routes = [
     path: '/inbox/sent',
     name: 'SentMessages',
     component: () => import('../views/SentMessagesView')
-  }
+  },
+  {
+    path: '/inbox/message/:id',
+    name: 'SentMessages',
+    component: () => import('../views/ReadMessageView')
+  },
+  {
+    path: '/inbox/message/send/:type',
+    name: 'SentMessages',
+    component: () => import('../views/SendMessageView')
+  } // type: general, invitation;
 ]
 
 const router = new VueRouter({
