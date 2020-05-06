@@ -241,9 +241,9 @@ namespace RoomAid.DataAccessLayer
              * <add key ="querySelectUserName" value="SELECT FirstName, LastName FROM dbo.Users WHERE SysID = @sendid"/>
              */
             var command = new SqlCommand(ConfigurationManager.AppSettings["querySelectInbox"]); // Query to select message ID, sent date, and sender ID of messages
-            const int SenderIDIndex = 3;
             command.Parameters.AddWithValue("@rcvid", receiverID);
             command.Parameters.AddWithValue("@general", isGeneral);
+            const int SenderIDIndex = 3;
             try
             {
                 listOfMessagesDetails = RetrieveMultipleRows(command);
@@ -264,6 +264,21 @@ namespace RoomAid.DataAccessLayer
             }
 
             return listOfMessagesDetails;
+        }
+
+        public int GetCount(int receiverID, bool isGeneral)
+        {
+            var command = new SqlCommand("SELECT COUNT(MessageID) FROM dbo.InboxMessages WHERE SysID = @rcvid AND IsGeneral = @general");
+            command.Parameters.AddWithValue("@rcvid", receiverID);
+            command.Parameters.AddWithValue("@general", isGeneral);
+            try
+            {
+                return (int) RetrieveOneColumn(command);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

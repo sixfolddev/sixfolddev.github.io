@@ -19,10 +19,10 @@ namespace RoomAid.Messaging.Tests
         // DAOs
         private readonly MessageDAO _messageDAO = new MessageDAO();
         private readonly ISqlDAO _dao = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
-        private ICreateAccountDAO _newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
-        private ICreateAccountDAO _newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
-        private IMapperDAO _mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
-        private ICreateAccountDAO _newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+        private readonly ICreateAccountDAO _newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
+        private readonly ICreateAccountDAO _newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private readonly IMapperDAO _mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+        private readonly ICreateAccountDAO _newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
         
         // Global variables
         private string email;
@@ -66,6 +66,36 @@ namespace RoomAid.Messaging.Tests
             {
                 Trace.WriteLine(e.ToString());
             }
+        }
+
+        [TestMethod]
+        public void GetMessageCount_Pass()
+        {
+            //Arrange
+            bool expected = true;
+            bool actual = false;
+            IList<GeneralMessage> messages = new List<GeneralMessage>();
+
+            //Act
+            try
+            {
+                for (int i = 0; i < _numMessages; i++) // Creating 3 general messages to send to database
+                {
+                    messages.Add(new GeneralMessage(receiverID, i + 2, GetDateTime.GetUTCNow(), "Test message" + i));
+                    RoomAid.QueueConsumer.QueueConsumer.SendToDB((IMessage)messages[i]);
+                }
+                if (_messageDAO.GetCount(receiverID, true) == _numMessages)
+                {
+                    actual = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.ToString());
+            }
+
+            //Assert
+            Assert.AreEqual(expected, actual);
         }
 
         /// <summary>
@@ -160,8 +190,10 @@ namespace RoomAid.Messaging.Tests
                     Int32.Parse(inboxContent[2]),
                     Int32.Parse(inboxContent[3]),
                     DateTime.Parse(inboxContent[5]),
-                    generalMessageContent);
-                incomingMessage.IsRead = bool.Parse(inboxContent[4]);
+                    generalMessageContent)
+                {
+                    IsRead = bool.Parse(inboxContent[4])
+                };
 
                 if (incomingMessage.SenderID == message.SenderID &&
                     incomingMessage.ReceiverID == message.ReceiverID &&
@@ -208,9 +240,11 @@ namespace RoomAid.Messaging.Tests
                 Invitation incomingInvitation = new Invitation(Int32.Parse(inboxContent[0]),
                     Int32.Parse(inboxContent[2]),
                     Int32.Parse(inboxContent[3]),
-                    DateTime.Parse(inboxContent[5]));
-                incomingInvitation.IsRead = bool.Parse(inboxContent[4]);
-                incomingInvitation.IsAccepted = invitationContent;
+                    DateTime.Parse(inboxContent[5]))
+                {
+                    IsRead = bool.Parse(inboxContent[4]),
+                    IsAccepted = invitationContent
+                };
 
                 if (incomingInvitation.SenderID == invitation.SenderID &&
                     incomingInvitation.ReceiverID == invitation.ReceiverID &&
@@ -263,9 +297,11 @@ namespace RoomAid.Messaging.Tests
                         Int32.Parse(incomingMessages[i][2]),
                         Int32.Parse(incomingMessages[i][3]),
                         DateTime.Parse(incomingMessages[i][5]),
-                        generalMessageContent[i][0]);
-                    incomingMessage.IsRead = bool.Parse(incomingMessages[i][4]); // IsRead [4]
-                                                                                 //incomingMessage.IsAccepted = bool.Parse(generalMessageContent[i][0]);
+                        generalMessageContent[i][0])
+                    {
+                        IsRead = bool.Parse(incomingMessages[i][4]) // IsRead [4]
+                    };
+                    //incomingMessage.IsAccepted = bool.Parse(generalMessageContent[i][0]);
 
                     if (incomingMessage.SenderID == messages[i].SenderID &&
                         incomingMessage.ReceiverID == messages[i].ReceiverID &&
@@ -320,9 +356,11 @@ namespace RoomAid.Messaging.Tests
                     Invitation incomingInvitation = new Invitation(Int32.Parse(incomingInvitations[i][0]),
                         Int32.Parse(incomingInvitations[i][2]),
                         Int32.Parse(incomingInvitations[i][3]),
-                        DateTime.Parse(incomingInvitations[i][5]));
-                    incomingInvitation.IsRead = bool.Parse(incomingInvitations[i][4]); // IsRead [4]
-                    incomingInvitation.IsAccepted = bool.Parse(invitationContent[i][0]);
+                        DateTime.Parse(incomingInvitations[i][5]))
+                    {
+                        IsRead = bool.Parse(incomingInvitations[i][4]), // IsRead [4]
+                        IsAccepted = bool.Parse(invitationContent[i][0])
+                    };
 
                     if (incomingInvitation.SenderID == invitations[i].SenderID &&
                         incomingInvitation.ReceiverID == invitations[i].ReceiverID &&
@@ -567,10 +605,12 @@ namespace RoomAid.Messaging.Tests
 
         private void DeleteMessages()
         {
-            List<SqlCommand> commands = new List<SqlCommand>();
-            commands.Add(new SqlCommand("DELETE FROM dbo.GeneralMessages"));
-            commands.Add(new SqlCommand("DELETE FROM dbo.Invitations"));
-            commands.Add(new SqlCommand("DELETE FROM dbo.InboxMessages"));
+            List<SqlCommand> commands = new List<SqlCommand>
+            {
+                new SqlCommand("DELETE FROM dbo.GeneralMessages"),
+                new SqlCommand("DELETE FROM dbo.Invitations"),
+                new SqlCommand("DELETE FROM dbo.InboxMessages")
+            };
             _messageDAO.RunCommand(commands);
         }
 

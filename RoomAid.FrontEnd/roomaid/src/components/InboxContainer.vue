@@ -8,7 +8,6 @@
                 <v-data-table v-model="selected"
                 :headers="headers"
                 :items="messages"
-                :single-select="singleSelect"
                 item-key="id"
                 show-select
                 sort-by="sentdate"
@@ -28,7 +27,6 @@ export default {
   name: 'InboxContainer',
   data: () => ({
     messages: [],
-    singleSelect: true,
     selected: [],
     headers: [
       { text: 'Name', sortable: true, value: 'name' },
