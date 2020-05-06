@@ -41,6 +41,22 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
 
         public bool Update(int hid, string zipCode, string address, SqlBoolean availability, string hhType, decimal price, string description)
         {
+            try
+            {
+                if (!validHouseholdTypeSize(hhType) | !validZipCodeSize(zipCode) | !validStreetAddressSize(address) | !validListingDescription(description))
+                {
+                    throw new ArgumentException("At least one input is invalid for HouseholdListing Update");
+                }
+            }
+            catch(ArgumentException e)
+            {
+                throw e;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error encountered in HouseholdUpdate input validation");
+            }
+
             var model = new HHListingModel(hid, DateTime.UtcNow, availability, zipCode: zipCode, streetAddress: address, householdType: hhType, listingDescription: description, price: price);
             for (int i = 0; i < numberOfRetries; i++)
             {
@@ -97,6 +113,50 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             }
             throw new Exception("Error encountered in HouseholdListing Delete");
         }
-        
+
+        private bool validHostNameSize(string input)
+        {
+            if (input.Length <= HHListingModel.maxHostName)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool validZipCodeSize(string input)
+        {
+            if (input.Length <= HHListingModel.maxZipCode)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool validStreetAddressSize(string input)
+        {
+            if (input.Length <= HHListingModel.maxStreetAddress)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool validHouseholdTypeSize(string input)
+        {
+            if (input.Length <= HHListingModel.maxHouseholdType)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool validListingDescription(string input)
+        {
+            if (input.Length <= HHListingModel.maxListingDescription)
+            {
+                return true;
+            }
+            return false;
+        }
     }
+
+    
 }
