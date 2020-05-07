@@ -17,14 +17,15 @@ namespace RoomAid.SPA.Controllers
     public class SearchController : ApiController
     {
         [HttpGet]
-        public IHttpActionResult Search([FromUri] SearchRequest request)
+        [Route("householdsearch")]
+        public IHttpActionResult Search(string cityName, int page, int minPrice, int maxPrice, string householdType)
         {
             HouseholdSearchDAO searchDAO = new HouseholdSearchDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
             HouseholdSearchService searchService = new HouseholdSearchService(searchDAO);
             HouseholdSearchManager searchManager = new HouseholdSearchManager(searchService);
             try
             {
-                var results = searchManager.Search(request.CityName, request.Page, request.MinPrice, request.MaxPrice, request.HouseholdType);
+                var results = searchManager.Search(cityName, page, minPrice, maxPrice, householdType);
                 return Content(HttpStatusCode.OK, results);
             }
             catch (Exception e)
@@ -34,14 +35,15 @@ namespace RoomAid.SPA.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult Count([FromUri] SearchRequest request)
+        [Route("count")]
+        public IHttpActionResult Count(string cityName, int minPrice, int maxPrice, string householdType)
         {
             HouseholdSearchDAO searchDAO = new HouseholdSearchDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
             HouseholdSearchService searchService = new HouseholdSearchService(searchDAO);
             HouseholdSearchManager searchManager = new HouseholdSearchManager(searchService);
             try
             {
-                var results = searchManager.GetTotalResultCountForQuery(request.CityName, request.MinPrice, request.MaxPrice, request.HouseholdType);
+                var results = searchManager.GetTotalResultCountForQuery(cityName, minPrice, maxPrice, householdType);
                 return Content(HttpStatusCode.OK, results);
             }
             catch (Exception e)
@@ -58,12 +60,6 @@ namespace RoomAid.SPA.Controllers
             HouseholdSearchService searchService = new HouseholdSearchService(searchDAO);
             HouseholdSearchManager searchManager = new HouseholdSearchManager(searchService);
             return Content(HttpStatusCode.OK, searchManager.GetAutocompleteCities());
-        }
-        [HttpGet]
-        [Route("test")]
-        public IHttpActionResult testMethod()
-        {
-            return Ok("Success!!!!");
         }
     }
 }

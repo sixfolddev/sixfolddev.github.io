@@ -1,6 +1,6 @@
 <template>
     <div id = "HouseholdSearchView">
-      <p>{{}}</p>
+      <span>Households: {{households}}</span>
         <v-container fluid>
             <v-toolbar
             dark
@@ -8,7 +8,7 @@
             >
                 <v-toolbar-title>Search For Households: </v-toolbar-title>
                 <v-autocomplete
-                    v-model="select"
+                    v-model="searchRequest.cityName"
                     :loading="loading"
                     :items="items"
                     :search-input.sync="search"
@@ -19,9 +19,9 @@
                     hide-details
                     label="Enter a city"
                     solo-inverted
-                    auto-select-first="true"
+                    auto-select-first
                 ></v-autocomplete>
-                    <v-btn icon outlined>
+                    <v-btn icon outlined @click="HouseholdSearch">
                         <v-icon>mdi-magnify</v-icon>
                     </v-btn>
             </v-toolbar>
@@ -41,6 +41,7 @@
                     hide-details
                     single-line
                     clearable
+                    v-model="searchRequest.householdType"
                 ></v-select>
                 </v-col>
                 <v-col cols = "3" class = "mt-8 pt-0">
@@ -49,6 +50,7 @@
                     label="Minimum"
                     prepend-icon="mdi-currency-usd"
                     clearable
+                    v-model="searchRequest.minPrice"
                 >
                 </v-text-field>
                 </v-col>
@@ -59,10 +61,21 @@
                     label="Maximum"
                     prepend-icon="mdi-currency-usd"
                     clearable
+                    v-model="searchRequest.maxPrice"
                 >
                 </v-text-field>
                  </v-col>
             </v-toolbar>
+            <v-alert
+              :value="errorMessage"
+              id="errorMessage"
+              type="error"
+              transition="scale-transition"
+              class = "mx-10"
+              v-if="!(errorMessage.length === 0)">
+                {{errorMessage}}
+            </v-alert>
+
         </v-container>
     </div>
 </template>
@@ -77,17 +90,17 @@ export default {
       select: null,
       householdTypes: ['Apartment', 'Townhouse', 'House'],
       cities: [],
-      cityName: '',
-      householdtype: '',
-      minPrice: '',
-      maxPrice: '',
-      page: null,
-      errorMessage: null,
-      data: {
-        Households: []
+      searchRequest: {
+        cityName: '',
+        householdType: '',
+        minPrice: null,
+        maxPrice: null,
+        page: null
       },
+      errorMessage: [],
+      households: [],
       count: null,
-      testValue: ''
+      totalResultCount: null
     }
   },
   watch: {
@@ -95,12 +108,13 @@ export default {
       val && val !== this.select && this.querySelections(val)
     }
   },
+  // Run a query to get the list of cities required for autocomplete as the page loads
   beforeMount () {
-    this.autocomplete()
+    this.Autocomplete()
   },
   methods: {
+    // Used for filtering out option when typing in the autocomplete
     querySelections (v) {
-      /// Ajax Call Goes Here
       this.loading = true
       setTimeout(() => {
         this.items = this.cities.filter(e => {
@@ -109,7 +123,8 @@ export default {
         this.loading = false
       }, 500)
     },
-    autocomplete () {
+    // Function used to get a list of cities from server
+    Autocomplete () {
       const uri = `${this.$hostname}/api/search/autocomplete`
       const req = new Request(uri, {
         method: 'GET',
@@ -122,8 +137,47 @@ export default {
           this.cities = data
         })
     },
-    test () {
-      const uri = `${this.$hostname}/api/search/test`
+
+    // Function used to get a list of search results from the server
+    // Also validates search inputs
+    HouseholdSearch: function () {
+      this.errorMessage = []
+      if (!(this.cities.includes(this.searchRequest.cityName)) || this.searchRequest.cityName.length === 0) {
+        this.errorMessage.push('Please select a city from the list!')
+      }
+      if (this.searchRequest.minPrice === null) {
+        this.searchRequest.minPrice = 0
+      }
+      if (this.searchRequest.maxPrice === null) {
+        this.searchRequest.maxPrice = 10000
+      }
+      if (isNaN(this.searchRequest.maxPrice) || isNaN(this.searchRequest.minPrice)) {
+        this.errorMessage.push('The price filters must be a number!')
+      }
+      if (this.searchRequest.maxPrice < 0 || this.searchRequest.maxPrice > 10000) {
+        this.errorMessage.push('The maximum price filter must be between 0 and 10000')
+      }
+      if (this.searchRequest.minPrice < 0 || this.searchRequest.minPrice > 10000) {
+        this.errorMessage.push('The minimum price filter must be between 0 and 10000')
+      }
+      if (this.searchRequest.householdType === '') {
+        this.searchRequest.householdType = 'none'
+      }
+      this.GetTotalResultCount()
+      this.page = 1
+    },
+    GetSearchResults () {
+      const params = {
+        cityName: 'Cypress',
+        minPrice: 0,
+        page: 1,
+        maxPrice: 10000,
+        householdType: 'none'
+      }
+      const query = Object.keys(params)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .join('&')
+      const uri = `${this.$hostname}/api/search/householdsearch?` + query
       const req = new Request(uri, {
         method: 'GET',
         headers: { Accept: 'application/json' },
@@ -132,7 +186,30 @@ export default {
       fetch(req)
         .then(response => response.json())
         .then(data => {
-          this.testValue = data.toString()
+          this.households = (data)
+        })
+    },
+    // Function used for getting the total number of results for pagination
+    GetTotalResultCount () {
+      const params = {
+        cityName: this.searchRequest.cityName,
+        minPrice: this.searchRequest.minPrice,
+        maxPrice: this.searchRequest.maxPrice,
+        householdType: this.searchRequest.householdType
+      }
+      const query = Object.keys(params)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .join('&')
+      const uri = `${this.$hostname}/api/search/count?` + query
+      const req = new Request(uri, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors'
+      })
+      fetch(req)
+        .then(response => response.json())
+        .then(data => {
+          this.totalResultCount = (data)
         })
     }
   }

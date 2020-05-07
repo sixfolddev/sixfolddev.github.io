@@ -244,8 +244,6 @@ namespace Roomaid.HouseholdSearch.Tests
             //Act
             var cities = searchManager.GetAutocompleteCities();
             //Assert
-            foreach (var c in cities)
-                TestContext.WriteLine(c);
             if (cities.Count  == 1238)
                 actual = true;
             Assert.AreEqual(actual, expected);
