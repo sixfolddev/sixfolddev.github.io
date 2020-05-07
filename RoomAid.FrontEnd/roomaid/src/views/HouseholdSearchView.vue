@@ -1,5 +1,6 @@
 <template>
     <div id = "HouseholdSearchView">
+      <p>{{}}</p>
         <v-container fluid>
             <v-toolbar
             dark
@@ -18,6 +19,7 @@
                     hide-details
                     label="Enter a city"
                     solo-inverted
+                    auto-select-first="true"
                 ></v-autocomplete>
                     <v-btn icon outlined>
                         <v-icon>mdi-magnify</v-icon>
@@ -65,8 +67,6 @@
     </div>
 </template>
 <script>
-// import axios from 'axios'
-import SearchService from '../Services/SearchService'
 export default {
   name: 'HouseholdSearchView',
   data () {
@@ -86,7 +86,8 @@ export default {
       data: {
         Households: []
       },
-      count: null
+      count: null,
+      testValue: ''
     }
   },
   watch: {
@@ -109,9 +110,29 @@ export default {
       }, 500)
     },
     autocomplete () {
-      SearchService.autocompleteSearch()
-        .then(response => {
-          this.cities = response.data
+      const uri = `${this.$hostname}/api/search/autocomplete`
+      const req = new Request(uri, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors'
+      })
+      fetch(req)
+        .then(response => response.json())
+        .then(data => {
+          this.cities = data
+        })
+    },
+    test () {
+      const uri = `${this.$hostname}/api/search/test`
+      const req = new Request(uri, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors'
+      })
+      fetch(req)
+        .then(response => response.json())
+        .then(data => {
+          this.testValue = data.toString()
         })
     }
   }

@@ -156,7 +156,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
                     {
                         while (reader.Read())
                         {
-                            _cities.Add(reader.ToString());
+                            _cities.Add(reader[0].ToString());
                         }
                     }
                     connection.Close();

@@ -10,10 +10,10 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-namespace RoomAid.SPA
+namespace RoomAid.SPA.Controllers
 {
-    [Route("api/[controller]")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
         [HttpGet]
@@ -51,12 +51,19 @@ namespace RoomAid.SPA
             }
         }
         [HttpGet]
+        [Route("autocomplete")]
         public IHttpActionResult Autocomplete()
         {
             HouseholdSearchDAO searchDAO = new HouseholdSearchDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
             HouseholdSearchService searchService = new HouseholdSearchService(searchDAO);
             HouseholdSearchManager searchManager = new HouseholdSearchManager(searchService);
             return Content(HttpStatusCode.OK, searchManager.GetAutocompleteCities());
+        }
+        [HttpGet]
+        [Route("test")]
+        public IHttpActionResult testMethod()
+        {
+            return Ok("Success!!!!");
         }
     }
 }
