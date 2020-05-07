@@ -12,7 +12,18 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
     {
         private readonly IHHListingDAO dao;
         private const int numberOfRetries = 3;
-
+        /*TODO:
+         *  Add Authorization Element AuthZService
+         *  Express which claims are necessary for Insert,Update ,Retrieve, Delete
+         *  Insert 
+         *      Meant to be an automatic inclusion in the household creation process.
+         *  Retrieve:
+         *      Requires search privileges to match.
+         *  Update:
+         *      Requires householdID and update privileges to match.
+         *  Delete requires some form of identification to match with the household being deleted.
+         *      If AuthZClaims HouseholdID and delete privileges match, delete is permitted.
+         */
         public HouseHoldListingService(IHHListingDAO dao)
         {
             this.dao = dao;
@@ -114,6 +125,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             throw new Exception("Error encountered in HouseholdListing Delete");
         }
 
+        #region Validation Functions for input parameters based on HouseholdListingModel size constraints.
         private bool ValidHostNameSize(string input)
         {
             if (input.Length <= HHListingModel.maxHostName)
@@ -138,7 +150,6 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             }
             return false;
         }
-
         private bool ValidHouseholdTypeSize(string input)
         {
             if (input.Length <= HHListingModel.maxHouseholdType)
@@ -147,7 +158,6 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             }
             return false;
         }
-
         private bool ValidListingDescription(string input)
         {
             if (input.Length <= HHListingModel.maxListingDescription)
@@ -156,6 +166,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             }
             return false;
         }
+        #endregion
     }
 
     
