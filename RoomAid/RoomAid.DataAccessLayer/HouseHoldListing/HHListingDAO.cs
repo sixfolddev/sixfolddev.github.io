@@ -10,6 +10,8 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
 {
     public class HHListingDAO: IHHListingDAO
     {
+
+        //TODO: Migrate queries to app.config file
         private readonly string _dbConnectionString;
 
         /// <summary>
@@ -22,7 +24,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         }
 
         /// <summary>
-        /// Inserts a record in the DAtabase with the information provided in the HHListingModel
+        /// Inserts a record in the DAtabase with the information provided in the HHListingModel. Returns 1 for success, 0 for failure.
         /// </summary>
         /// <param name="model">Presumably a default HHListingModel used to insert a HHListing record upon household creation.</param>
         /// <returns></returns>
@@ -55,17 +57,17 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                         return rowsChanged;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
-                    throw e;
-                }
+                    // throw e; Not sure if I should throw back an exception or the sql exception. regardless we will rollback and should send an appropriate value.
+                    return 0;
+                 }
             }
         }
 
         /// <summary>
-        /// Updates a record in the Database with the information provided in the HHListingModel
-        /// Updates DatePosted, HouseholdType, ListingDescription, Price, ZipCode, StreetAddress, and Availability
+        /// Updates DatePosted, HouseholdType, ListingDescription, Price, ZipCode, StreetAddress, and Availability based on model. Returns 1 for success and 0 for failure.
         /// </summary>
         /// <param name="model">HouseholdListing Model provided as a basis to edit a preexisting record.</param>
         /// <returns></returns>
@@ -79,7 +81,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                 try
                 { 
                     var query1 = "Update  dbo.HouseholdListings SET DatePosted = @date, HouseholdType = @hhtype, ListingDescription = @desc, Price = @price WHERE HID = @hid";
-                    var query2 = "Update dbo.Households SET ZipCode = @zipcode, StreetAddress = @address, Availability = @availability, WHERE HID = @hid";
+                    var query2 = "Update dbo.Households SET ZipCode = @zipcode, StreetAddress = @address, IsAvailable = @availability WHERE HID = @hid";
 
 
                     using (SqlCommand command = new SqlCommand(query1, connection, transaction))
@@ -117,13 +119,14 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    throw e;
+                    return 0;
+                    //throw e;
                 }
             }
         }
 
         /// <summary>
-        /// Deletes a single household listing record from the database that belongs to a specific db.
+        /// Deletes a single household listing record. Returns 1 for success, 0 for failure.
         /// </summary>
         /// <param name="hid"></param>
         /// <returns></returns>
@@ -158,14 +161,16 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                 catch(Exception e)
                 {
                     transaction.Rollback();
-                    throw e;
+                    return 0;
+                    //throw e;
                 }
             }
         }
 
         /// <summary>
         /// Returns a single HHListingModel with the provided hid.
-        /// Retreives ZipCode Availability, DatePosted, ListingDescription, Price, Host First and Last Name.
+        /// Retrieves ZipCode Availability, DatePosted, ListingDescription, Price, Host First and Last Name.
+        /// Note: Added retrieve HouseholdType despite not specified in householdListing viewing.
         /// </summary>
         /// <param name="hid">unique identifier of a household.</param>
         /// <returns></returns>
@@ -180,7 +185,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                 try
                 {
                     var query = "SELECT ZipCode, IsAvailable from dbo.Households WHERE HID = @hid;" +
-                                "SELECT ListingDescription, Price, DatePosted from dbo.HouseholdListings WHERE HID = @hid;" +
+                                "SELECT HouseHoldType, ListingDescription, Price, DatePosted from dbo.HouseholdListings WHERE HID = @hid;" +
                                 "SELECT FirstName, LastName from Residents INNER JOIN Users on Residents.SysID = Users.SysID WHERE HID = @hid;";
 
                     using (var command = new SqlCommand(query, connection, transaction))
@@ -217,6 +222,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                                 throw new Exception("Error encountered in HouseholdListing Retrieval");
                             }
                             var datePosted = (DateTime)reader["DatePosted"];
+                            var householdType = (string)reader["HouseHoldType"];
                             var description = (string)reader["ListingDescription"];
                             var price = (decimal)reader["Price"];
                             //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
@@ -243,7 +249,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                             }
                             #endregion
 
-                            model = new HHListingModel(hid, datePosted, availability, hostName: hostName, zipCode: zip, listingDescription: description, price: price);
+                            model = new HHListingModel(hid, datePosted, availability, hostName: hostName, zipCode: zip, householdType: householdType, listingDescription: description, price: price);
                             
                         }
                         transaction.Commit();
