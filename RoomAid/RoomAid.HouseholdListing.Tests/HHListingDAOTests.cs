@@ -27,6 +27,7 @@ namespace RoomAid.HouseholdListing.Tests
         private readonly string _testZipCodeString = "92868";
         private readonly string _testAddress = "Test Address"; //Note that households acnnot be created with the same address. Therefore, delete the household as cleanup.
         private readonly bool _testAvailabilityTrue = true;
+        HouseHold _testHousehold;
         #endregion
 
         #region Update HouseholdListing Information
@@ -56,12 +57,12 @@ namespace RoomAid.HouseholdListing.Tests
             hhService = new HouseHoldService(householdDAO);
             hhListingService = new HouseHoldListingService(listingDAO);
 
-            HouseHold _testHousehold = new RoomAid.ServiceLayer.HouseHold(_testRent, _testAddress, _testZipCodeInt, _testAvailabilityTrue);
+            _testHousehold = new RoomAid.ServiceLayer.HouseHold(_testRent, _testAddress, _testZipCodeInt, _testAvailabilityTrue);
             _testHouseholdID = hhService.CreateHouseHold(_testHousehold);
         }
 
         /// <summary>
-        /// Successful test from generating a household, inserting a listing, retrieving the listing, updating the listing, and finally deleting the listing.
+        /// Comprehensive test from generating a household, inserting a listing, retrieving the listing, updating the listing, and finally deleting the listing.
         /// If this test does not pass, the rest will most likely not pass.
         /// </summary>
         [TestMethod]
@@ -140,6 +141,7 @@ namespace RoomAid.HouseholdListing.Tests
             #endregion
         }
 
+        #region Insert Tests
         [TestMethod]
         public void HHListingDAO_Insert_TestDuplicateRecord_FAIL()
         {
@@ -192,6 +194,153 @@ namespace RoomAid.HouseholdListing.Tests
             //Assert
             Assert.AreEqual(expectedRowsChanged, resultRowsChanged);
         }
+        #endregion
+
+        
+
+        #region Retrieve Tests
+        [TestMethod]
+        public void HHListingDAO_Retrieve_TestNonExistingHousehold_Fail()
+        {
+            //Arrange
+            //Cleanup as part of arrange
+            hhService.DeleteHouseHold(_testHouseholdID);
+            var expectedModel = new HHListingModel();
+            //Act
+            var resultModel = listingDAO.Retrieve(_testHouseholdID);
+
+            //Assert
+            Assert.AreEqual(expectedModel.HID, resultModel.HID);
+            Assert.AreEqual(expectedModel.HostName, resultModel.HostName);
+            Assert.AreEqual(expectedModel.Availability, resultModel.Availability);
+            Assert.AreEqual(expectedModel.ZipCode, resultModel.ZipCode);
+            Assert.AreEqual(expectedModel.StreetAddress, resultModel.StreetAddress);
+            Assert.AreEqual(expectedModel.HouseholdType, resultModel.HouseholdType);
+            Assert.AreEqual(expectedModel.ListingDescription, resultModel.ListingDescription);
+            Assert.AreEqual(expectedModel.Price, resultModel.Price);
+        }
+
+        [TestMethod] //Household Listing should be created for every household. returns empty model.
+        public void HHListingDAO_Retrieve_TestNonExistingHouseholdListing_Fail()
+        {
+            //Arrange
+            var expectedModel = new HHListingModel();
+            
+
+            var resultModel = listingDAO.Retrieve(_testHouseholdID);
+
+            //Assert
+            Assert.AreEqual(expectedModel.HID, resultModel.HID);
+            Assert.AreEqual(expectedModel.HostName, resultModel.HostName);
+            Assert.AreEqual(expectedModel.Availability, resultModel.Availability);
+            Assert.AreEqual(expectedModel.ZipCode, resultModel.ZipCode);
+            Assert.AreEqual(expectedModel.StreetAddress, resultModel.StreetAddress);
+            Assert.AreEqual(expectedModel.HouseholdType, resultModel.HouseholdType);
+            Assert.AreEqual(expectedModel.ListingDescription, resultModel.ListingDescription);
+            Assert.AreEqual(expectedModel.Price, resultModel.Price);
+
+            //Cleanup as part of arrange
+            hhService.DeleteHouseHold(_testHouseholdID);
+        }
+        #endregion
+
+        #region Update Tests
+        [TestMethod]
+        public void HHLISTINGDAO_Update_TestNonExistentHousehold_Fail()
+        {
+            //Arrange
+            //Cleanup as part of arrange
+            hhService.DeleteHouseHold(_testHouseholdID);
+            var expectedRowsChanged = 0;
+            var updateModel = new HHListingModel(_testHouseholdID, DateTime.UtcNow, SqlBoolean.False, zipCode: _updateZipCode, streetAddress: _updateAddress,
+                householdType: _updateHouseholdType, listingDescription: _updateListingDescription, price: _updatePrice);
+            //Act
+            var resultRowsChanged = listingDAO.Update(updateModel);
+
+            //Assert
+            Assert.AreEqual(expectedRowsChanged, resultRowsChanged);
+        }
+
+        [TestMethod]
+        public void HHLISTINGDAO_Update_TestNonExistentHouseholdListing_Fail()
+        {
+            //Arrange
+            var expectedRowsChanged = 0;
+            var updateModel = new HHListingModel(_testHouseholdID, DateTime.UtcNow, SqlBoolean.False, zipCode: _updateZipCode, streetAddress: _updateAddress,
+                householdType: _updateHouseholdType, listingDescription: _updateListingDescription, price: _updatePrice);
+            //Act
+            var resultRowsChanged = listingDAO.Update(updateModel);
+
+            //Assert
+            Assert.AreEqual(expectedRowsChanged, resultRowsChanged);
+
+            //Cleanup
+            hhService.DeleteHouseHold(_testHouseholdID);
+        }
+
+        [TestMethod]
+        public void HHLISTINGDAO_Update_TestInvalidArgument_Fail()
+        {
+            //Arrange
+            var expectedRowsChangedInsert = 1;
+            var expectedRowsChangedUpdate = 0;
+            var falseZipCode = "123456"; //Non existent zip code in california. 6 digits.
+            var insertModel = new HHListingModel(_testHouseholdID);
+            var updateModel = new HHListingModel(_testHouseholdID, DateTime.UtcNow, SqlBoolean.False, zipCode: falseZipCode, streetAddress: _updateAddress,
+                householdType: _updateHouseholdType, listingDescription: _updateListingDescription, price: _updatePrice);
+            //Act
+            var resultRowsChangedInsert = listingDAO.Insert(insertModel);
+            var resultRowsChangedUpdate = listingDAO.Update(updateModel);
+
+            //Assert
+            Assert.AreEqual(expectedRowsChangedInsert, resultRowsChangedInsert);
+            Assert.AreEqual(expectedRowsChangedUpdate, resultRowsChangedUpdate);
+            //Cleanup as part of arrange
+            listingDAO.Delete(_testHouseholdID);
+            hhService.DeleteHouseHold(_testHouseholdID);
+        }
+        #endregion
+
+        #region Delete Tests
+        [TestMethod]
+        public void HHListingDAO_Delete_TestNonExistentHousehold_Fail()
+        {
+            //Arrange
+            //Cleanup as part of arrange
+            hhService.DeleteHouseHold(_testHouseholdID);
+            var expectedRowsChanged = 0;
+            var insertModel = new HHListingModel(_testHouseholdID);
+            //Act
+            var resultRowsChanged = listingDAO.Delete(_testHouseholdID);
+
+            //Assert
+            Assert.AreEqual(expectedRowsChanged, resultRowsChanged);
+        }
+
+
+        [TestMethod]
+        public void HHListingDAO_Delete_TestNonExistentHouseholdListing_Fail()
+        {
+            //Arrange
+            var expectedRowsChangedInsert1 = 1;
+            var expectedRowsChangedDelete1 = 1;
+            var expectedRowsChangedDelete2 = 0;
+            var insertModel = new HHListingModel(_testHouseholdID);
+            //Act
+            var resultRowsChangedInsert1 = listingDAO.Insert(insertModel);
+            var resultRowsChangedDelete1 = listingDAO.Delete(insertModel.HID);
+            var resultRowsChangedDelete2 = listingDAO.Delete(insertModel.HID);
+
+            //Assert
+            Assert.AreEqual(expectedRowsChangedInsert1, resultRowsChangedInsert1);
+            Assert.AreEqual(expectedRowsChangedDelete1, resultRowsChangedDelete1);
+            Assert.AreEqual(expectedRowsChangedDelete2, resultRowsChangedDelete2);
+            //Cleanup
+            hhService.DeleteHouseHold(_testHouseholdID);
+        }
+        #endregion 
+
+
 
 
 
