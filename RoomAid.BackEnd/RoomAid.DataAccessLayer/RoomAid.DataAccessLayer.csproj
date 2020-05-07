@@ -42,8 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD:RoomAid.BackEnd/RoomAid.DataAccessLayer/RoomAid.DataAccessLayer.csproj
     <Compile Include="HouseHoldManagement\HouseholdSearchDAO.cs" />
     <Compile Include="HouseHoldManagement\HouseholdSearchDTO.cs" />
+=======
+    <Compile Include="HouseHoldListing\HHListingDAO.cs" />
+    <Compile Include="HouseHoldListing\HHListingModel.cs" />
+    <Compile Include="HouseHoldListing\IHHListingDAO.cs" />
+>>>>>>> HouseholdListing:RoomAid/RoomAid.DataAccessLayer/RoomAid.DataAccessLayer.csproj
     <Compile Include="HouseHoldManagement\IHouseHoldDAO.cs" />
     <Compile Include="HouseHoldManagement\IHouseholdSearchDAO.cs" />
     <Compile Include="HouseHoldManagement\SqlHouseHoldDAO.cs" />
