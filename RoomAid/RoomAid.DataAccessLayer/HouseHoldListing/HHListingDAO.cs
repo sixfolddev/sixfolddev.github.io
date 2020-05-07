@@ -131,6 +131,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         {
             using(var connection = new SqlConnection(_dbConnectionString))
             {
+                connection.Open();
                 var transaction = connection.BeginTransaction("HouseholdListing Delete");
 
                 try
@@ -172,6 +173,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         {
             using (var connection = new SqlConnection(_dbConnectionString))
             {
+                connection.Open();
                 var transaction = connection.BeginTransaction("HouseholdListing Retrieve");
 
                 try
