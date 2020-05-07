@@ -91,7 +91,15 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
             string zipCode = _defaultZipCode, string streetAddress = _defaultStreetAddress, 
             string householdType = _defaultHouseholdType, string listingDescription = _defaultListingDescription, decimal price = _defaultPrice )
         {
-
+            HID = hid;
+            DatePosted = datePosted;
+            Availability = availability;
+            HostName = hostName;
+            ZipCode = zipCode;
+            StreetAddress =streetAddress;
+            HouseholdType = householdType;
+            ListingDescription = listingDescription;
+            Price = price;
         }
 
         

@@ -171,6 +171,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         /// <returns></returns>
         public HHListingModel Retrieve(int hid)
         {
+            HHListingModel model;
             using (var connection = new SqlConnection(_dbConnectionString))
             {
                 connection.Open();
@@ -178,7 +179,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
 
                 try
                 {
-                    var query = "SELECT ZipCode, Availability from dbo.Households WHERE HID = @hid;" +
+                    var query = "SELECT ZipCode, IsAvailable from dbo.Households WHERE HID = @hid;" +
                                 "SELECT ListingDescription, Price, DatePosted from dbo.HouseholdListings WHERE HID = @hid;" +
                                 "SELECT FirstName, LastName from Residents INNER JOIN Users on Residents.SysID = Users.SysID WHERE HID = @hid;";
 
@@ -191,64 +192,68 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                         var reader = command.EndExecuteReader(result);
 
                         #region Reads 1st Result of the batch query specified in var query.
+                        using (reader)
+                        {
+                            if (!reader.Read())
+                            {
+                                throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            }
+                            var zip = (string)reader["ZipCode"];
+                            var availability = reader.GetSqlBoolean(reader.GetOrdinal("IsAvailable")); //Previous error (SqlBoolean Cast unacceptable)
 
-                        if (!reader.Read())
-                        {
-                            throw new Exception("Error encountered in HouseholdListing Retrieval");
-                        } 
-                        var zip = (string)reader["ZipCode"];
-                        var availability = (SqlBoolean)reader["Availability"];//If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
-                        if (reader.Read())
-                        {
-                            throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
+                            if (reader.Read())
+                            {
+                                throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            }
+
+                            #endregion
+
+
+                            #region Reads 2nd result of the batch query specified in var query.
+                            reader.NextResult();
+                            if (!reader.Read())//Read the first result of the batch query specified in var query.
+                            {
+                                throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            }
+                            var datePosted = (DateTime)reader["DatePosted"];
+                            var description = (string)reader["ListingDescription"];
+                            var price = (decimal)reader["Price"];
+                            //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
+                            if (reader.Read())
+                            {
+                                throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            }
+                            #endregion
+
+
+                            #region Reads the third result set of the batch query specified in var query.
+                            reader.NextResult();
+                            var hostName = "Not Available";
+                            if (reader.Read())//Read the first result of the batch query specified in var query.
+                            {
+                                var firstName = (string)reader["FirstName"];
+                                var lastName = (string)reader["LastName"];
+                                hostName = firstName + lastName;
+                            }
+                            //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
+                            if (reader.Read())
+                            {
+                                throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            }
+                            #endregion
+
+                            model = new HHListingModel(hid, datePosted, availability, hostName: hostName, zipCode: zip, listingDescription: description, price: price);
+                            
                         }
-
-                        #endregion
-
-
-                        #region Reads 2nd result of the batch query specified in var query.
-                        reader.NextResult(); 
-                        if (!reader.Read())//Read the first result of the batch query specified in var query.
-                        {
-                            throw new Exception("Error encountered in HouseholdListing Retrieval");
-                        }
-                        var datePosted = (DateTime)reader["DatePosted"];
-                        var description = (string)reader["ListingDescription"];
-                        var price = (decimal)reader["Price"];
-                        //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
-                        if (reader.Read())
-                        {
-                            throw new Exception("Error encountered in HouseholdListing Retrieval");
-                        }
-                        #endregion
-
-
-                        #region Reads the third result set of the batch query specified in var query.
-                        reader.NextResult();
-                        var hostName = "Not Found";
-                        if (reader.Read())//Read the first result of the batch query specified in var query.
-                        {
-                            var firstName = (string)reader["FirstName"];
-                            var lastName = (string)reader["LastName"];
-                            hostName = firstName + lastName;
-                        }
-                        //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
-                        if (reader.Read())
-                        {
-                            throw new Exception("Error encountered in HouseholdListing Retrieval");
-                        }
-                        #endregion
-
-                        var model = new HHListingModel(hid, datePosted, availability, hostName: hostName, zipCode: zip, listingDescription: description, price: price);
                         transaction.Commit();
                         return model;
-                        
                     }
                 }
                 catch (Exception)
                 {
                     transaction.Rollback();
-                    var model = new HHListingModel();
+                    model = new HHListingModel();
                     return model;
                 }
             }
