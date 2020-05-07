@@ -218,6 +218,10 @@ namespace RoomAid.DataAccessLayer
                 command.Parameters.AddWithValue("@msgid", messageID);
                 string content = RetrieveOneColumn(command).ToString();
                 messageContent.Add(content); // Both commands above return only one column
+
+                command = new SqlCommand("UPDATE dbo.InboxMessages SET IsRead = 1 WHERE MessageID = @msgid");
+                command.Parameters.AddWithValue("msgid", messageID);
+                RunCommand(command); // Update message IsRead = true
             }
             catch (Exception e)
             {
@@ -268,7 +272,7 @@ namespace RoomAid.DataAccessLayer
 
         public int GetCount(int receiverID, bool isGeneral)
         {
-            var command = new SqlCommand("SELECT COUNT(MessageID) FROM dbo.InboxMessages WHERE SysID = @rcvid AND IsGeneral = @general");
+            var command = new SqlCommand("SELECT COUNT(MessageID) FROM dbo.InboxMessages WHERE SysID = @rcvid AND IsGeneral = @general AND IsRead = 0");
             command.Parameters.AddWithValue("@rcvid", receiverID);
             command.Parameters.AddWithValue("@general", isGeneral);
             try

@@ -1,10 +1,10 @@
 <template>
-<div id = "ReadMessageView"> <!-- Start inbox container -->
+<div id = "ReplyMessageView"> <!-- Start inbox container -->
   <v-content>
     <v-container fluid>
       <v-layout row>
         <v-flex md0><InboxNavBar/></v-flex>
-        <v-flex md12><MessageContainer/></v-flex>
+        <v-flex md12><NewMessageBox/></v-flex>>
       </v-layout>
     </v-container>
   </v-content>
@@ -14,19 +14,22 @@
 <script>
 // @ is an alias to /src
 import InboxNavBar from '@/components/InboxNavBar.vue'
-import MessageContainer from '@/components/MessageContainer.vue'
+import NewMessageBox from '@/components/NewMessageBox.vue'
 
 export default {
-  name: 'ReadMessageView',
+  name: 'ReplyMessageView',
   components: {
     InboxNavBar,
-    MessageContainer
+    NewMessageBox
   },
   data: () => ({
+
   }),
-  created () {
-  },
   methods: {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RoomAid.DataAccessLayer;
@@ -45,7 +46,9 @@ namespace RoomAid.Messaging.Tests
                 cmd = new SqlCommand("SELECT SysID FROM dbo.Users WHERE UserEmail = @email");
                 cmd.Parameters.AddWithValue("@email", email);
                 receiverID = (int)_messageDAO.RetrieveOneColumn(cmd); // Get SysID of user just created
-            }
+                //MakeTestData();
+                //DeleteTestData();
+                }
             catch (Exception e)
             {
                 Trace.WriteLine(e.ToString());
@@ -444,10 +447,13 @@ namespace RoomAid.Messaging.Tests
                 IList<MessageListing> inbox = manager.GetAllMessages(receiverID); // Retrieve all messages in inbox for user "Michell Kuang"
                 for (int i = 0; i < inbox.Count; i++)
                 {
-                    if(inbox[i].MessageID == messages[i].MessageID &&
+                    // Combine first and last to get full name
+                    StringBuilder sb = new StringBuilder(sendingUsers[i].FirstName);
+                    sb.Append(" ");
+                    sb.Append(sendingUsers[i].LastName);
+                    if (inbox[i].MessageID == messages[i].MessageID &&
                        inbox[i].SentDate.ToString().Equals(messages[i].SentDate.ToString()) &&
-                       inbox[i].FirstName.Equals(sendingUsers[i].FirstName) &&
-                       inbox[i].LastName.Equals(sendingUsers[i].LastName))
+                       inbox[i].FullName.Equals(sb.ToString()))
                     {
                         isSuccess = true;
                     }
@@ -461,8 +467,9 @@ namespace RoomAid.Messaging.Tests
             {
                 Trace.WriteLine(e);
             }
+
             //Cleanup other users created
-            foreach(User u in sendingUsers)
+            foreach (User u in sendingUsers)
             {
                 DeleteAccounts(u.UserEmail);
             }
@@ -528,10 +535,13 @@ namespace RoomAid.Messaging.Tests
                 IList<MessageListing> inbox = manager.GetAllInvitations(receiverID); // Retrieve all messages in inbox for user "Michell Kuang"
                 for (int i = 0; i < inbox.Count; i++)
                 {
+                    // Combine first and last to get full name
+                    StringBuilder sb = new StringBuilder(sendingUsers[i].FirstName);
+                    sb.Append(" ");
+                    sb.Append(sendingUsers[i].LastName);
                     if (inbox[i].MessageID == invitations[i].MessageID &&
                        inbox[i].SentDate.ToString().Equals(invitations[i].SentDate.ToString()) &&
-                       inbox[i].FirstName.Equals(sendingUsers[i].FirstName) &&
-                       inbox[i].LastName.Equals(sendingUsers[i].LastName))
+                       inbox[i].FullName.Equals(sb.ToString()))
                     {
                         isSuccess = true;
                     }
@@ -647,6 +657,57 @@ namespace RoomAid.Messaging.Tests
                 throw e;
             }
         }
+
+        private void MakeTestData()
+        {
+            IList<GeneralMessage> messages = new List<GeneralMessage>();
+            IList<User> sendingUsers = new List<User>();
+            try
+            {
+                CreateUser(receiverID, email, "Michell", "Kuang"); // Creating a user for the first account created in test initialization
+                for (int i = 0; i < _numMessages; i++) // Creating the same number of users as the number of messages that will be sent
+                {
+                    // Create email
+                    StringBuilder userEmail = new StringBuilder("email");
+                    userEmail.Append(i);
+                    userEmail.Append("@gmail.com");
+
+                    // Create first name
+                    StringBuilder firstName = new StringBuilder("FirstName");
+                    firstName.Append(i);
+
+                    // Create last name
+                    StringBuilder lastName = new StringBuilder("LastName");
+                    lastName.Append(i);
+
+                    CreateAccount(userEmail.ToString(), "TestPassword", "TestSalt"); // Create user
+                    var command = new SqlCommand("SELECT SysID FROM dbo.Users WHERE UserEmail = @email");
+                    command.Parameters.AddWithValue("@email", userEmail.ToString());
+                    int rcvid = (int)_messageDAO.RetrieveOneColumn(command); // Get SysID of user just created
+                    var user = CreateUser(rcvid, userEmail.ToString(), firstName.ToString(), lastName.ToString());
+                    sendingUsers.Add(user);
+
+                    messages.Add(new GeneralMessage(receiverID, rcvid, GetDateTime.GetUTCNow(), "Test message" + i)); // All messages will be sent to the first user created
+                    RoomAid.QueueConsumer.QueueConsumer.SendToDB((IMessage)messages[i]);
+
+                    command = new SqlCommand("SELECT MessageID FROM dbo.InboxMessages WHERE SenderID = @sendid");
+                    command.Parameters.AddWithValue("@sendid", rcvid);
+                    int incomingMessageID = (int)_messageDAO.RetrieveOneColumn(command);
+                    messages[i].MessageID = incomingMessageID;
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
+        }
         
+        public void DeleteTestData()
+        {
+            //Cleanup other users created
+            DeleteAccounts("email0@gmail.com");
+            DeleteAccounts("email1@gmail.com");
+            DeleteAccounts("email2@gmail.com");
+        }
     }
 }

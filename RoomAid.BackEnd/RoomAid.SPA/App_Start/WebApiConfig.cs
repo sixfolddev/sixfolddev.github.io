@@ -12,6 +12,9 @@ namespace RoomAid.SPA
     {
         public static void Register(HttpConfiguration config)
         {
+            // Enable CORS
+            config.EnableCors();
+
             // Web API configuration and services
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();
