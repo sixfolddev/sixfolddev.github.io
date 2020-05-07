@@ -246,7 +246,8 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    throw e;
+                    var model = new HHListingModel();
+                    return model;
                 }
             }
         }

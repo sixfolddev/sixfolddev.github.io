@@ -40,9 +40,25 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         public string ListingDescription { get; }
         public decimal Price { get; }
 
+        /// <summary>
+        /// Default constructor for a HHListingModel. Used when retreiving a non existn HHListingModel
+        /// </summary>
+        public HHListingModel()
+        {
+            HID = 0;
+            DatePosted = DateTime.UtcNow;
+            Availability = SqlBoolean.False;
+            HostName = _defaultHostName;
+            ZipCode = _defaultZipCode;
+            StreetAddress = _defaultStreetAddress;
+            HouseholdType = _defaultHouseholdType;
+            ListingDescription = _defaultListingDescription;
+            Price = _defaultPrice;
+
+        }
 
         /// <summary>
-        /// Default constructor for a HHListingModel. Used for Insert of a default HHListing
+        /// Used for Insert of a HHListing with default information
         /// </summary>
         /// <param name="hid">Household ID</param>
         public HHListingModel(int hid)
@@ -77,5 +93,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
         {
 
         }
+
+        
     }
 }
