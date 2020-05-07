@@ -14,9 +14,17 @@ namespace Roomaid.HouseholdSearch.Tests
     class HouseholdSearchTestDAO : IHouseholdSearchDAO
     {
         private ICollection<HouseholdSearchDTO> _mockData = new Collection<HouseholdSearchDTO>();
+        private ICollection<string> _mockCities = new Collection<string>();
         public HouseholdSearchTestDAO()
         {
             MockDatastore();
+        }
+
+        public ICollection<string> GetAutocompleteCities()
+        {
+            _mockCities.Add("Cypress");
+            _mockCities.Add("Long Beach");
+            return _mockCities;
         }
 
         public int GetTotalResultCountForQuery(string cityName, int minPrice, int maxPrice, string householdType)

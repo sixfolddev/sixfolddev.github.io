@@ -1,8 +1,10 @@
-﻿using RoomAid.ManagerLayer;
+﻿using Microsoft.AspNetCore.Cors;
+using RoomAid.ManagerLayer;
 using System;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using EnableCorsAttribute = System.Web.Http.Cors.EnableCorsAttribute;
 
 namespace RoomAid.SPA.Controllers
 {

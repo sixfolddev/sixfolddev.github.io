@@ -18,6 +18,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
         private readonly int _resultLimit = 20;
         private readonly string _SQLConnectionString;
         private readonly ICollection<HouseholdSearchDTO> _listing = new Collection<HouseholdSearchDTO>();
+        private readonly ICollection<string> _cities = new Collection<string>();
         public HouseholdSearchDAO(string connectionString)
         {
             _SQLConnectionString = connectionString;
@@ -142,5 +143,30 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
         }
 
         // TODO: Add functionality for returning city names for autocomplete frontend feature
+        public ICollection<string> GetAutocompleteCities()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_SQLConnectionString))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand("SELECT DISTINCT City FROM ZipLocations");
+                    cmd.Connection = connection;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            _cities.Add(reader.ToString());
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return _cities;
+        }
     }
 }

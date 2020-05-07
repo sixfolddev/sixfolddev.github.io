@@ -10,5 +10,6 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
     {
         ICollection<HouseholdSearchDTO> Search(string cityName, int page, int minPrice, int maxPrice, string householdType);
         int GetTotalResultCountForQuery(string cityName, int minPrice, int maxPrice, string householdType);
+        ICollection<string> GetAutocompleteCities();
     }
 }
