@@ -1,0 +1,67 @@
+
+  INSERT INTO Households(Rent, StreetAddress, ZipCode, IsAvailable) VALUES
+  (3000, '2934 Lincoln Ave', 90630, 1),
+  (500, '3241 Orange Ave', 90630, 1),
+  (700, '0542 Ball Rd', 90630, 0),
+  (1000, '32 Ivy Court', 95828, 1),
+  (400, '7718 Pendergast Ave', 92509, 1),
+  (1300, '7382 Marshall St', 90063, 0),
+  (950, '3241 Cleveland St', 90063, 1),
+  (300, '9392 Lake Dr', 90063, 1),
+  (550, '8523 Atlantic St', 90063, 1),
+  (700, '5919 Newport Ln', 90063, 1),
+  (1100, '58 Pawnee St', 90063, 1),
+  (1000, '22 Poplar St', 90063, 1),
+  (3200, '109 Sheffield St', 90063, 1),
+  (2200, '8029 Tanglewood Ave', 90063, 1),
+
+  (1400, '7045 Lookout Dr', 90063, 1),
+  (1450, '9955 Thorne Dr', 90063, 1),
+  (2200, '8259 St Louis Dr', 90063, 1),
+  (3221, '5252 Redwood Ln', 90063, 1),
+  (5200, '9873 Belmont Dr', 90063, 1),
+  (4000, '37 Briarwood St', 90063, 1),
+  (3000, '844 North Sheffield St', 90063,1),
+  (2300, '9782 Pheasant Ave', 90063,1),
+  (2500, '30 East 6th St', 90063, 1),
+  (3300, '268 Pin Oak Street', 90063,1),
+  (3500, '7511 Bridgeton Street', 90063,1),
+  (2200, '25 Spring St', 90063, 1),
+  (1800, '3 Boston Drive', 90063,1),
+  (4500, '637 Hartford St', 90063,1),
+  (2000, '9781 Primrose Street', 90063,1)
+
+
+
+
+  INSERT INTO HouseholdListings(HID, HouseHoldType, ListingDescription, Price) VALUES
+  (1, 'Apartment', 'Looking for 1 applicant', 400),
+  (2, 'Townhouse', 'Roomate wanted', 250),
+  (3, 'Apartment', 'Roomate wanted', 400),
+  (4, 'House', 'Roomate wanted', 450),
+  (5, 'Apartment', 'Roomate wanted', 200),
+  (6, 'Apartment', 'Roomate wanted', 400),
+  (7, 'Townhouse', 'Roomate wanted', 300),
+  (8, 'Townhouse', 'Roomate wanted', 150),
+  (9, 'House', 'Roomate wanted', 200),
+  (10, 'House', 'Roomate wanted', 400),
+  (11, 'Apartment', 'Roomate wanted', 550),
+  (12, 'Apartment', 'Roomate wanted', 300),
+  (13, 'House', 'Roomate wanted', 1600),
+  (14, 'Townhouse', 'Roomate wanted', 1100)
+
+  (15,'Townhouse', 'Roomate wanted', 700),
+  (16,'Townhouse', 'Roomate wanted', 700),
+  (17,'Townhouse', 'Roomate wanted',700),
+  (18,'Townhouse', 'Roomate wanted',700),
+  (19,'Townhouse', 'Roomate wanted',700),
+  (20,'Townhouse', 'Roomate wanted',700),
+  (21,'Apartment', 'Roomate wanted',550),
+  (22,'Apartment', 'Roomate wanted',550),
+  (23,'Apartment', 'Roomate wanted', 1100),
+  (24,'Apartment', 'Roomate wanted', 1100),
+  (25,'Apartment', 'Roomate wanted',400),
+  (26,'Apartment', 'Roomate wanted',550),
+  (27,'Apartment', 'Roomate wanted',400),
+  (28,'Apartment', 'Roomate wanted', 1100),
+  (29,'Apartment', 'Roomate wanted',550)

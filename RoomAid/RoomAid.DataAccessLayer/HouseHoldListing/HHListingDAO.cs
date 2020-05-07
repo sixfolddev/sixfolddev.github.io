@@ -223,13 +223,13 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
 
                         #region Reads the third result set of the batch query specified in var query.
                         reader.NextResult();
-                        if (!reader.Read())//Read the first result of the batch query specified in var query.
+                        var hostName = "Not Found";
+                        if (reader.Read())//Read the first result of the batch query specified in var query.
                         {
-                            throw new Exception("Error encountered in HouseholdListing Retrieval");
+                            var firstName = (string)reader["FirstName"];
+                            var lastName = (string)reader["LastName"];
+                            hostName = firstName + lastName;
                         }
-                        var firstName = (string)reader["FirstName"];
-                        var lastName = (string)reader["LastName"];
-                        var hostName = firstName + lastName;
                         //If there are still rows in the query, then the program has retrieved more than 1 householdListing with specified HID
                         if (reader.Read())
                         {
@@ -243,7 +243,7 @@ namespace RoomAid.DataAccessLayer.HouseHoldListing
                         
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
                     var model = new HHListingModel();

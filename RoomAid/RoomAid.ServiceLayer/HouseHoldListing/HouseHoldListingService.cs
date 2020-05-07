@@ -30,7 +30,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
                         return true;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //Should Logging be done for every failed attempt?
                 }
@@ -43,7 +43,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
         {
             try
             {
-                if (!validHouseholdTypeSize(hhType) | !validZipCodeSize(zipCode) | !validStreetAddressSize(address) | !validListingDescription(description))
+                if (!ValidHouseholdTypeSize(hhType) | !ValidZipCodeSize(zipCode) | !ValidStreetAddressSize(address) | !ValidListingDescription(description))
                 {
                     throw new ArgumentException("At least one input is invalid for HouseholdListing Update");
                 }
@@ -68,7 +68,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
                         return true;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //Should Logging be done for every failed attempt?
                 }
@@ -86,7 +86,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
                     var model = dao.Retrieve(hid);
                     return model;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //Should Logging be done for every failed attempt?
                 }
@@ -106,7 +106,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
                         return true;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //Should Logging be done for every failed attempt?
                 }
@@ -114,7 +114,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             throw new Exception("Error encountered in HouseholdListing Delete");
         }
 
-        private bool validHostNameSize(string input)
+        private bool ValidHostNameSize(string input)
         {
             if (input.Length <= HHListingModel.maxHostName)
             {
@@ -122,7 +122,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             }
             return false;
         }
-        private bool validZipCodeSize(string input)
+        private bool ValidZipCodeSize(string input)
         {
             if (input.Length <= HHListingModel.maxZipCode)
             {
@@ -130,7 +130,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             }
             return false;
         }
-        private bool validStreetAddressSize(string input)
+        private bool ValidStreetAddressSize(string input)
         {
             if (input.Length <= HHListingModel.maxStreetAddress)
             {
@@ -139,7 +139,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             return false;
         }
 
-        private bool validHouseholdTypeSize(string input)
+        private bool ValidHouseholdTypeSize(string input)
         {
             if (input.Length <= HHListingModel.maxHouseholdType)
             {
@@ -148,7 +148,7 @@ namespace RoomAid.ServiceLayer.HouseHoldListing
             return false;
         }
 
-        private bool validListingDescription(string input)
+        private bool ValidListingDescription(string input)
         {
             if (input.Length <= HHListingModel.maxListingDescription)
             {
