@@ -8,11 +8,17 @@
                 <v-data-table v-model="selected"
                 :headers="headers"
                 :items="messages"
-                item-key="id"
+                item-key="messageID"
                 show-select
-                sort-by="sentdate"
-                @click:row="goToMessage"
+                sort-by="sentDate"
+                no-data-text="No messages"
+                @click:row="openMessage"
                 class="messagelist">
+                <template v-slot:default="items">
+                  <div v-if="items.IsRead = true"> <!-- How so set conditional for already read messages? -->
+                    <tr v-bind:style="{ color: 'blue'}"></tr>
+                  </div>
+                </template>
                 </v-data-table>
               </template>
             </v-container>
@@ -26,37 +32,57 @@
 export default {
   name: 'InboxContainer',
   data: () => ({
+    userid: 0,
     messages: [],
     selected: [],
+    // Headers that identify a message in an inbox
     headers: [
-      { text: 'Name', sortable: true, value: 'name' },
-      { text: 'Date', sortable: true, defaultSortBy: true, value: 'sentdate' }
-    ]
+      { text: 'Name', sortable: true, value: 'fullName' },
+      { text: 'Date', sortable: true, defaultSortBy: true, value: 'sentDate' }
+    ],
+    messagetype: ''
   }),
   created () {
-    this.initialize()
-  },
-  computed: {
+    // Get user's id from persisted store
+    this.userid = this.$store.getters.userid
+    // Get type of message (general or invitation) from persisted store
+    this.messagetype = this.$store.getters.messagetype
+    // Fetch messages from database server
+    this.getMessages(this.messagetype)
   },
   methods: {
-    initialize () {
-      this.messages = [
-        { id: 1, name: 'Bojack Horseman', sentdate: '04/04/2019' },
-        { id: 2, name: 'Diane Nguyen', sentdate: '03/05/2018' }
-      ]
-    },
-    getMessages () {
-      const req = new Request(this.$hostname, {
+    // GET request for messages
+    getMessages (type) {
+      const uri = `${this.$hostname}/api/inbox/${type}/${this.userid}`
+      const req = new Request(uri, {
         method: 'GET',
-        headers: {
-          Accept: 'application/json'
-        },
+        headers: { Accept: 'application/json' },
         mode: 'cors'
       })
       fetch(req)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw new Error(response.status)
+          }
+        })
+        .then(data => {
+          data.forEach(m => {
+            this.messages.push(m)
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
-    goToMessage (item) {
-      this.$router.push(`/inbox/message/${item.id}`)
+    openMessage (item) {
+      // Update message info
+      this.$store.dispatch('updateMessageId', item.messageID)
+      this.$store.dispatch('updateOtherUserName', item.fullName)
+      this.$store.dispatch('updateMessageRead', item.isRead)
+      // Route to ReadMessageView
+      this.$router.push(`/inbox/message/${item.messageID}`)
     }
   }
 }

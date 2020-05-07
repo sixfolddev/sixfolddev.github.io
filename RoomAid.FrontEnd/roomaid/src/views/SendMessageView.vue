@@ -1,28 +1,31 @@
 <template>
 <div id = "SendMessageView"> <!-- Start inbox container -->
-  <v-container fluid>
-    <InboxNavBar/>
-  <div class="messages"> <!-- Start inbox container -->
-    <!-- Start message items -->
-  </div>
-  </v-container>
+  <v-content>
+    <v-container fluid>
+      <v-layout row>
+        <v-flex md0><InboxNavBar/></v-flex>
+        <v-flex md12><NewMessageBox/></v-flex>>
+      </v-layout>
+    </v-container>
+  </v-content>
 </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import InboxNavBar from '@/components/InboxNavBar.vue'
+import NewMessageBox from '@/components/NewMessageBox.vue'
 
 export default {
-  name: 'ReadMessageView',
+  name: 'SendMessageView',
   components: {
-    InboxNavBar
+    InboxNavBar,
+    NewMessageBox
   },
   data: () => ({
 
   }),
   methods: {
-
   }
 }
 </script>

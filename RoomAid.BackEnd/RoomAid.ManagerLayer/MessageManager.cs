@@ -2,6 +2,8 @@
 using RoomAid.ServiceLayer;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace RoomAid.ManagerLayer
 {
@@ -28,13 +30,16 @@ namespace RoomAid.ManagerLayer
                 var messageInbox = new List<MessageListing>(); // Container for all message listings in the inbox
                 foreach (IList<string> message in listOfMessagesDetails)
                 {
+                    // Combine first and last to get full name
+                    StringBuilder sb = new StringBuilder(message[3]);
+                    sb.Append(" ");
+                    sb.Append(message[4]);
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
                         IsRead = bool.Parse(message[1]),
-                        SentDate = DateTime.Parse(message[2]),
-                        FirstName = message[3],
-                        LastName = message[4]
+                        SentDate = DateTime.Parse(message[2]), // var formatDate = DateTime.Parse(message[2]).ToString("f", CultureInfo.CreateSpecificCulture("en-US"));
+                        FullName = sb.ToString()
                     };
                     messageInbox.Add(MessageListing);
                 }
@@ -56,13 +61,16 @@ namespace RoomAid.ManagerLayer
                 var invitationInbox = new List<MessageListing>(); // Container for all message listings in the inbox
                 foreach (IList<string> message in listOfMessagesDetails)
                 {
+                    // Combine first and last to get full name
+                    StringBuilder sb = new StringBuilder(message[3]);
+                    sb.Append(" ");
+                    sb.Append(message[4]);
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
                         IsRead = bool.Parse(message[1]),
                         SentDate = DateTime.Parse(message[2]),
-                        FirstName = message[3],
-                        LastName = message[4]
+                        FullName = sb.ToString()
                     };
                     invitationInbox.Add(MessageListing);
                 }

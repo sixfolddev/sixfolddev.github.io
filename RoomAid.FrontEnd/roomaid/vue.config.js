@@ -8,5 +8,7 @@ module.exports = {
     port: 44393, // CHANGE YOUR PORT HERE!
     https: true,
     hotOnly: false,
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }

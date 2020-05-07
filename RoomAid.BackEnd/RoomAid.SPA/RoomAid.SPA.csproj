@@ -371,6 +371,7 @@
     <Content Include="Models\MessageModel.edmx.diagram">
       <DependentUpon>MessageModel.edmx</DependentUpon>
     </Content>
+    <Content Include="App_Data\App.config" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -422,9 +423,7 @@
     </Content>
     <Content Include="Scripts\knockout.validation.min.js.map" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>

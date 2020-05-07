@@ -18,9 +18,9 @@
                         <v-list-item-title class="text-left">Messages</v-list-item-title>
                     </v-list-item-content>
                     <v-chip
-                        v-if="numUnread > 0"
+                        v-if="messagesUnread > 0"
                         color="green accent-3"
-                        small>{{numUnread}}
+                        small>{{messagesUnread}}
                     </v-chip>
                 </v-list-item>
                 <v-list-item router to="/inbox/invitations">
@@ -31,9 +31,9 @@
                         <v-list-item-title class="text-left">Invitations</v-list-item-title>
                     </v-list-item-content>
                     <v-chip
-                        v-if="numUnread > 0"
+                        v-if="invitationsUnread > 0"
                         color="green accent-3"
-                        small>{{numUnread}}
+                        small>{{invitationsUnread}}
                     </v-chip>
                 </v-list-item>
                 <v-list-item router to="/inbox/sent">
@@ -53,6 +53,14 @@
                     </v-list-item-content>
                 </v-list-item> -->
             </v-list>
+            <!-- temporary -->
+            <v-layout row style="position: absolute; bottom: 0">
+              <v-flex md-10>
+                <v-list-item dense>
+                  <v-btn id="newmessage" text class="success mx-0 mt-3" @click="newMessage">NEW MESSAGE</v-btn>
+                </v-list-item>
+              </v-flex>
+            </v-layout>
         </v-navigation-drawer>
     </nav>
     </div>
@@ -63,13 +71,64 @@ export default {
   name: 'InboxNavBar',
   data: () => ({
     drawer: true,
-    numUnread: 1
+    messagesUnread: 0,
+    invitationsUnread: 0,
+    userid: 2157
   }),
-  beforeDestroy () {
+  created () {
+    this.getNewCount()
   },
-  mounted () {
+  computed: {
+    unreadCount () {
+      return this.getNewCount()
+    }
   },
   methods: {
+    getNewCount () {
+      let uri = `${this.$hostname}/api/inbox/2157/true/messages/count`
+      let req = new Request(uri, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors'
+      })
+      fetch(req)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw new Error(response.status)
+          }
+        })
+        .then(data => {
+          this.messagesUnread = data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      uri = `${this.$hostname}/api/inbox/2157/false/messages/count`
+      req = new Request(uri, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors'
+      })
+      fetch(req)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw new Error(response.status)
+          }
+        })
+        .then(data => {
+          this.invitationsUnread = data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    newMessage () {
+      this.$router.push('/inbox/message/send/general')
+    }
   }
 }
 </script>

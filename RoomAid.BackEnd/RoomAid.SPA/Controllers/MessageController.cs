@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using EnableCorsAttribute = System.Web.Http.Cors.EnableCorsAttribute;
+using System.Configuration;
 
 namespace RoomAid.SPA.Controllers
 {
@@ -41,7 +42,7 @@ namespace RoomAid.SPA.Controllers
         }
 
         [HttpGet]
-        [Route("{receiverID}/messages")]
+        [Route("general/{receiverID}")]
         public IHttpActionResult GetAllMessages(int receiverID)
         {
             try
@@ -55,7 +56,7 @@ namespace RoomAid.SPA.Controllers
         }
 
         [HttpGet]
-        [Route("{receiverID}/invitations")]
+        [Route("invitation/{receiverID}")]
         public IHttpActionResult GetAllInvitations(int receiverID)
         {
             try
@@ -69,7 +70,21 @@ namespace RoomAid.SPA.Controllers
         }
 
         [HttpGet]
-        [Route("{receiverID}/{messageID}/general")]
+        [Route("sent/{receiverID}")]
+        public IHttpActionResult GetAllSent(int senderID)
+        {
+            try
+            {
+                return Ok(); // TODO: implement
+            }
+            catch
+            {
+                return StatusCode(HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("general/{receiverID}/{messageID}")]
         public IHttpActionResult ReadMessage(int receiverID, int messageID)
         {
             try
@@ -83,7 +98,7 @@ namespace RoomAid.SPA.Controllers
         }
 
         [HttpGet]
-        [Route("{receiverID}/{messageID}/invitation")]
+        [Route("invitation/{receiverID}/{messageID}")]
         public IHttpActionResult ReadInvitation(int receiverID, int messageID)
         {
             try
