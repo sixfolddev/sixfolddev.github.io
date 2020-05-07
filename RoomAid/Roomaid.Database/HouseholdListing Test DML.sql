@@ -1,11 +1,12 @@
 /*Initialization file for HouseholdListing Test DATA*/
 
 BEGIN /*Deletes information from tables relevant to household listings*/
- DELETE FROM HouseholdListings;
-	DELETE FROM Households;
+	DELETE FROM HouseholdListings;
 	DELETE FROM Residents;
+	DELETE FROM Households;
 	DELETE FROM Users;
 	DELETE FROM UserStatus;
+	DELETE UserRoles;
 END
 
   BEGIN /*Populates Enumeration Tables*/
