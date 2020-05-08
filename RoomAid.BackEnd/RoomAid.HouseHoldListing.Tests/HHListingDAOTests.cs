@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Text;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.SqlTypes;
 using RoomAid.DataAccessLayer;
 using RoomAid.DataAccessLayer.HouseHoldListing;
-using RoomAid.ServiceLayer;
+using RoomAid.DataAccessLayer.HouseHoldManagement;
+using RoomAid.ServiceLayer.HouseHoldManagement;
+using RoomAid.ServiceLayer; //Used for households? and household Service? name space issues.
 
 namespace RoomAid.HouseHoldListing.Tests
 {
@@ -15,6 +19,7 @@ namespace RoomAid.HouseHoldListing.Tests
         private IHouseHoldDAO householdDAO;
         //Services
         private ServiceLayer.HouseHoldService hhService;
+        private HouseHoldListingService hhListingService;
 
         //Testing Information
         private readonly string envConnectionString = "sqlConnectionSystemWithDatePosted";
@@ -25,7 +30,7 @@ namespace RoomAid.HouseHoldListing.Tests
         private readonly string _testZipCodeString = "92868";
         private readonly string _testAddress = "Test Address"; //Note that households acnnot be created with the same address. Therefore, delete the household as cleanup.
         private readonly bool _testAvailabilityTrue = true;
-        HouseHold _testHousehold;
+        ServiceLayer.HouseHold _testHousehold;
         #endregion
 
         #region Update HouseholdListing Information
@@ -53,6 +58,7 @@ namespace RoomAid.HouseHoldListing.Tests
             householdDAO = new SqlHouseHoldDAO(Environment.GetEnvironmentVariable(envConnectionString, EnvironmentVariableTarget.User));
 
             hhService = new HouseHoldService(householdDAO);
+            hhListingService = new HouseHoldListingService(listingDAO);
 
             _testHousehold = new RoomAid.ServiceLayer.HouseHold(_testRent, _testAddress, _testZipCodeInt, _testAvailabilityTrue);
             _testHouseholdID = hhService.CreateHouseHold(_testHousehold);
@@ -337,3 +343,4 @@ namespace RoomAid.HouseHoldListing.Tests
         }
         #endregion
     }
+}

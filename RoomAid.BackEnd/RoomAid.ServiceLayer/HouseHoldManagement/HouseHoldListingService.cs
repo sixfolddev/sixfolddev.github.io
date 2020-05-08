@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlTypes;
 using RoomAid.DataAccessLayer.HouseHoldListing;
 
-namespace RoomAid.ServiceLayer.HouseHoldListing
+namespace RoomAid.ServiceLayer.HouseHoldManagement
 {
     public class HouseHoldListingService
     {
