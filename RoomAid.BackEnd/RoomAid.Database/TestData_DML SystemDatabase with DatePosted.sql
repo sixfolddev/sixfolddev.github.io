@@ -6,7 +6,7 @@ BEGIN /*Deletes information from tables relevant to household listings*/
 	DELETE FROM Households;
 	DELETE FROM Users;
 	DELETE FROM UserStatus;
-	DELETE UserRoles;
+	DELETE FROM UserRoles;
 END
 
   BEGIN /*Populates Enumeration Tables*/
