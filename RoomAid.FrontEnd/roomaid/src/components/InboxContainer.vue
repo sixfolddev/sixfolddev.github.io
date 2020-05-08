@@ -1,5 +1,5 @@
 <template>
-  <div id="inboxcontainer">
+  <div id="inboxcontainer" data-cy="messagelist">
       <v-layout>
         <v-flex>
           <v-app style="background-color: white;" class="ma-n4">

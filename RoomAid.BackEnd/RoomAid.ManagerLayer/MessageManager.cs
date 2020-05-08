@@ -34,11 +34,12 @@ namespace RoomAid.ManagerLayer
                     StringBuilder sb = new StringBuilder(message[3]);
                     sb.Append(" ");
                     sb.Append(message[4]);
+                    var formatDate = DateTime.Parse(message[2]).ToString("f", CultureInfo.CreateSpecificCulture("en-US"));
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
                         IsRead = bool.Parse(message[1]),
-                        SentDate = DateTime.Parse(message[2]), // var formatDate = DateTime.Parse(message[2]).ToString("f", CultureInfo.CreateSpecificCulture("en-US"));
+                        SentDate = formatDate,
                         FullName = sb.ToString()
                     };
                     messageInbox.Add(MessageListing);
@@ -65,11 +66,12 @@ namespace RoomAid.ManagerLayer
                     StringBuilder sb = new StringBuilder(message[3]);
                     sb.Append(" ");
                     sb.Append(message[4]);
+                    var formatDate = DateTime.Parse(message[2]).ToString("f", CultureInfo.CreateSpecificCulture("en-US"));
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
                         IsRead = bool.Parse(message[1]),
-                        SentDate = DateTime.Parse(message[2]),
+                        SentDate = formatDate,
                         FullName = sb.ToString()
                     };
                     invitationInbox.Add(MessageListing);

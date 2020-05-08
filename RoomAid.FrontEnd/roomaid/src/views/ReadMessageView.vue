@@ -3,7 +3,7 @@
   <v-content>
     <v-container fluid>
       <v-layout row>
-        <v-flex md0><InboxNavBar/></v-flex>
+        <v-flex md0><InboxNavPane/></v-flex>
         <v-flex md12><MessageContainer/></v-flex>
       </v-layout>
     </v-container>
@@ -13,13 +13,13 @@
 
 <script>
 // @ is an alias to /src
-import InboxNavBar from '@/components/InboxNavBar.vue'
+import InboxNavPane from '@/components/InboxNavPane.vue'
 import MessageContainer from '@/components/MessageContainer.vue'
 
 export default {
   name: 'ReadMessageView',
   components: {
-    InboxNavBar,
+    InboxNavPane,
     MessageContainer
   },
   data: () => ({

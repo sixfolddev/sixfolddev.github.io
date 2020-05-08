@@ -29,7 +29,7 @@
 <script>
 export default {
   data: () => ({
-    uerid: 0,
+    userid: 0,
     sendtoid: 0,
     sendto: '',
     content: '',
@@ -52,10 +52,15 @@ export default {
   },
   methods: {
     sendMessage () {
-      const uri = `${this.$hostname}/api/inbox/${this.otheruserid}/${this.prevmessageid}/reply/${this.messagetype}/${this.userid}` // UPDATE LATER; THIS IS ONLY FOR REPLIES
+      const uri = `${this.$hostname}/api/inbox/${this.userid}/${this.prevmessageid}/reply/${this.messagetype}/${this.sendtoid}` // UPDATE LATER; THIS IS ONLY FOR REPLIES RIGHT NOW
+      const h = new Headers()
+      h.append('Access-Control-Allow-Origin', '*')
+      h.append('Access-Control-Allow-Methods', 'POST')
+      h.append('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
+      h.append('Content-Type', 'application/json')
       const req = new Request(uri, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: h,
         mode: 'cors',
         body: JSON.stringify(this.content)
       })
@@ -73,6 +78,11 @@ export default {
         .catch(err => {
           console.log(err)
         })
+      if (this.messagetype === 'general') {
+        this.$router.push('/inbox/messages')
+      } else {
+        this.$router.push('/inbox/invitations')
+      }
     }
   }
 }
