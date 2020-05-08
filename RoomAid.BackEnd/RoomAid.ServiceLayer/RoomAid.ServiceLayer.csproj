@@ -80,6 +80,7 @@
     <Compile Include="Authorization\AuthZService.cs" />
     <Compile Include="Authorization\IAuthZService.cs" />
     <Compile Include="GetDateTime.cs" />
+    <Compile Include="HouseHoldListing\HouseHoldListingService.cs" />
     <Compile Include="HouseHoldManagement\HouseholdSearchService.cs" />
     <Compile Include="HouseHoldManagement\IHouseholdSearchService.cs" />
     <Compile Include="Messaging\MessageListing.cs" />

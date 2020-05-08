@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HouseHoldListing\HHListingDAO.cs" />
+    <Compile Include="HouseHoldListing\HHListingModel.cs" />
+    <Compile Include="HouseHoldListing\IHHListingDAO.cs" />
     <Compile Include="HouseHoldManagement\HouseholdSearchDAO.cs" />
     <Compile Include="HouseHoldManagement\HouseholdSearchDTO.cs" />
     <Compile Include="HouseHoldManagement\IHouseHoldDAO.cs" />
