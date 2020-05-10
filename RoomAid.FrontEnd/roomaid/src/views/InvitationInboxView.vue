@@ -22,10 +22,15 @@ export default {
     InboxContainer
   },
   data: () => ({
-
+    type: 'invitation'
   }),
+  created () {
+    this.type = this.updateMessageType()
+  },
   methods: {
-
+    updateMessageType () {
+      this.$store.dispatch('updateMessageType', this.type)
+    }
   }
 }
 </script>

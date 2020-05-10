@@ -10,23 +10,19 @@ namespace RoomAid.ServiceLayer
         public bool IsRead { get; set; }
         // Timestamp of when a message is sent
         public DateTime SentDate { get; set; }
-        // First name of user who sent the message
-        public string FirstName { get; set; }
-        // Last name of user who sent the message
-        public string LastName { get; set; }
-
+        // First and last name of user who sent the message
+        public string FullName { get; set; }
         public MessageListing()
         {
 
         }
 
-        public MessageListing(int msgid, bool read, DateTime date, string fname, string lname)
+        public MessageListing(int msgid, bool read, DateTime date, string name)
         {
             MessageID = msgid;
             IsRead = read;
             SentDate = date;
-            FirstName = fname;
-            LastName = lname;
+            FullName = name;
         }
     }
 }

@@ -51,5 +51,10 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
         {
             return _searchService.GetTotalResultCountForQuery(cityName, minPrice, maxPrice, householdType);
         }
+        
+        public ICollection<string> GetAutocompleteCities()
+        {
+            return _searchService.GetAutocompleteCities();
+        }
     }
 }

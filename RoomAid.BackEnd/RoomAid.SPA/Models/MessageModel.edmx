@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MessageModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GeneralMessages">
+          <Key>
+            <PropertyRef Name="SysID" />
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="SysID" Type="int" Nullable="false" />
+          <Property Name="MessageID" Type="int" Nullable="false" />
+          <Property Name="MessageBody" Type="varchar" MaxLength="2000" />
+        </EntityType>
+        <EntityType Name="InboxMessages">
+          <Key>
+            <PropertyRef Name="SysID" />
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="SysID" Type="int" Nullable="false" />
+          <Property Name="MessageID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PrevMessageID" Type="int" />
+          <Property Name="SenderID" Type="int" Nullable="false" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="SentDate" Type="datetime" Nullable="false" />
+          <Property Name="IsGeneral" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Invitations">
+          <Key>
+            <PropertyRef Name="SysID" />
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="SysID" Type="int" Nullable="false" />
+          <Property Name="MessageID" Type="int" Nullable="false" />
+          <Property Name="IsAccepted" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_GeneralMessages_InboxMessages">
+          <End Role="InboxMessages" Type="Self.InboxMessages" Multiplicity="1" />
+          <End Role="GeneralMessages" Type="Self.GeneralMessages" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InboxMessages">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Principal>
+            <Dependent Role="GeneralMessages">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Invitations_InboxMessages">
+          <End Role="InboxMessages" Type="Self.InboxMessages" Multiplicity="1" />
+          <End Role="Invitations" Type="Self.Invitations" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InboxMessages">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Principal>
+            <Dependent Role="Invitations">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MessageModelStoreContainer">
+          <EntitySet Name="GeneralMessages" EntityType="Self.GeneralMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InboxMessages" EntityType="Self.InboxMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invitations" EntityType="Self.Invitations" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_GeneralMessages_InboxMessages" Association="Self.fk_GeneralMessages_InboxMessages">
+            <End Role="InboxMessages" EntitySet="InboxMessages" />
+            <End Role="GeneralMessages" EntitySet="GeneralMessages" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Invitations_InboxMessages" Association="Self.fk_Invitations_InboxMessages">
+            <End Role="InboxMessages" EntitySet="InboxMessages" />
+            <End Role="Invitations" EntitySet="Invitations" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MessageModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="GeneralMessage">
+          <Key>
+            <PropertyRef Name="SysID" />
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="SysID" Type="Int32" Nullable="false" />
+          <Property Name="MessageID" Type="Int32" Nullable="false" />
+          <Property Name="MessageBody" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="InboxMessage" Relationship="Self.fk_GeneralMessages_InboxMessages" FromRole="GeneralMessages" ToRole="InboxMessages" />
+        </EntityType>
+        <EntityType Name="InboxMessage">
+          <Key>
+            <PropertyRef Name="SysID" />
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="SysID" Type="Int32" Nullable="false" />
+          <Property Name="MessageID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PrevMessageID" Type="Int32" />
+          <Property Name="SenderID" Type="Int32" Nullable="false" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="SentDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsGeneral" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="GeneralMessage" Relationship="Self.fk_GeneralMessages_InboxMessages" FromRole="InboxMessages" ToRole="GeneralMessages" />
+          <NavigationProperty Name="Invitation" Relationship="Self.fk_Invitations_InboxMessages" FromRole="InboxMessages" ToRole="Invitations" />
+        </EntityType>
+        <EntityType Name="Invitation">
+          <Key>
+            <PropertyRef Name="SysID" />
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="SysID" Type="Int32" Nullable="false" />
+          <Property Name="MessageID" Type="Int32" Nullable="false" />
+          <Property Name="IsAccepted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="InboxMessage" Relationship="Self.fk_Invitations_InboxMessages" FromRole="Invitations" ToRole="InboxMessages" />
+        </EntityType>
+        <Association Name="fk_GeneralMessages_InboxMessages">
+          <End Role="InboxMessages" Type="Self.InboxMessage" Multiplicity="1" />
+          <End Role="GeneralMessages" Type="Self.GeneralMessage" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InboxMessages">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Principal>
+            <Dependent Role="GeneralMessages">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Invitations_InboxMessages">
+          <End Role="InboxMessages" Type="Self.InboxMessage" Multiplicity="1" />
+          <End Role="Invitations" Type="Self.Invitation" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InboxMessages">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Principal>
+            <Dependent Role="Invitations">
+              <PropertyRef Name="SysID" />
+              <PropertyRef Name="MessageID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MessageContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="GeneralMessages" EntityType="Self.GeneralMessage" />
+          <EntitySet Name="InboxMessages" EntityType="Self.InboxMessage" />
+          <EntitySet Name="Invitations" EntityType="Self.Invitation" />
+          <AssociationSet Name="fk_GeneralMessages_InboxMessages" Association="Self.fk_GeneralMessages_InboxMessages">
+            <End Role="InboxMessages" EntitySet="InboxMessages" />
+            <End Role="GeneralMessages" EntitySet="GeneralMessages" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Invitations_InboxMessages" Association="Self.fk_Invitations_InboxMessages">
+            <End Role="InboxMessages" EntitySet="InboxMessages" />
+            <End Role="Invitations" EntitySet="Invitations" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MessageModelStoreContainer" CdmEntityContainer="MessageContext">
+          <EntitySetMapping Name="GeneralMessages">
+            <EntityTypeMapping TypeName="MessageModel.GeneralMessage">
+              <MappingFragment StoreEntitySet="GeneralMessages">
+                <ScalarProperty Name="SysID" ColumnName="SysID" />
+                <ScalarProperty Name="MessageID" ColumnName="MessageID" />
+                <ScalarProperty Name="MessageBody" ColumnName="MessageBody" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InboxMessages">
+            <EntityTypeMapping TypeName="MessageModel.InboxMessage">
+              <MappingFragment StoreEntitySet="InboxMessages">
+                <ScalarProperty Name="SysID" ColumnName="SysID" />
+                <ScalarProperty Name="MessageID" ColumnName="MessageID" />
+                <ScalarProperty Name="PrevMessageID" ColumnName="PrevMessageID" />
+                <ScalarProperty Name="SenderID" ColumnName="SenderID" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="SentDate" ColumnName="SentDate" />
+                <ScalarProperty Name="IsGeneral" ColumnName="IsGeneral" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invitations">
+            <EntityTypeMapping TypeName="MessageModel.Invitation">
+              <MappingFragment StoreEntitySet="Invitations">
+                <ScalarProperty Name="SysID" ColumnName="SysID" />
+                <ScalarProperty Name="MessageID" ColumnName="MessageID" />
+                <ScalarProperty Name="IsAccepted" ColumnName="IsAccepted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

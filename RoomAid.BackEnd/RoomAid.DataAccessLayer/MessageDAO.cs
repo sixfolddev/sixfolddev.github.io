@@ -218,6 +218,10 @@ namespace RoomAid.DataAccessLayer
                 command.Parameters.AddWithValue("@msgid", messageID);
                 string content = RetrieveOneColumn(command).ToString();
                 messageContent.Add(content); // Both commands above return only one column
+
+                command = new SqlCommand("UPDATE dbo.InboxMessages SET IsRead = 1 WHERE MessageID = @msgid");
+                command.Parameters.AddWithValue("msgid", messageID);
+                RunCommand(command); // Update message IsRead = true
             }
             catch (Exception e)
             {
@@ -241,9 +245,9 @@ namespace RoomAid.DataAccessLayer
              * <add key ="querySelectUserName" value="SELECT FirstName, LastName FROM dbo.Users WHERE SysID = @sendid"/>
              */
             var command = new SqlCommand(ConfigurationManager.AppSettings["querySelectInbox"]); // Query to select message ID, sent date, and sender ID of messages
-            const int SenderIDIndex = 3;
             command.Parameters.AddWithValue("@rcvid", receiverID);
             command.Parameters.AddWithValue("@general", isGeneral);
+            const int SenderIDIndex = 3;
             try
             {
                 listOfMessagesDetails = RetrieveMultipleRows(command);
@@ -264,6 +268,21 @@ namespace RoomAid.DataAccessLayer
             }
 
             return listOfMessagesDetails;
+        }
+
+        public int GetCount(int receiverID, bool isGeneral)
+        {
+            var command = new SqlCommand("SELECT COUNT(MessageID) FROM dbo.InboxMessages WHERE SysID = @rcvid AND IsGeneral = @general AND IsRead = 0");
+            command.Parameters.AddWithValue("@rcvid", receiverID);
+            command.Parameters.AddWithValue("@general", isGeneral);
+            try
+            {
+                return (int) RetrieveOneColumn(command);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }
