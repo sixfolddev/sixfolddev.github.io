@@ -24,12 +24,13 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
         /// <param name="minPrice"></param>
         /// <param name="maxPrice"></param>
         /// <param name="householdType"></param>
-        /// <returns></returns>
+        /// <returns>Returning a readonly collection of Households </returns>
         public ICollection<HouseholdSearchDTO> Search(string cityName, int page, int minPrice, int maxPrice, string householdType)
         {
             try
             {
-                ICollection<HouseholdSearchDTO> resultsListing = _searchService.Search(cityName, page, minPrice, maxPrice, householdType);
+                var  resultsListing = _searchService.Search(cityName, page, minPrice, maxPrice, householdType);
+
                 //TODO: Log Search
                 return resultsListing;
             }

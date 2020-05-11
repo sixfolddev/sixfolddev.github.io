@@ -58,13 +58,16 @@ namespace Roomaid.HouseholdSearch.Tests
         /// <summary>
         /// Used to instantiate HouseholdSearchService, HouseholdSearchManager, and HouseholdSearchDAO similar to how the HouseholdSearchController would.
         /// </summary>
-        private HouseholdSearchManager instantiateLayers()
+
+        private HouseholdSearchManager InstantiateLayers()
         {
             IHouseholdSearchDAO searchDAO = new HouseholdSearchDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
             IHouseholdSearchService searchService = new HouseholdSearchService(searchDAO);
             HouseholdSearchManager searchManager = new HouseholdSearchManager(searchService);
             return searchManager;
         }
+
+
 
         /// <summary>
         /// Search all available households in "Los Angeles". *Expect 20 values (a full page) from test data*
@@ -73,15 +76,14 @@ namespace Roomaid.HouseholdSearch.Tests
         public void Search_SearchByCityWithoutFilters_Pass()
         {
             //Arrange
-            var expected = true;
-            var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
+
             //Act
-            ICollection<HouseholdSearchDTO> resultListing = searchManager.Search("Los Angeles", 1, 0, 10000, "none");
+            var searchResults = searchManager.Search("Los Angeles", 1, 0, 10000, "none");
+
             //Assert
-            if (resultListing.Count == 20)
-                actual = true;
-            Assert.AreEqual(actual, expected);
+            Assert.IsNotNull(searchResults);
+            Assert.IsTrue(searchResults.Count == 20);
         }
 
         /// <summary>
@@ -93,7 +95,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             ICollection<HouseholdSearchDTO> resultListing = searchManager.Search("Cypress", 1, 0, 10000, "Apartment");
             //Assert
@@ -111,7 +113,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             ICollection<HouseholdSearchDTO> resultListing = searchManager.Search("Los Angeles", 1, 500, 1000, "none");
             //Assert
@@ -129,7 +131,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             ICollection<HouseholdSearchDTO> resultListing = searchManager.Search("Los Angeles", 1, 500, 2000, "Townhouse");
             //Assert
@@ -147,7 +149,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             ICollection<HouseholdSearchDTO> resultListing = searchManager.Search("Los Angeles", 2, 0, 10000, "none");
             //Assert
@@ -165,7 +167,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             ICollection<HouseholdSearchDTO> resultListing = searchManager.Search("Los Altos", 1, 0, 10000, "none");
             //Assert
@@ -183,7 +185,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             Stopwatch sw = new Stopwatch();
             //Act
             sw.Start();
@@ -204,7 +206,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             var resultCount = searchManager.GetTotalResultCountForQuery("Los Angeles", 0, 10000, "none");
             //Assert
@@ -222,7 +224,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             var resultCount = searchManager.GetTotalResultCountForQuery("Los Altos", 0, 10000, "none");
             //Assert
@@ -240,7 +242,7 @@ namespace Roomaid.HouseholdSearch.Tests
             //Arrange
             var expected = true;
             var actual = false;
-            var searchManager = instantiateLayers();
+            var searchManager = InstantiateLayers();
             //Act
             var cities = searchManager.GetAutocompleteCities();
             //Assert

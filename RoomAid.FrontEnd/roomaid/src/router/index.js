@@ -50,6 +50,11 @@ const routes = [
     component: () => import('../views/HouseholdSearchView')
   },
   {
+    path: '/listing',
+    name: 'HouseholdListing',
+    component: () => import('../views/SearchListingView')
+  },
+  {
     path: '/inbox/message/reply/:type',
     name: 'ReplyMessage',
     component: () => import('../views/ReplyMessageView')

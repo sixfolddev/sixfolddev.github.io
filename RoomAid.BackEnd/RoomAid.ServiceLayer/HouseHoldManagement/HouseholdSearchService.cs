@@ -17,6 +17,7 @@ namespace RoomAid.ServiceLayer.HouseHoldManagement
         public ICollection<HouseholdSearchDTO> Search(string cityName, int page, int minPrice, int maxPrice, string householdType)
         {
             return _householdSearchDAO.Search(cityName, page, minPrice, maxPrice, householdType);
+
         }
         public int GetTotalResultCountForQuery(string cityName, int minPrice, int maxPrice, string householdType)
         {

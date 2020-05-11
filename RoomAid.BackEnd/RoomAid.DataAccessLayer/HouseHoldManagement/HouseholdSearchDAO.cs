@@ -48,21 +48,23 @@ namespace RoomAid.DataAccessLayer.HouseHoldManagement
                 {
                     connection.Open();
                     SqlCommand cmd;
+
+
                     // HACK:System.InvalidOperationException: ExecuteReader: CommandText property has not been initialized when using appconfig
                     // HACK: How to include 'IS NOT NULL' through Parameters.AddWithValue to account for no type filter being selected
                     if (householdType.Equals("none"))
                     {
                         cmd = new SqlCommand
                         ("SELECT HouseholdType, ListingDescription, Price FROM HouseholdListings INNER JOIN Households INNER JOIN ZipLocations ON Households.ZipCode = ZipLocations.ZipCode ON Households.HID = HouseholdListings.HID WHERE HouseholdListings.HouseHoldType IS NOT NULL AND HouseholdListings.Price BETWEEN @minPrice AND @maxPrice AND Households.IsAvailable = 1 AND ZipLocations.City = @cityName ORDER BY Households.HID OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY");
-                        cmd.Parameters.AddWithValue("@cityName", cityName);
-                        cmd.Parameters.AddWithValue("@minPrice", minPrice);
-                        cmd.Parameters.AddWithValue("@maxPrice", maxPrice);
+                        cmd.Parameters.AddWithValue($"@{nameof(cityName)}", cityName);
+                        cmd.Parameters.AddWithValue($"@minPrice", minPrice);
+                        cmd.Parameters.AddWithValue($"@maxPrice", maxPrice);
                         cmd.Parameters.AddWithValue("@offset", (page - 1) * _resultLimit);
                         cmd.Parameters.AddWithValue("@limit", _resultLimit);
                     }
                     else
                     {
-                        cmd = new SqlCommand("SELECT HouseholdType, ListingDescription, Price FROM HouseholdListings INNER JOIN Households INNER JOIN ZipLocations ON Households.ZipCode = ZipLocations.ZipCode ON Households.HID = HouseholdListings.HID WHERE HouseholdListings.HouseHoldType = @householdType AND HouseholdListings.Price BETWEEN @minPrice AND @maxPrice AND Households.IsAvailable = 1 AND ZipLocations.City = @cityName ORDER BY Households.HID OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY");
+                        cmd = new SqlCommand("SELECT HouseholdType, ListingDescription, Price FROM HouseholdListings INNER JOIN Households INNER JOIN ZipLocations ON Households.ZipCode = ZipLocations.ZipCode ON Households.HID = HouseholdListings.HID WHERE HouseholdListings.HouseHoldType = COALESCE(@householdType, 'ALL') AND HouseholdListings.Price BETWEEN @minPrice AND @maxPrice AND Households.IsAvailable = 1 AND ZipLocations.City = @cityName ORDER BY Households.HID OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY");
                         cmd.Parameters.AddWithValue("@cityName", cityName);
                         cmd.Parameters.AddWithValue("@householdType", householdType);
                         cmd.Parameters.AddWithValue("@minPrice", minPrice);
