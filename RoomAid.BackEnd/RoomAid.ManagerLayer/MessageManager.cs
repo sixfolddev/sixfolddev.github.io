@@ -2,6 +2,8 @@
 using RoomAid.ServiceLayer;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace RoomAid.ManagerLayer
 {
@@ -28,13 +30,16 @@ namespace RoomAid.ManagerLayer
                 var messageInbox = new List<MessageListing>(); // Container for all message listings in the inbox
                 foreach (IList<string> message in listOfMessagesDetails)
                 {
+                    // Combine first and last to get full name
+                    StringBuilder sb = new StringBuilder(message[3]);
+                    sb.Append(" ");
+                    sb.Append(message[4]);
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
                         IsRead = bool.Parse(message[1]),
-                        SentDate = DateTime.Parse(message[2]),
-                        FirstName = message[3],
-                        LastName = message[4]
+                        SentDate = DateTime.Parse(message[2]), // var formatDate = DateTime.Parse(message[2]).ToString("f", CultureInfo.CreateSpecificCulture("en-US"));
+                        FullName = sb.ToString()
                     };
                     messageInbox.Add(MessageListing);
                 }
@@ -56,13 +61,16 @@ namespace RoomAid.ManagerLayer
                 var invitationInbox = new List<MessageListing>(); // Container for all message listings in the inbox
                 foreach (IList<string> message in listOfMessagesDetails)
                 {
+                    // Combine first and last to get full name
+                    StringBuilder sb = new StringBuilder(message[3]);
+                    sb.Append(" ");
+                    sb.Append(message[4]);
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
                         IsRead = bool.Parse(message[1]),
                         SentDate = DateTime.Parse(message[2]),
-                        FirstName = message[3],
-                        LastName = message[4]
+                        FullName = sb.ToString()
                     };
                     invitationInbox.Add(MessageListing);
                 }
@@ -77,86 +85,140 @@ namespace RoomAid.ManagerLayer
 
         public bool SendMessage(int receiverID, int senderID, string messageBody)
         {
-            if(messageBody == "" || messageBody == null) // NOTE: do check on front=end?
+            try
             {
-                // TODO: throw new messagebody null exception?
-                return false; // TODO: How to accept a boolean from front-end?
+                if (messageBody == "" || messageBody == null) // NOTE: do check on front=end?
+                {
+                    throw new Exception("Message body cannot be empty");
+                    
+                }
+                var newMessage = new GeneralMessage(receiverID, senderID, GetDateTime.GetUTCNow(), messageBody);
+                Send(newMessage);
+                return true;
             }
-            var newMessage = new GeneralMessage(receiverID, senderID, GetDateTime.GetUTCNow(), messageBody);
-            Send(newMessage);
-            return true;
+            catch (Exception e)
+            {
+                _errorHandler.Handle(e);
+                return false;
+            }
         }
 
-        public void SendInvitation(int receiverID, int senderID)
+        public bool SendInvitation(int receiverID, int senderID)
         {
-            var invitation = new Invitation(receiverID, senderID, GetDateTime.GetUTCNow());
-            Send(invitation);
+            try
+            {
+                var invitation = new Invitation(receiverID, senderID, GetDateTime.GetUTCNow());
+                Send(invitation);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _errorHandler.Handle(e);
+                return false;
+            }
         }
 
         public bool ReplyMessage(int receiverID, int prevMessageID, int senderID, string messageBody)
         {
-            if (messageBody == "" || messageBody == null) // NOTE: do check on front=end?
+            try
             {
-                // TODO: throw new messagebody null exception?
-                return false; // How to accept a boolean from front-end?
+                if (messageBody == "" || messageBody == null) // NOTE: do check on front=end?
+                {
+                    throw new Exception("Message body cannot be empty");
+                }
+                var reply = new GeneralMessage(receiverID, prevMessageID, senderID, GetDateTime.GetUTCNow(), messageBody);
+                return Send(reply);
             }
-            var reply = new GeneralMessage(receiverID, prevMessageID, senderID, GetDateTime.GetUTCNow(), messageBody);
-            return Send(reply);
+            catch (Exception e)
+            {
+                _errorHandler.Handle(e);
+                return false;
+            }
         }
 
         public bool ReplyInvitation(int receiverID, int prevMessageID, int senderID, bool accepted)
         {
-            var reply = new Invitation(receiverID, prevMessageID, senderID, GetDateTime.GetUTCNow());
-            if (accepted)
+            try
             {
-                reply.IsAccepted = true;
+                var reply = new Invitation(receiverID, prevMessageID, senderID, GetDateTime.GetUTCNow());
+                if (accepted)
+                {
+                    reply.IsAccepted = true;
+                }
+                return Send(reply);
             }
-            return Send(reply);
-        }
-
-        public IMessage ReadMessage(int receiverID, int messageID)
-        {
-            // Assign strings to corresponding message fields
-            IList<string> messageContent = (List<string>)_messageService.ReadMessage(_dao, receiverID, messageID, true);
-            int prevMessageID = Int32.Parse(messageContent[0]); // TODO: If they click on this, call ReadMessage() again
-            int senderID = Int32.Parse(messageContent[1]);
-            bool read = true; // Always true because a message is being read
-            DateTime date = DateTime.Parse(messageContent[2]);
-            string content = messageContent[3];
-            // Create message
-            var message = new GeneralMessage(receiverID, prevMessageID, senderID, date, content)
+            catch (Exception e)
             {
-                // Set MessageID and IsRead to values above
-                MessageID = messageID,
-                IsRead = read
-            };
-            return message;
+                _errorHandler.Handle(e);
+                return false;
+            }
         }
 
         /// <summary>
-        /// 
+        /// Returns a message from an inbox for reading
         /// </summary>
-        /// <param name="receiverID"></param>
-        /// <param name="messageID"></param>
+        /// <param name="receiverID">ID of user reading the invitation</param>
+        /// <param name="messageID">ID of the message being read</param>
+        /// <returns></returns>
+        public IMessage ReadMessage(int receiverID, int messageID)
+        {
+            try
+            {
+                // Assign strings to corresponding message fields
+                IList<string> messageContent = (List<string>)_messageService.ReadMessage(_dao, receiverID, messageID, true);
+                int prevMessageID = Int32.Parse(messageContent[0]); // TODO: If they click on this, call ReadMessage() again
+                int senderID = Int32.Parse(messageContent[1]);
+                bool read = true; // Always true because a message is being read
+                DateTime date = DateTime.Parse(messageContent[2]);
+                string content = messageContent[3];
+                // Create message
+                var message = new GeneralMessage(receiverID, prevMessageID, senderID, date, content)
+                {
+                    // Set MessageID and IsRead to values above
+                    MessageID = messageID,
+                    IsRead = read
+                };
+                return message;
+            }
+            catch (Exception e)
+            {
+                _errorHandler.Handle(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns an invitation from an inbox for reading
+        /// </summary>
+        /// <param name="receiverID">ID of user reading the invitation</param>
+        /// <param name="messageID">ID of the message being read</param>
         /// <returns></returns>
         public IMessage ReadInvitation(int receiverID, int messageID)
         {
-            // Assign strings to corresponding message fields
-            IList<string> invitationContent = (List<string>)_messageService.ReadMessage(_dao, receiverID, messageID, false);
-            int prevMessageID = Int32.Parse(invitationContent[0]);
-            int senderID = Int32.Parse(invitationContent[1]);
-            bool read = true; // Always true because a message is being read
-            DateTime date = DateTime.Parse(invitationContent[2]);
-            bool accepted = bool.Parse(invitationContent[3]);
-            // Create invitation
-            var invitation = new Invitation(receiverID, prevMessageID, senderID, date)
+            try
             {
-                // Set MessageID and IsRead to values above
-                MessageID = messageID,
-                IsRead = read,
-                IsAccepted = accepted
-            };
-            return invitation;
+                // Assign strings to corresponding message fields
+                IList<string> invitationContent = (List<string>)_messageService.ReadMessage(_dao, receiverID, messageID, false);
+                int prevMessageID = Int32.Parse(invitationContent[0]);
+                int senderID = Int32.Parse(invitationContent[1]);
+                bool read = true; // Always true because a message is being read
+                DateTime date = DateTime.Parse(invitationContent[2]);
+                bool accepted = bool.Parse(invitationContent[3]);
+                // Create invitation
+                var invitation = new Invitation(receiverID, prevMessageID, senderID, date)
+                {
+                    // Set MessageID and IsRead to values above
+                    MessageID = messageID,
+                    IsRead = read,
+                    IsAccepted = accepted
+                };
+                return invitation;
+            }
+            catch (Exception e)
+            {
+                _errorHandler.Handle(e);
+                return null;
+            }
         }
 
         /// <summary>
@@ -178,5 +240,23 @@ namespace RoomAid.ManagerLayer
             }
         }
 
+        /// <summary>
+        /// Returns the number of new (unread) messages in an inbox
+        /// </summary>
+        /// <param name="receiverID">ID of user checking their inbox</param>
+        /// <param name="isGeneral">Indicates whether a message is general or not (invitation)</param>
+        /// <returns></returns>
+        public int GetNewCount(int receiverID, bool isGeneral)
+        {
+            try
+            {
+                return _messageService.GetNewCount(_dao, receiverID, isGeneral);
+            }
+            catch (Exception e)
+            {
+                _errorHandler.Handle(e);
+                return 0;
+            }
+        }
     }
 }

@@ -3,9 +3,6 @@
   <v-container fluid>
     <InboxNavBar/>
     <InboxContainer/>
-  <div class="messages"> <!-- Start inbox container -->
-    <!-- Start message items -->
-  </div>
   </v-container>
 </div>
 </template>
@@ -22,8 +19,15 @@ export default {
     InboxContainer
   },
   data: () => ({
+    type: 'general'
   }),
+  created () {
+    this.type = this.updateMessageType()
+  },
   methods: {
+    updateMessageType () {
+      this.$store.dispatch('updateMessageType', this.type)
+    }
   }
 }
 </script>

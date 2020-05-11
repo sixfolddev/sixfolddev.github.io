@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
-Vue.prototype.$hostname = 'https://localhost:8080'
+Vue.prototype.$hostname = 'https://localhost:44393'
 
 new Vue({
   router,

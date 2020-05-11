@@ -3,8 +3,9 @@
     <div id="static">
     <div id="nav">
       <router-link to="/home">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/inbox">Inbox</router-link> |
+      <router-link to="/about">About</router-link>
+        <router-link to="/inbox">Inbox</router-link>
+        <router-link to="/inbox">Inbox</router-link> |
       <router-link to="/registration">Registration</router-link> |
       <router-link to="/householCreation">Create a household</router-link>
     </div>

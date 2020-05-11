@@ -22,5 +22,9 @@ namespace RoomAid.ServiceLayer.HouseHoldManagement
         {
             return _householdSearchDAO.GetTotalResultCountForQuery(cityName, minPrice, maxPrice, householdType);
         }
+        public ICollection<string> GetAutocompleteCities()
+        {
+            return _householdSearchDAO.GetAutocompleteCities();
+        }
     }
 }

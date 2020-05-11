@@ -78,5 +78,23 @@ namespace RoomAid.ServiceLayer
                 throw e;
             }
         }
+
+        /// <summary>
+        /// Retrieves the number of unew (nread) messages in an inbox
+        /// </summary>
+        /// <param name="receiverID"></param>
+        /// <param name="isGeneral"></param>
+        /// <returns></returns>
+        public int GetNewCount(MessageDAO dao, int receiverID, bool isGeneral)
+        {
+            try
+            {
+                return dao.GetCount(receiverID, isGeneral);   
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }

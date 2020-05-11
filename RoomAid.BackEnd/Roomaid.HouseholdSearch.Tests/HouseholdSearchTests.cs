@@ -231,7 +231,23 @@ namespace Roomaid.HouseholdSearch.Tests
             Assert.AreEqual(actual, expected);
 
         }
-
+        /// <summary>
+        /// Tests method for getting complete list of cities for autocomplete. *Returns 1238 values from database*
+        /// </summary>
+        [TestMethod]
+        public void GetAutocompleteCities_GetTotalListOfCities_Pass()
+        {
+            //Arrange
+            var expected = true;
+            var actual = false;
+            var searchManager = instantiateLayers();
+            //Act
+            var cities = searchManager.GetAutocompleteCities();
+            //Assert
+            if (cities.Count  == 1238)
+                actual = true;
+            Assert.AreEqual(actual, expected);
+        }
         /// <summary>
         /// Used to display time taken during performance test in the Test Detail Summary
         /// </summary>
