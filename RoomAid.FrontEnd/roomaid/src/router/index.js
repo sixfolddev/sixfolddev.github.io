@@ -43,17 +43,7 @@ const routes = [
     path: '/inbox/message/send',
     name: 'SendMessage',
     component: () => import('../views/SendMessageView')
-  },
-  {
-    path: '/search',
-    name: 'HouseholdSearch',
-    component: () => import('../views/HouseholdSearchView')
-  },
-  {
-    path: '/inbox/message/reply/:type',
-    name: 'ReplyMessage',
-    component: () => import('../views/ReplyMessageView')
-  }
+  } // type: general, invitation;
 ]
 
 const router = new VueRouter({
