@@ -12,7 +12,8 @@ namespace RoomAid.ServiceLayer
     public class PermissionUpdateSqlService:IUpdateAccountService
     {
         private readonly ISqlDAO _dao;
-        private readonly List<Permission> _permissions;
+        private readonly IMapperDAO _mapperDAO;
+        public List<Permission> _permissions { get; set; }
        
 
 
@@ -21,6 +22,12 @@ namespace RoomAid.ServiceLayer
         /// </summary>
         /// <param name="dao"></param>
         /// <param name="permissions"></param>
+        /// 
+        public PermissionUpdateSqlService(ISqlDAO dao, IMapperDAO mapperDao)
+        {
+            _dao = dao;
+            _mapperDAO = mapperDao;
+        }
         public PermissionUpdateSqlService(ISqlDAO dao, List<Permission> permissions)
         {
             _dao = dao;
@@ -30,8 +37,13 @@ namespace RoomAid.ServiceLayer
         public PermissionUpdateSqlService(ISqlDAO dao, Permission permission)
         {
             _dao = dao;
-            _permissions = new List<Permission>();
-            _permissions.Add(permission);
+            _permissions = new List<Permission> { permission };
+        }
+
+        public int SysIdFinder(User user)
+        {
+            IMapperDAO mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+            return mapperDAO.GetSysID(user.UserEmail);
         }
 
 

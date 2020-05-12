@@ -9,17 +9,24 @@ namespace RoomAid.ServiceLayer
 {
     public class SqlCreateAccountService : ICreateAccountService
     {
-        private readonly List<Account> _newAccounts; //ICollection instead of list for more flexibility
+        public List<Account> _newAccounts { get; set; } //ICollection instead of list for more flexibility
         private readonly ICreateAccountDAO newAccountDAO; 
         private readonly ICreateAccountDAO newMappingDAO;
         private readonly IMapperDAO mapperDAO; 
-        private readonly ICreateAccountDAO newUserDAO; 
+        private readonly ICreateAccountDAO newUserDAO;
 
         /// <summary>
         /// Service that crafts queries for inserting a new row in the account table for new account
         /// </summary>
         /// <param name="newAccount"></param>
-        public SqlCreateAccountService(Account newAccount, CreateAccountDAOs daos)
+        public SqlCreateAccountService(CreateAccountDAOs daos)
+        {
+            newAccountDAO = daos.CreateAccountDAO;
+            newMappingDAO = daos.CreateMappingDAO;
+            mapperDAO = daos.MapperDAO;
+            newUserDAO = daos.CreateUserDAO;
+        }
+            public SqlCreateAccountService(Account newAccount, CreateAccountDAOs daos)
         {
             this._newAccounts = new List<Account>();
             this._newAccounts.Add(newAccount);
