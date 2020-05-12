@@ -1,6 +1,7 @@
 ﻿using RoomAid.Authorization;
 using RoomAid.DataAccessLayer;
 using RoomAid.ServiceLayer;
+using RoomAid.ServiceLayer.UserManagement;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,14 +41,15 @@ namespace RoomAid.ManagerLayer
         private readonly ISqlDAO _accountDB;
         //private readonly CreateAccountDAOs _daos; //newAccount, newMapping, newUser, mapper
 
-        public SqlCreateAccountService CreateAccountService { get; set; }
-        public DeleteAccountSQLService DeleteAccountService { get; set; }
-        public UpdateAccountSqlService UpdateAccountService { get; set; }
-        public PermissionUpdateSqlService UpdatePermissionService { get; set; }
-        public JWTService AuthService { get; set; }
+        private readonly AuthenticationService _authNService;
+        private readonly SqlCreateAccountService _createAccountService;
+        private readonly DeleteAccountSQLService _deleteAccountService;
+        private readonly UpdateAccountSqlService _updateAccountService;
+        private readonly PermissionUpdateSqlService _updatePermissionService;
+        private readonly JWTService _authService;
 
 
-        public UserManagementManager(SqlCreateAccountService createAccountService, DeleteAccountSQLService deleteAccountService, UpdateAccountSqlService updateAccountService, PermissionUpdateSqlService updatePermissionService) {
+        public UserManagementManager(AuthenticationService authenticationService, SqlCreateAccountService createAccountService, DeleteAccountSQLService deleteAccountService, UpdateAccountSqlService updateAccountService, PermissionUpdateSqlService updatePermissionService) {
             //_newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
             //_newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
             //_newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
@@ -55,10 +57,38 @@ namespace RoomAid.ManagerLayer
             //_systemDB = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
             //_mappingDB = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
             //_accountDB = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
-            UpdatePermissionService = updatePermissionService;
-            UpdateAccountService = updateAccountService;
-            CreateAccountService = createAccountService;
-            DeleteAccountService = deleteAccountService;
+            _updatePermissionService = updatePermissionService;
+            _updateAccountService = updateAccountService;
+            _createAccountService = createAccountService;
+            _deleteAccountService = deleteAccountService;
+            _authNService = authenticationService;
+        }
+
+        public User LoginAccount(LoginAttemptModel account)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+
+                try
+                {
+                    _authNService._userEmail = account.Email;
+                    var authNSuccess = _authNService.Authenticate(account.Password);
+                    if (authNSuccess)
+                        break;
+
+                }
+                catch(Exception e)
+                {
+                    var handler = new ErrorController();
+                    handler.Handle(e);
+                }
+                if (i == 2)
+                    throw new Exception("Failed to Authenticate User");
+            }
+
+            
+
+
 
         }
 
@@ -66,13 +96,13 @@ namespace RoomAid.ManagerLayer
         {
             var users = new List<User> { user };
             var accounts = new List<Account> { account };
-            CreateAccountService._newAccounts = accounts;
-            UpdateAccountService._newUsers = users;
+            _createAccountService._newAccounts = accounts;
+            _updateAccountService._newUsers = users;
             for (int i = 0; i < 3; i++)
             {
                 try
                 {
-                    var createAccountResult = CreateAccountService.Create();
+                    var createAccountResult = _createAccountService.Create();
                     if (createAccountResult.IsSuccess)
                         break;
                 }
@@ -90,7 +120,7 @@ namespace RoomAid.ManagerLayer
             {
                 try
                 {
-                    var updateAccountResult = UpdateAccountService.Update();
+                    var updateAccountResult = _updateAccountService.Update();
                     if (updateAccountResult.IsSuccess)
                         break;
                 }
@@ -104,7 +134,7 @@ namespace RoomAid.ManagerLayer
                     throw new Exception("Failed to create Account");
                 }
             }
-            var id= UpdatePermissionService.SysIdFinder(user);
+            var id= _updatePermissionService.SysIdFinder(user);
             Permission perms = new Permission(id);
             foreach(string s in Enum.GetValues(typeof(StandardUser)))
             {
@@ -114,8 +144,8 @@ namespace RoomAid.ManagerLayer
             {
                 try
                 {
-                    UpdatePermissionService._permissions = new List<Permission> { perms };
-                    var permResult = UpdatePermissionService.Update();
+                    _updatePermissionService._permissions = new List<Permission> { perms };
+                    var permResult = _updatePermissionService.Update();
                     if (permResult.IsSuccess)
                         break;
                 }
@@ -139,9 +169,9 @@ namespace RoomAid.ManagerLayer
         {
 
             var users = new List<User> { user };
-            DeleteAccountService._targetUsers = users;
+            _deleteAccountService._targetUsers = users;
             
-            var userId = UpdatePermissionService.SysIdFinder(user);
+            var userId = _updatePermissionService.SysIdFinder(user);
             for(int i = 0; i < 3; i++)
             {
                 Permission perms = new Permission(userId);
@@ -151,8 +181,8 @@ namespace RoomAid.ManagerLayer
                 }
                 try
                 {
-                    UpdatePermissionService._permissions = new List<Permission> { perms };
-                    var permResult = UpdatePermissionService.Update();
+                    _updatePermissionService._permissions = new List<Permission> { perms };
+                    var permResult = _updatePermissionService.Update();
                     if (permResult.IsSuccess)
                         break;
                 }
@@ -168,7 +198,7 @@ namespace RoomAid.ManagerLayer
             {
                 try
                 {
-                    var deleteResult = DeleteAccountService.Delete();
+                    var deleteResult = _deleteAccountService.Delete();
                     if (deleteResult.IsSuccess)
                     {
                         LogService.Log(deleteResult.Message);
@@ -193,7 +223,7 @@ namespace RoomAid.ManagerLayer
 
         public IResult UpdateAccount(User user)
         {
-            //var id = UpdatePermissionService.SysIdFinder(user);
+            //var id = _updatePermissionService.SysIdFinder(user);
             //foreach (string s in Enum.GetValues(typeof(StandardUser)))
             //{
             //    perms.AddPermission(s);
@@ -202,8 +232,8 @@ namespace RoomAid.ManagerLayer
             //{
             //    try
             //    {
-            //        UpdatePermissionService._permissions = new List<Permission> { perms };
-            //        var permResult = UpdatePermissionService.Update();
+            //        _updatePermissionService._permissions = new List<Permission> { perms };
+            //        var permResult = _updatePermissionService.Update();
             //        if (permResult.IsSuccess)
             //            break;
             //    }
@@ -216,12 +246,12 @@ namespace RoomAid.ManagerLayer
             //        throw new Exception("Failed to create Permissions");
             //}
 
-            UpdateAccountService._newUsers = new List<User> { user };
+            _updateAccountService._newUsers = new List<User> { user };
             for (int i = 0; i < 3; i++)
             {
                 try
                 {
-                    var updateAccountResult = UpdateAccountService.Update();
+                    var updateAccountResult = _updateAccountService.Update();
                     if (updateAccountResult.IsSuccess)
                         break;
                 }
@@ -237,7 +267,7 @@ namespace RoomAid.ManagerLayer
             }
 
             return new CheckResult("Account updated successfully", true);
-
+        }
 
     
     }

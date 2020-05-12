@@ -50,6 +50,7 @@
     <Compile Include="MessageDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserManagement\CreateAccountDAOs.cs" />
+    <Compile Include="UserManagement\GetUserDao.cs" />
     <Compile Include="UserManagement\ISqlDAO.cs" />
     <Compile Include="UserManagement\SqlDAO.cs" />
     <Compile Include="UserManagement\ICreateAccountDAO.cs" />

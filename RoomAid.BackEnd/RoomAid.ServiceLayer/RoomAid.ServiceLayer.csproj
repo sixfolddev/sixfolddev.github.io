@@ -126,6 +126,7 @@
     <Compile Include="UserManagement\ICreateAccountService.cs" />
     <Compile Include="UserManagement\IDeleteAccountService.cs" />
     <Compile Include="UserManagement\IUpdateAccountService.cs" />
+    <Compile Include="UserManagement\LoginAttemptModel.cs" />
     <Compile Include="UserManagement\Permission.cs" />
     <Compile Include="UserManagement\PermissionUpdateSqlService.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
