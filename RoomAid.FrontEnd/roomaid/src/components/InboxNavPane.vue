@@ -1,7 +1,8 @@
 <template>
-    <div id="inboxnavbar">
+    <div id="inboxnavpane" data-cy="navpane">
         <nav>
-        <v-navigation-drawer v-model="drawer" dark app class="grey darken-3 py-0">
+        <v-navigation-drawer v-model="drawer"
+        dark app class="grey darken-3 py-0">
             <v-container>
                 <v-row>
                     <v-col md="9">
@@ -10,7 +11,7 @@
                 </v-row>
             </v-container>
             <v-list nav>
-                <v-list-item router to="/inbox/messages">
+                <v-list-item data-cy="messages" router to="/inbox/messages">
                     <v-list-item-action>
                         <v-icon small></v-icon>
                     </v-list-item-action>
@@ -23,7 +24,7 @@
                         small>{{messagesUnread}}
                     </v-chip>
                 </v-list-item>
-                <v-list-item router to="/inbox/invitations">
+                <v-list-item data-cy="invitations" router to="/inbox/invitations">
                     <v-list-item-action>
                         <v-icon small></v-icon>
                     </v-list-item-action>
@@ -36,7 +37,7 @@
                         small>{{invitationsUnread}}
                     </v-chip>
                 </v-list-item>
-                <v-list-item router to="/inbox/sent">
+                <v-list-item data-cy="sent" router to="/inbox/sent">
                     <v-list-item-action>
                         <v-icon small></v-icon>
                     </v-list-item-action>
@@ -54,13 +55,13 @@
                 </v-list-item> -->
             </v-list>
             <!-- temporary -->
-            <v-layout row style="position: absolute; bottom: 0">
+            <!-- <v-layout row style="position: absolute; bottom: 0">
               <v-flex md-10>
                 <v-list-item dense>
                   <v-btn id="newmessage" text class="success mx-0 mt-3" @click="newMessage">NEW MESSAGE</v-btn>
                 </v-list-item>
               </v-flex>
-            </v-layout>
+            </v-layout> -->
         </v-navigation-drawer>
     </nav>
     </div>
@@ -68,14 +69,16 @@
 
 <script>
 export default {
-  name: 'InboxNavBar',
+  name: 'InboxNavPane',
   data: () => ({
     drawer: true,
     messagesUnread: 0,
     invitationsUnread: 0,
-    userid: 2157
+    userid: 0
   }),
   created () {
+    // Get user's id from persisted store
+    this.userid = this.$store.getters.userid
     this.getNewCount()
   },
   computed: {
@@ -85,7 +88,7 @@ export default {
   },
   methods: {
     getNewCount () {
-      let uri = `${this.$hostname}/api/inbox/2157/true/messages/count`
+      let uri = `${this.$hostname}/api/inbox/${this.userid}/true/messages/count`
       let req = new Request(uri, {
         method: 'GET',
         headers: { Accept: 'application/json' },
@@ -105,7 +108,7 @@ export default {
         .catch(err => {
           console.log(err)
         })
-      uri = `${this.$hostname}/api/inbox/2157/false/messages/count`
+      uri = `${this.$hostname}/api/inbox/${this.userid}/false/messages/count`
       req = new Request(uri, {
         method: 'GET',
         headers: { Accept: 'application/json' },

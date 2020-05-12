@@ -1,4 +1,10 @@
-﻿using System;
+﻿using MongoDB.Bson.IO;
+using RoomAid.DataAccessLayer;
+using RoomAid.DataAccessLayer.UserManagement;
+using RoomAid.ServiceLayer.UserManagement;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,9 +12,16 @@ namespace RoomAid.ServiceLayer
 {
     public class AuthenticationService
     {
-        private readonly string _userEmail;
+        public string _userEmail { get; set; }
         private bool _authenticated;
         private readonly Hasher hasher = new Hasher(new SHA256Cng());
+        private readonly GetUserDao _dao;
+
+        public AuthenticationService(GetUserDao dao)
+        {
+            _dao = dao;
+            _authenticated = false;
+        }
 
         public AuthenticationService(string email)
         {
@@ -29,6 +42,16 @@ namespace RoomAid.ServiceLayer
                 _authenticated = false;
 
             return _authenticated;
+        }
+
+        public User FindUser(LoginAttemptModel model)
+        {
+            var email = model.Email;
+            var dictionary = _dao.RetrieveUser(email);
+
+            return new User(int.Parse(dictionary["SystemID"]), email, dictionary["FirstName"], dictionary["LastName"], dictionary["AccountStatus"], DateTime.Parse(dictionary["DateOfBirth"]), dictionary["Gender"]);
+
+
         }
 
         public bool CompareHashes(string password)

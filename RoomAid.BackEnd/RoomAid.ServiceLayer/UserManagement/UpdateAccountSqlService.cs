@@ -12,7 +12,7 @@ namespace RoomAid.ServiceLayer
 {
     public class UpdateAccountSqlService : IUpdateAccountService
     {
-        private readonly List<User> _newUsers;
+        public List<User> _newUsers { get; set; }
         private readonly ISqlDAO _update;
 
         /// <summary>
@@ -20,6 +20,12 @@ namespace RoomAid.ServiceLayer
         /// </summary>
         /// <param name="newUsers"></param>
         /// <param name="update"></param>
+        /// 
+        public UpdateAccountSqlService(ISqlDAO update)
+        {
+            this._update = update;
+        }
+
         public UpdateAccountSqlService(User newUser, ISqlDAO update)
         {
             this._newUsers = new List<User>();

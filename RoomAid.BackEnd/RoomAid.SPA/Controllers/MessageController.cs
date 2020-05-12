@@ -1,15 +1,14 @@
-﻿
 using RoomAid.ManagerLayer;
 using System;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using EnableCorsAttribute = System.Web.Http.Cors.EnableCorsAttribute;
 using System.Configuration;
+
 
 namespace RoomAid.SPA.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    //[EnableCors(origins: "http://localhost:8080", headers: "*", methods: "GET, POST, PUT, DELETE")]
     [RoutePrefix("api/inbox")]
     public class MessageController : ApiController
     {
@@ -41,6 +40,25 @@ namespace RoomAid.SPA.Controllers
             }
         }
 
+        /*        private IHttpActionResult ExecuteAction(IHttpActionResult act)
+                {
+                    try
+                    {
+                        return act;
+                    }
+                    catch (Exception e)
+                    {
+                        var newError = new Exception(e.Message, null);
+                        return InternalServerError(newError);
+                    }
+                }
+
+                [HttpGet]
+                [Route("general/{receiverID}")]
+                public IHttpActionResult GetAllMessages(int receiverID)
+                {
+                    return ExecuteAction(Ok(_messageManager.GetAllMessages(receiverID)));
+                }*/
         [HttpGet]
         [Route("general/{receiverID}")]
         public IHttpActionResult GetAllMessages(int receiverID)
@@ -69,13 +87,14 @@ namespace RoomAid.SPA.Controllers
             }
         }
 
+        // TODO: implement
         [HttpGet]
         [Route("sent/{receiverID}")]
         public IHttpActionResult GetAllSent(int senderID)
         {
             try
             {
-                return Ok(); // TODO: implement
+                return Ok();
             }
             catch
             {

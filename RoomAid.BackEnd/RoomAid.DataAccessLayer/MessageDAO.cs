@@ -83,6 +83,7 @@ namespace RoomAid.DataAccessLayer
             return data;
         }
 
+
         public IList<string> RetrieveOneRow(SqlCommand command)
         {
             IList<string> listOfColumns = new List<string>();
@@ -96,6 +97,7 @@ namespace RoomAid.DataAccessLayer
                         command.Connection = connection;
                         using (SqlDataReader dataReader = command.ExecuteReader())
                         {
+                            // Fetch data from data store
                             if (dataReader.Read())
                             {
                                 Object[] objectArray = new Object[_MaxColumns];
@@ -256,7 +258,10 @@ namespace RoomAid.DataAccessLayer
                     int senderID = Int32.Parse(listOfMessagesDetails[i][SenderIDIndex]); // Previous query retrieves senderID as the fourth column/value
                     command = new SqlCommand(ConfigurationManager.AppSettings["querySelectUserName"]); // Query to select first and last name of one user by system ID (guaranteed one since SysID is unique)
                     command.Parameters.AddWithValue("@sendid", senderID);
+                    
+                    // Executing the query
                     IList<string> senderInfo = RetrieveOneRow(command);
+
                     listOfMessagesDetails[i].RemoveAt(SenderIDIndex); // Remove SenderID
                     listOfMessagesDetails[i].Add(senderInfo[0]); // Add first name to list of details of current message
                     listOfMessagesDetails[i].Add(senderInfo[1]); // Add last name to list of details of current message
@@ -268,6 +273,13 @@ namespace RoomAid.DataAccessLayer
             }
 
             return listOfMessagesDetails;
+
+
+    
+
+
+
+
         }
 
         public int GetCount(int receiverID, bool isGeneral)

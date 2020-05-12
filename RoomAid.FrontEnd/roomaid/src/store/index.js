@@ -11,14 +11,14 @@ const store = new Vuex.Store({
   // Global variables that every Vue component can reference
   state: {
     userData: {
-      userid: 2157 // Test id: need to grab from token authentication
+      userid: 2207 // Test id: need to grab from token authentication
     },
     messageData: {
       messageid: 0,
       messageread: false,
       messagetype: '',
       otherusername: '',
-      otheruserId: 0,
+      otheruserid: 0,
       prevmessageid: 0
     }
   },
@@ -39,8 +39,8 @@ const store = new Vuex.Store({
     otherusername: state => {
       return state.messageData.otherusername
     },
-    otheruserId: state => {
-      return state.messageData.otheruserId
+    otheruserid: state => {
+      return state.messageData.otheruserid
     },
     prevmessageid: state => {
       return state.messageData.prevmessageid
@@ -64,7 +64,7 @@ const store = new Vuex.Store({
       state.messageData.otherusername = type
     },
     updateOtherUserId (state, type) {
-      state.messageData.otheruserId = type
+      state.messageData.otheruserid = type
     },
     updatePrevMessageId (state, type) {
       state.messageData.prevmessageid = type
@@ -88,7 +88,7 @@ const store = new Vuex.Store({
       commit('updateOtherUserName', name)
     },
     updateOtherUserId ({ commit }, newOtherUserId) {
-      commit('updateotherUserId', newOtherUserId)
+      commit('updateOtherUserId', newOtherUserId)
     },
     updatePrevMessageId ({ commit }, newPrevMessageId) {
       commit('updatePrevMessageId', newPrevMessageId)
