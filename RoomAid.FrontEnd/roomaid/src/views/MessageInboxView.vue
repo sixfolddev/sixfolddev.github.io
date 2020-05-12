@@ -1,25 +1,26 @@
 <template>
 <div id = "MessageInboxView"> <!-- Start inbox container -->
   <v-container fluid>
-    <InboxNavBar/>
-    <InboxContainer/>
+    <InboxNavPane/>
+    <InboxContainer/> <!-- messages='messages' -->
   </v-container>
 </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import InboxNavBar from '@/components/InboxNavBar.vue'
+import InboxNavPane from '@/components/InboxNavPane.vue'
 import InboxContainer from '@/components/InboxContainer.vue'
 
 export default {
   name: 'MessageInboxView',
   components: {
-    InboxNavBar,
+    InboxNavPane,
     InboxContainer
   },
   data: () => ({
     type: 'general'
+    // messages: []
   }),
   created () {
     this.type = this.updateMessageType()

@@ -1,7 +1,7 @@
 <template>
 <div id = "SentMessagesView"> <!-- Start inbox container -->
   <v-container fluid>
-    <InboxNavBar/>
+    <InboxNavPane/>
     <InboxContainer/>
   <div class="messages"> <!-- Start inbox container -->
     <!-- Start message items -->
@@ -12,13 +12,13 @@
 
 <script>
 // @ is an alias to /src
-import InboxNavBar from '@/components/InboxNavBar.vue'
+import InboxNavPane from '@/components/InboxNavPane.vue'
 import InboxContainer from '@/components/InboxContainer.vue'
 
 export default {
   name: 'SentMessagesView',
   components: {
-    InboxNavBar,
+    InboxNavPane,
     InboxContainer
   },
   data: () => ({

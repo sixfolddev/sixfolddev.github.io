@@ -55,7 +55,7 @@ export default {
       const uri = `${this.$hostname}/api/inbox/${type}/${this.userid}/${this.messageid}`
       const req = new Request(uri, {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         mode: 'cors'
       })
       fetch(req)
@@ -68,9 +68,13 @@ export default {
         })
         .then(data => {
           this.message = data
-          this.content = data.messageBody
-          this.prevmessageid = data.prevMessageID
+          if (this.messagetype === 'general') {
+            this.content = data.messageBody
+          } else {
+            this.content = data.isAccepted
+          }
           this.otheruserid = data.senderID
+          this.prevmessageid = data.messageID // The current message becomes the previous message in a reply
         })
         .catch(err => {
           console.log(err)
