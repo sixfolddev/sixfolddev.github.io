@@ -40,6 +40,21 @@ const routes = [
     component: () => import('../views/ReadMessageView')
   },
   {
+    path: '/search',
+    name: 'HouseholdSearch',
+    component: () => import('../views/HouseholdSearchView')
+  },
+  {
+    path: '/registration',
+    name: 'Registration',
+    component: () => import('../views/RegistrationView')
+  },
+  {
+    path: '/householdCreation',
+    name: 'HouseholdCreation',
+    component: () => import('../views/HouseholdCreationView')
+  },
+  {
     path: '/inbox/message/send',
     name: 'SendMessage',
     component: () => import('../views/SendMessageView')

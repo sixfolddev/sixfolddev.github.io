@@ -4,7 +4,10 @@
     <div id="nav">
       <router-link to="/home">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/inbox">Inbox</router-link>
+      <router-link to="/inbox">Inbox</router-link> |
+      <router-link to="/search">Search</router-link> |
+      <router-link to="/registration">Registration</router-link> |
+      <router-link to="/householdCreation">HouseholdCreation</router-link>
     </div>
     <router-view/>
   </div>

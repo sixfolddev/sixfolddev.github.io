@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿
 using RoomAid.ManagerLayer;
 using System;
 using System.Net;

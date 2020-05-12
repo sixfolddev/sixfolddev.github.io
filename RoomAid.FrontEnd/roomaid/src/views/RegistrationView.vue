@@ -20,7 +20,7 @@
       ></v-text-field>
       <v-text-field
         id="lastname"
-        v-model="Lastrname"
+        v-model="Lastname"
         label="Last name"
         :rules="LastnameRules"
         required
@@ -46,23 +46,23 @@
         ref="menu"
         v-model="menu"
         :close-on-content-click="false"
-        :return-value.sync="date"
+        :return-value.sync="DOB"
         transition="scale-transition"
         offset-y
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
           <v-text-field
-            v-model="date"
+            v-model="DOB"
             label="Pick a date of birth"
             readonly
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker v-model="date" no-title scrollable>
+        <v-date-picker v-model="DOB" no-title scrollable :selectableYearRange="{from: 1985, to: 2020}">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-          <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+          <v-btn text color="primary" @click="$refs.menu.save(DOB)">OK</v-btn>
         </v-date-picker>
       </v-menu>
     </v-col>
@@ -75,10 +75,9 @@
         indeterminate
       ></v-progress-circular>
     </div>
-    <!-- Dialog to display the status of the form submission -->
     <v-dialog v-model="dialog" max-width="800" :persistent="true">
       <v-card>
-        <v-card-title class="headline">Registration Status</v-card-title>
+        <v-card-title class="justify-center">Registration Status</v-card-title>
 
         <v-card-text>
           {{ DialogMessage }}
@@ -87,7 +86,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="green darken-1" text @click.stop="GoToLogin()">
+          <v-btn color="green" text @click.stop="GoToLogin()">
             Accept
           </v-btn>
         </v-card-actions>
@@ -100,24 +99,31 @@
 import 'vue-date-pick/dist/vueDatePick.css'
 export default {
   name: 'RegistrationView',
-  components: { },
+
+  computed: {
+    GetPassword () {
+      return this.Password
+    },
+    GetRepeatedPassword () {
+      return this.RepeatPassword
+    }
+  },
   data () {
     return {
       Loading: false,
-      Username: '',
+      Email: '',
       Firstname: '',
-      LastName: '',
-      date: new Date().toISOString().substr(0, 10),
+      Lastname: '',
+      DOB: new Date().toISOString().substr(0, 10),
       menu: false,
       modal: false,
       menu2: false,
-      email: '',
-      DOB: '2019-01-01',
       Password: '',
       RepeatPassword: '',
       FormStatus: false,
       dialog: false,
       DialogMessage: '',
+      formValid: '',
       // Rules callback
       FirstnameRules: [
         (v) => !!v || 'First name is required',
@@ -151,6 +157,65 @@ export default {
   methods: {
     Validate () {
       this.$refs.form.validate()
+    },
+    Submit () {
+      const formValid = this.$refs.form.validate()
+      // If the form is valid submit to backend.
+      if (formValid) {
+        this.Loading = true
+        // Submit post request.
+        fetch(`${this.$hostname}/api/registration/registerNewUser`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            Email: this.$data.Email,
+            Firstname: this.$data.Firstname,
+            Lastname: this.$data.Lastname,
+            Password: this.$data.Password,
+            RepeatPassword: this.$data.RepeatPassword,
+            Dob: this.$data.Date
+          })
+        })
+          .then((response) => {
+            this.Loading = false
+            if (response > 401) {
+              throw Error('response error')
+            }
+            return response.json()
+          })
+          .then((data) => {
+            if (data.IsSuccess === true) {
+              this.DialogMessage =
+                'Registration finished!'
+              this.dialog = true
+              this.FormStatus = true
+            } else {
+              var errorMesssage = data.Message
+              this.dialog = true
+              this.DialogMessage = errorMesssage
+            }
+          })
+          .catch((error) => {
+            this.Loading = false
+            console.log(error)
+            this.dialog = true
+            this.DialogMessage = 'Fetch data failed!: contact system admin!'
+          })
+      } else {
+        this.Loading = false
+        this.DialogMessage = 'Please make sure all fields are filled and valid!'
+        this.dialog = true
+      }
+    },
+    GoToLogin () {
+      this.dialog = false
+      if (this.FormStatus === true) {
+        this.$router.push('Login').catch((err) => err)
+      }
     }
   }
 }
