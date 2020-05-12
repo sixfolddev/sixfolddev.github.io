@@ -193,29 +193,28 @@ namespace RoomAid.ManagerLayer
 
         public IResult UpdateAccount(User user)
         {
-            var id = UpdatePermissionService.SysIdFinder(user);
-            Permission perms = new Permission(id);
-            foreach (string s in Enum.GetValues(typeof(StandardUser)))
-            {
-                perms.AddPermission(s);
-            }
-            for (int i = 0; i < 3; i++)
-            {
-                try
-                {
-                    UpdatePermissionService._permissions = new List<Permission> { perms };
-                    var permResult = UpdatePermissionService.Update();
-                    if (permResult.IsSuccess)
-                        break;
-                }
-                catch (Exception e)
-                {
-                    ErrorController handler = new ErrorController();
-                    handler.Handle(e);
-                }
-                if (i == 2)
-                    throw new Exception("Failed to create Permissions");
-            }
+            //var id = UpdatePermissionService.SysIdFinder(user);
+            //foreach (string s in Enum.GetValues(typeof(StandardUser)))
+            //{
+            //    perms.AddPermission(s);
+            //}
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    try
+            //    {
+            //        UpdatePermissionService._permissions = new List<Permission> { perms };
+            //        var permResult = UpdatePermissionService.Update();
+            //        if (permResult.IsSuccess)
+            //            break;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        ErrorController handler = new ErrorController();
+            //        handler.Handle(e);
+            //    }
+            //    if (i == 2)
+            //        throw new Exception("Failed to create Permissions");
+            //}
 
             UpdateAccountService._newUsers = new List<User> { user };
             for (int i = 0; i < 3; i++)
