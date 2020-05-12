@@ -60,6 +60,7 @@ namespace RoomAid.ServiceLayer
             try
             {
                 //Retrieve hash connected to user ID from pw file
+                // DAO for retrieving for database
                 storedHash = "tempHash";/*"f8qÈessKÉü`\u0002æça'\u0014éãPHê\u008d¥çE\u0005\u0004Kc²e";*/
             }
             catch (Exception)
