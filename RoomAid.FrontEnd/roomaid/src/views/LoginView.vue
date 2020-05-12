@@ -85,8 +85,11 @@ export default {
   },
   methods: {
     // POST REQUEST
-    LoginUser () {
-      const uri = `${this.$hostname}/api/login`
+    LoginUser (username, password) {
+      this.showError = false
+      this.valid = false
+      this.disable = true
+      const uri = `${this.$hostname}/api/login/loginaccount`
       const req = new Request(uri, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

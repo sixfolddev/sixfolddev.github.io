@@ -1,4 +1,5 @@
 ﻿using RoomAid.ManagerLayer;
+using RoomAid.ServiceLayer.UserManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace RoomAid.SPA.Controllers
     public class LoginController : ApiController
     {
         private readonly UserManagementManager _userManager;
+        
 
         // CONSTRUCTORS
         public LoginController()
@@ -23,11 +25,17 @@ namespace RoomAid.SPA.Controllers
 
         [HttpPost]
         [Route("loginaccount")]
-        public IHttpActionResult LoginAccount()
+        public IHttpActionResult LoginAccount([FromBody] LoginAttemptModel loginAttempt)
         {
             try
             {
-                return Ok(); // IMPLEMENT
+                // Model Binding Validation
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+                // Try to login and get token
+                return Ok(_userManager.LoginAccount(loginAttempt));
             }
             catch (Exception e)
             {
