@@ -45,20 +45,25 @@ const routes = [
     component: () => import('../views/ReadMessageView')
   },
   {
-    path: '/inbox/message/send',
-    name: 'SendMessage',
-    component: () => import('../views/SendMessageView')
-  },
-  {
     path: '/search',
     name: 'HouseholdSearch',
     component: () => import('../views/HouseholdSearchView')
   },
   {
-    path: '/inbox/message/reply/:type',
-    name: 'ReplyMessage',
-    component: () => import('../views/ReplyMessageView')
-  }
+    path: '/registration',
+    name: 'Registration',
+    component: () => import('../views/RegistrationView')
+  },
+  {
+    path: '/householdCreation',
+    name: 'HouseholdCreation',
+    component: () => import('../views/HouseholdCreationView')
+  },
+  {
+    path: '/inbox/message/send',
+    name: 'SendMessage',
+    component: () => import('../views/SendMessageView')
+  } // type: general, invitation;
 ]
 
 const router = new VueRouter({

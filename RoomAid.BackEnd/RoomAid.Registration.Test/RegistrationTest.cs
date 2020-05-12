@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RoomAid.DataAccessLayerLayer;
+using RoomAid.ManagerLayer;
 using RoomAid.ServiceLayer;
 namespace RoomAid.Registration.Test
 {
@@ -331,7 +333,7 @@ namespace RoomAid.Registration.Test
             //Assert
             Assert.AreEqual(expected, actual);
         }
-        //partB test to see if the whole RegistrationService can work
+        //partB test to see if the whole RegistrationManager can work
 
         //The success function for age validation
         //if age is < 18, should return false
@@ -342,11 +344,11 @@ namespace RoomAid.Registration.Test
             bool expected = true;
 
             //Act
-            RegistrationRequestDTO testDTO = new RegistrationRequestDTO("Tester@email.com","testerFname", "testerLname", DateTime.Today, "Male", "testpassword", "testpassword");
+            RegistrationRequestDTO testDTO = new RegistrationRequestDTO("Tester@email.com","testerFname", "testerLname", DateTime.Today, "testpassword", "testpassword");
             DeleteUser(testDTO.Email);
             DeleteMapping(testDTO.Email);
             DeleteAccount(testDTO.Email);
-            RegistrationService rs = new RegistrationService(testDTO);
+            RegistrationManager rs = new RegistrationManager(testDTO);
             IResult checkResult = rs.RegisterUser();
             bool actual = checkResult.IsSuccess;
             DeleteUser(testDTO.Email);

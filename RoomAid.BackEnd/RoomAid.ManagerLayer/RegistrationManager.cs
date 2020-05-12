@@ -1,15 +1,13 @@
 ﻿using RoomAid.DataAccessLayer;
+using RoomAid.DataAccessLayerLayer;
+using RoomAid.ServiceLayer;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RoomAid.ServiceLayer
+
+namespace RoomAid.ManagerLayer
 {
-    public class RegistrationService
+    public class RegistrationManager
     {
         private readonly SHA256Cng algorithm = new SHA256Cng(); // SHA256 algorithm
         private readonly RegistrationRequestDTO registrationRequest;
@@ -18,7 +16,7 @@ namespace RoomAid.ServiceLayer
         /// Service that finish registration and create account for new user
         /// </summary>
         /// <param name="RegistrationRequestDTO dto"></param>
-        public RegistrationService(RegistrationRequestDTO dto)
+        public RegistrationManager(RegistrationRequestDTO dto)
         {
             registrationRequest = dto;
         }
@@ -32,10 +30,9 @@ namespace RoomAid.ServiceLayer
             string message = "";
 
             string email = registrationRequest.Email;
-            string fname = registrationRequest.Fname;
-            string lname = registrationRequest.Lname;
+            string fname = registrationRequest.Firstname;
+            string lname = registrationRequest.Lastname;
             DateTime dob = registrationRequest.Dob;
-            string gender = registrationRequest.Gender;
             string password = registrationRequest.Password;
 
             // Generate salt and hash password
@@ -62,7 +59,7 @@ namespace RoomAid.ServiceLayer
                 if (sysID!=-1)
                 {
                     ISqlDAO DAO = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
-                    User newUser = new User(sysID, email, fname, lname, "Enable", dob, gender);
+                    User newUser = new User(sysID, email, fname, lname, "Enable", dob, null);
                     UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, DAO);
                     checkResult = updateAccount.Update();
                     message = message + checkResult.Message;

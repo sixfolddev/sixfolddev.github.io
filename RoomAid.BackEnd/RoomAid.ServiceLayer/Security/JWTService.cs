@@ -9,31 +9,20 @@ namespace RoomAid.ServiceLayer
 {
     public class JWTService
     {
-        private Base64UrlConverter _encoder;
-        private static string secret_key = ConfigurationManager.AppSettings["secret_key"];
+        
+        private readonly static string secret_key = ConfigurationManager.AppSettings["secret_key"];
         static readonly int sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
 
         // Claims
-        public const string ISSUED_AT_TIME = "iat";
-        public const string EXPIRATION_TIME = "exp";
+        private const string ISSUED_AT_TIME = "iat";
+        private const string EXPIRATION_TIME = "exp";
         //public const string JWT_ID = "jti";
-        public const string SUB = "sub";
+        private const string SUB = "sub";
         //public const string ADMIN = "admin";
 
         public Base64UrlConverter Encoder 
         {
-            get
-            {
-                return _encoder;
-            }
-            set
-            {
-                this._encoder = new Base64UrlConverter();
-            }
-        }
-
-        public JWTService()
-        {   
+            get;set;
         }
 
         private string GenerateJWTHeader()

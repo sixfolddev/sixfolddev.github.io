@@ -6,11 +6,13 @@
         <router-link to="/home">Home</router-link> |
         <router-link to="/about">About</router-link> |
         <router-link to="/inbox">Inbox</router-link> |
-        <router-link to="/search">Search</router-link>
+        <router-link to="/search">Search</router-link> |
+        <router-link to="/householdCreation">HouseholdCreation</router-link>
       </div>
       <div v-if="!isLoggedIn()">
         <router-link to="/login">Home</router-link> |
-        <router-link to="/about">About</router-link>
+        <router-link to="/about">About</router-link> |
+        <router-link to="/registration">Register</router-link>
       </div>
     </div>
     <router-view/>

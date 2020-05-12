@@ -12,7 +12,7 @@ namespace RoomAid.ServiceLayer
 {
     public class DeleteAccountSQLService : IDeleteAccountService
     {
-        private readonly List<User> _targetUsers;
+        public List<User> _targetUsers { get; set; }
         private readonly ISqlDAO _deleteAccountdb;
         private readonly ISqlDAO _deleteMappingdb;
         private readonly ISqlDAO _deleteSystemdb;
@@ -20,6 +20,13 @@ namespace RoomAid.ServiceLayer
         /// Craft queries based off a single user
         /// </summary>
         /// <returns></returns>
+        /// 
+        public DeleteAccountSQLService(ISqlDAO deleteSystem, ISqlDAO deleteMapping, ISqlDAO deleteAccount)
+        {
+            this._deleteAccountdb = deleteAccount;
+            this._deleteMappingdb = deleteMapping;
+            this._deleteSystemdb = deleteSystem;
+        }
         public DeleteAccountSQLService(User targetUser, ISqlDAO deleteSystem, ISqlDAO deleteMapping, ISqlDAO deleteAccount)
         {
             this._targetUsers = new List<User>();
