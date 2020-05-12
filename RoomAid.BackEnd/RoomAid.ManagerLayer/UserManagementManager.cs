@@ -49,7 +49,7 @@ namespace RoomAid.ManagerLayer
         private readonly JWTService _authService;
 
 
-        public UserManagementManager(AuthenticationService authenticationService, SqlCreateAccountService createAccountService, DeleteAccountSQLService deleteAccountService, UpdateAccountSqlService updateAccountService, PermissionUpdateSqlService updatePermissionService) {
+        public UserManagementManager(JWTService authService, AuthenticationService authenticationService, SqlCreateAccountService createAccountService, DeleteAccountSQLService deleteAccountService, UpdateAccountSqlService updateAccountService, PermissionUpdateSqlService updatePermissionService) {
             //_newAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
             //_newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
             //_newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
@@ -62,9 +62,10 @@ namespace RoomAid.ManagerLayer
             _createAccountService = createAccountService;
             _deleteAccountService = deleteAccountService;
             _authNService = authenticationService;
+            _authService = authService;
         }
 
-        public User LoginAccount(LoginAttemptModel account)
+        public string LoginAccount(LoginAttemptModel account)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -86,8 +87,25 @@ namespace RoomAid.ManagerLayer
                     throw new Exception("Failed to Authenticate User");
             }
 
-            
+            for(int i = 0; i < 3; i++)
+            {
+                try
+                {
+                    var user = _authNService.FindUser(account);
+                    if(user is object)
+                    {
+                        return _authService.GenerateJWT(user);
+                    }
+                }
+                catch (Exception e)
+                {
+                    var handler = new ErrorController();
+                    handler.Handle(e);
+                }
+            }
 
+
+            throw new Exception("Failed to Login");
 
 
         }
