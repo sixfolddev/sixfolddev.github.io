@@ -46,7 +46,7 @@ namespace RoomAid.Messaging.Tests
                 cmd = new SqlCommand("SELECT SysID FROM dbo.Users WHERE UserEmail = @email");
                 cmd.Parameters.AddWithValue("@email", email);
                 receiverID = (int)_messageDAO.RetrieveOneColumn(cmd); // Get SysID of user just created
-                //MakeTestData();
+                //MakeTestData(); // For creating mock data for front end testing
                 //DeleteTestData();
                 }
             catch (Exception e)
@@ -452,7 +452,7 @@ namespace RoomAid.Messaging.Tests
                     sb.Append(" ");
                     sb.Append(sendingUsers[i].LastName);
                     if (inbox[i].MessageID == messages[i].MessageID &&
-                       inbox[i].SentDate.ToString().Equals(messages[i].SentDate.ToString()) &&
+                       inbox[i].SentDate.Equals(messages[i].SentDate.ToString("f", CultureInfo.CreateSpecificCulture("en-US"))) &&
                        inbox[i].FullName.Equals(sb.ToString()))
                     {
                         isSuccess = true;
@@ -540,7 +540,7 @@ namespace RoomAid.Messaging.Tests
                     sb.Append(" ");
                     sb.Append(sendingUsers[i].LastName);
                     if (inbox[i].MessageID == invitations[i].MessageID &&
-                       inbox[i].SentDate.ToString().Equals(invitations[i].SentDate.ToString()) &&
+                       inbox[i].SentDate.ToString().Equals(invitations[i].SentDate.ToString("f", CultureInfo.CreateSpecificCulture("en-US"))) &&
                        inbox[i].FullName.Equals(sb.ToString()))
                     {
                         isSuccess = true;

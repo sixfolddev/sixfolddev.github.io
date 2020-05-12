@@ -13,6 +13,8 @@ namespace RoomAid.SPA
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+
         }
+
     }
 }

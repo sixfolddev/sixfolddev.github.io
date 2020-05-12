@@ -29,7 +29,7 @@
 <script>
 export default {
   data: () => ({
-    uerid: 0,
+    userid: 0,
     sendtoid: 0,
     sendto: '',
     content: '',
@@ -52,13 +52,19 @@ export default {
   },
   methods: {
     sendMessage () {
-      const uri = `${this.$hostname}/api/inbox/${this.otheruserid}/${this.prevmessageid}/reply/${this.messagetype}/${this.userid}` // UPDATE LATER; THIS IS ONLY FOR REPLIES
+      const uri = `${this.$hostname}/api/inbox/${this.userid}/${this.prevmessageid}/reply/${this.messagetype}/${this.sendtoid}` // UPDATE LATER; THIS IS ONLY FOR REPLIES RIGHT NOW
+      const h = new Headers()
+      h.append('Content-Type', 'application/json')
+      h.append('Accept', 'application/json')
+      h.append('Origin', 'http://localhost:8080')
+
       const req = new Request(uri, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: h,
         mode: 'cors',
         body: JSON.stringify(this.content)
       })
+
       fetch(req)
         .then(response => {
           if (response.ok) {
@@ -69,6 +75,11 @@ export default {
         })
         .then(data => {
           console.log(data) // Boolean return value
+          if (this.messagetype === 'general') {
+            this.$router.push('/inbox/messages')
+          } else {
+            this.$router.push('/inbox/invitations')
+          }
         })
         .catch(err => {
           console.log(err)

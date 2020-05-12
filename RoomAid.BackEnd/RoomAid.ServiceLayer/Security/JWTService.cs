@@ -52,7 +52,7 @@ namespace RoomAid.ServiceLayer
             claims.Add(ISSUED_AT_TIME, getTimeNowInSeconds().ToString());
             claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + sessiontimeout).ToString());
             //claims.Add(JWT_ID, Guid.NewGuid().ToString()); // TODO: Do not use GUID
-            claims.Add(SUB, user.UserEmail); // TODO: encrypt email
+            claims.Add(SUB, (user.SystemID).ToString()); // TODO: encrypt email
             //claims.Add(ADMIN, user.Admin.ToString());
             string encodedPayload = Encoder.Encode(claims);
 

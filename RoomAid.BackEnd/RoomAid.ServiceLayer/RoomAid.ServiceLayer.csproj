@@ -130,11 +130,11 @@
     <Compile Include="UserManagement\PermissionUpdateSqlService.cs" />
     <Compile Include="UserManagement\UpdateAccountSqlService.cs" />
     <Compile Include="Security\SaltGenerator.cs" />
-    <Compile Include="UserManagement\Base64UrlConverter.cs" />
+    <Compile Include="Security\Base64UrlConverter.cs" />
     <Compile Include="UserManagement\SqlCreateAccountService.cs" />
-    <Compile Include="UserManagement\IConverter.cs" />
-    <Compile Include="UserManagement\JWTService.cs" />
-    <Compile Include="UserManagement\SessionTokenService.cs" />
+    <Compile Include="Security\IConverter.cs" />
+    <Compile Include="Security\JWTService.cs" />
+    <Compile Include="Security\SessionTokenService.cs" />
     <Compile Include="UserManagement\User.cs" />
     <Compile Include="UserManagement\UserSession.cs" />
   </ItemGroup>
