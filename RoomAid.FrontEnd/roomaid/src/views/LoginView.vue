@@ -41,7 +41,7 @@
                   required
                   solo
                   ></v-text-field>
-                <v-btn color="success" @click="LoginUser" :disabled="!valid" :loading="loading">Sign In</v-btn>
+                <v-btn color="success" @click="LoginUser" :disabled="!valid">Sign In</v-btn>
                 <!-- <div class="text-right">
                   <router-link class="md-accent" to="ResetPassword">Forgot password?</router-link>
                 </div>
@@ -85,6 +85,28 @@ export default {
   },
   methods: {
     // POST REQUEST
+    LoginUser () {
+      const uri = `${this.$hostname}/api/login`
+      const req = new Request(uri, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
+        body: JSON.stringify({ Email: this.email, Password: this.password })
+      })
+      fetch(req)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw new Error(response.status)
+          }
+        })
+        .then(data => {
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
 }
 </script>

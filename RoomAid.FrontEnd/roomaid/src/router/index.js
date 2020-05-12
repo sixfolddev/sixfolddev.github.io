@@ -45,6 +45,11 @@ const routes = [
     component: () => import('../views/ReadMessageView')
   },
   {
+    path: '/inbox/message/reply/:type',
+    name: 'ReplyMessage',
+    component: () => import('../views/ReplyMessageView')
+  },
+  {
     path: '/search',
     name: 'HouseholdSearch',
     component: () => import('../views/HouseholdSearchView')

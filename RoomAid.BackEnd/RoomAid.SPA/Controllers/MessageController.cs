@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace RoomAid.SPA.Controllers
 {
-    //[EnableCors(origins: "http://localhost:8080", headers: "*", methods: "GET, POST, PUT, DELETE")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/inbox")]
     public class MessageController : ApiController
     {
@@ -18,11 +18,6 @@ namespace RoomAid.SPA.Controllers
         public MessageController()
         {
             _messageManager = new MessageManager();
-        }
-
-        public MessageController(MessageManager messageManager)
-        {
-            _messageManager = messageManager;
         }
 
         // GET REQUESTS
