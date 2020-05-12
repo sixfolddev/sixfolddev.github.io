@@ -1,5 +1,5 @@
 <template>
-  <div id="inboxcontainer" data-cy="messagelist">
+  <div id="inboxcontainer" data-cy="inboxcontainer">
       <v-layout>
         <v-flex>
           <v-app style="background-color: white;" class="ma-n4">
@@ -14,11 +14,6 @@
                 no-data-text="No messages"
                 @click:row="openMessage"
                 class="messagelist">
-                <template v-slot:default="items">
-                  <div v-if="items.IsRead = true"> <!-- How so set conditional for already read messages? -->
-                    <tr v-bind:style="{ color: 'blue'}"></tr>
-                  </div>
-                </template>
                 </v-data-table>
               </template>
             </v-container>
@@ -31,6 +26,7 @@
 <script>
 export default {
   name: 'InboxContainer',
+  // props: ['messages'],
   data: () => ({
     userid: 0,
     messages: [],
@@ -38,7 +34,8 @@ export default {
     // Headers that identify a message in an inbox
     headers: [
       { text: 'Name', sortable: true, value: 'fullName' },
-      { text: 'Date', sortable: true, defaultSortBy: true, value: 'sentDate' }
+      { text: 'Date', sortable: true, defaultSortBy: true, value: 'sentDate' },
+      { text: 'Opened', sortable: false, value: 'isRead' } // Placeholder; row should ideally be a different color (grey) upon read
     ],
     messagetype: ''
   }),

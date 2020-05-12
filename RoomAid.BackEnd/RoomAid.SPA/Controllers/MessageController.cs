@@ -9,7 +9,7 @@ using System.Configuration;
 
 namespace RoomAid.SPA.Controllers
 {
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
+    //[EnableCors(origins: "http://localhost:8080", headers: "*", methods: "GET, POST, PUT, DELETE")]
     [RoutePrefix("api/inbox")]
     public class MessageController : ApiController
     {
@@ -41,6 +41,25 @@ namespace RoomAid.SPA.Controllers
             }
         }
 
+        /*        private IHttpActionResult ExecuteAction(IHttpActionResult act)
+                {
+                    try
+                    {
+                        return act;
+                    }
+                    catch (Exception e)
+                    {
+                        var newError = new Exception(e.Message, null);
+                        return InternalServerError(newError);
+                    }
+                }
+
+                [HttpGet]
+                [Route("general/{receiverID}")]
+                public IHttpActionResult GetAllMessages(int receiverID)
+                {
+                    return ExecuteAction(Ok(_messageManager.GetAllMessages(receiverID)));
+                }*/
         [HttpGet]
         [Route("general/{receiverID}")]
         public IHttpActionResult GetAllMessages(int receiverID)

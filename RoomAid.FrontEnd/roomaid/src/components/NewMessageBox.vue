@@ -54,16 +54,17 @@ export default {
     sendMessage () {
       const uri = `${this.$hostname}/api/inbox/${this.userid}/${this.prevmessageid}/reply/${this.messagetype}/${this.sendtoid}` // UPDATE LATER; THIS IS ONLY FOR REPLIES RIGHT NOW
       const h = new Headers()
-      h.append('Access-Control-Allow-Origin', '*')
-      h.append('Access-Control-Allow-Methods', 'POST')
-      h.append('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
       h.append('Content-Type', 'application/json')
+      h.append('Accept', 'application/json')
+      h.append('Origin', 'http://localhost:8080')
+
       const req = new Request(uri, {
         method: 'POST',
         headers: h,
         mode: 'cors',
         body: JSON.stringify(this.content)
       })
+
       fetch(req)
         .then(response => {
           if (response.ok) {
@@ -74,15 +75,15 @@ export default {
         })
         .then(data => {
           console.log(data) // Boolean return value
+          if (this.messagetype === 'general') {
+            this.$router.push('/inbox/messages')
+          } else {
+            this.$router.push('/inbox/invitations')
+          }
         })
         .catch(err => {
           console.log(err)
         })
-      if (this.messagetype === 'general') {
-        this.$router.push('/inbox/messages')
-      } else {
-        this.$router.push('/inbox/invitations')
-      }
     }
   }
 }

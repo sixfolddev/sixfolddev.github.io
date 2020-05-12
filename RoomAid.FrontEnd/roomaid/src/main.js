@@ -8,6 +8,7 @@ Vue.config.productionTip = false
 
 Vue.prototype.$hostname = 'https://localhost:44393'
 
+// const app =
 new Vue({
   router,
   store,

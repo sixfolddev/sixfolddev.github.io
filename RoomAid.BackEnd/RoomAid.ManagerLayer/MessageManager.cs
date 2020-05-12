@@ -35,6 +35,7 @@ namespace RoomAid.ManagerLayer
                     sb.Append(" ");
                     sb.Append(message[4]);
                     var formatDate = DateTime.Parse(message[2]).ToString("f", CultureInfo.CreateSpecificCulture("en-US"));
+
                     var MessageListing = new MessageListing()
                     {
                         MessageID = Int32.Parse(message[0]),
@@ -42,6 +43,7 @@ namespace RoomAid.ManagerLayer
                         SentDate = formatDate,
                         FullName = sb.ToString()
                     };
+
                     messageInbox.Add(MessageListing);
                 }
                 return messageInbox;

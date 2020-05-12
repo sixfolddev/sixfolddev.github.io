@@ -2,7 +2,7 @@
 <div id = "MessageInboxView"> <!-- Start inbox container -->
   <v-container fluid>
     <InboxNavPane/>
-    <InboxContainer/>
+    <InboxContainer/> <!-- messages='messages' -->
   </v-container>
 </div>
 </template>
@@ -20,6 +20,7 @@ export default {
   },
   data: () => ({
     type: 'general'
+    // messages: []
   }),
   created () {
     this.type = this.updateMessageType()

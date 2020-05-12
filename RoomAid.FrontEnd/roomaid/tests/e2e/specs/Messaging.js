@@ -1,9 +1,12 @@
 // https://docs.cypress.io/api/introduction/api.html
 
+
+
 describe('Test navigation to inbox', () => {
   it('Visits the MessageInboxView url from the Home view', () => {
     // Arrange
     cy.visit('http://localhost:8080/home')
+
 
     // Act
     cy.contains('Inbox').click()
@@ -52,9 +55,10 @@ describe('Test inbox functionality', () => {
     cy.url().should('include', '/inbox/sent')
   })
 
+  // Can't get past the navigation pane to access messages; adjust pane properties
   it('Opens a message from an inbox', () => {
     // Act
-    cy.get('[data-cy=messagelist]').click()
+    cy.get('[data-cy=inboxcontainer]')
     cy.contains(testUser).click()
 
     // Assert

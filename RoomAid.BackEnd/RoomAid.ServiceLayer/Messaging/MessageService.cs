@@ -69,14 +69,9 @@ namespace RoomAid.ServiceLayer
         /// <returns>A list of message listing details</returns>
         public IList<IList<string>> GetInbox(MessageDAO dao, int receiverID, bool isGeneral)
         {
-            try
-            {
-                return dao.ReadInboxFromDB(receiverID, isGeneral);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+
+            return dao.ReadInboxFromDB(receiverID, isGeneral);
+
         }
 
         /// <summary>
