@@ -22,7 +22,10 @@ const store = new Vuex.Store({
       otherusername: '',
       otheruserid: 0,
       prevmessageid: 0
-    }
+    },
+    searchRequest: {},
+    searchResults: [],
+    currentPage: 1
   },
   // For retrieving the current state of a variable
   getters: {
@@ -52,6 +55,12 @@ const store = new Vuex.Store({
     },
     prevmessageid: state => {
       return state.messageData.prevmessageid
+    },
+    searchRequest: state => {
+      return state.searchRequest
+    },
+    searchResults: state => {
+      return state.searchResults
     }
   },
   // For performing synchronous updates to states
@@ -82,6 +91,12 @@ const store = new Vuex.Store({
     },
     updatePrevMessageId (state, type) {
       state.messageData.prevmessageid = type
+    },
+    updateSearchRequest (state, newRequest) {
+      state.searchRequest = newRequest
+    },
+    updateSearchResults (state, newResults) {
+      state.searchResults = newResults
     }
   },
   // For performing asynchronous methods
@@ -112,6 +127,12 @@ const store = new Vuex.Store({
     },
     updatePrevMessageId ({ commit }, newPrevMessageId) {
       commit('updatePrevMessageId', newPrevMessageId)
+    },
+    updateSearchRequest ({ commit }, newRequest) {
+      commit('updateSearchRequest', newRequest)
+    },
+    updateSearchResults ({ commit }, newResults) {
+      commit('updateSearchResults', newResults)
     }
   }
 })
