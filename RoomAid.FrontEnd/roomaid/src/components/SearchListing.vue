@@ -1,5 +1,5 @@
 <template>
-<div id ="update">
+<div class = "listing">
   <v-card
     class="mx-10"
   >
@@ -7,10 +7,9 @@
       dark
     >
 
-      <v-toolbar-title>Search Results For: </v-toolbar-title>
+      <v-toolbar-title>Search Results: </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
-
     <v-container>
       <v-row dense>
         <v-col
@@ -19,16 +18,20 @@
           cols="12"
         >
           <v-card
-            dark
+          dark
           >
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
                 <v-card-title
                   class="headline"
-                  v-text="households.householdType"
+                  v-text=" 'Hostname Placeholder: ' + item.householdType"
                 ></v-card-title>
-
-                <v-card-subtitle v-text="households.listingDescription"></v-card-subtitle>
+                <v-card-subtitle class="text-left" v-text="'Price: ' + decimal(item.price)"></v-card-subtitle>
+                <v-card-text class="text-left" v-text = "item.listingDescription"></v-card-text>
+                <v-card-actions>
+                  <v-btn color="green accent-4">View Listing</v-btn>
+                  <!-- <v-btn color="green accent-4">Contact Host</v-btn> -->
+                </v-card-actions>
               </div>
 
               <v-avatar
@@ -49,15 +52,12 @@
 
 <script>
 export default {
-  data: () => ({
-    households: [],
-    searchRequest: {
-      cityName: '',
-      householdType: '',
-      minPrice: null,
-      maxPrice: null,
-      page: 1
+  props: ['households'],
+  computed: function () { return this.households },
+  methods: {
+    decimal: function (price) {
+      return Number.parseFloat(price).toFixed(2)
     }
-  })
+  }
 }
 </script>

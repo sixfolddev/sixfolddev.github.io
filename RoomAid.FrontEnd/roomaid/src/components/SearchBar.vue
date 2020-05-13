@@ -74,12 +74,15 @@
               v-if="!(errorMessage.length === 0)">
                 {{errorMessage}}
             </v-alert>
-        <p id = "results">Households: {{this.households}}</p>
-        <p id = "count">Total Returned Values: {{this.households.length}}</p>
+        <!-- <p id = "results">Households: {{this.households}}</p>
+        <p id = "count">Total Returned Values: {{this.households.length}}</p> -->
         </v-container>
     </div>
 </template>
 <script>
+
+// import * as config from './config.prod.json'
+
 export default {
   name: 'HouseholdSearchView',
   data () {
@@ -88,7 +91,7 @@ export default {
       items: [],
       search: null,
       select: null,
-      householdTypes: ['Apartment', 'Townhouse', 'House'],
+      householdTypes: ['All', 'Apartment', 'Townhouse', 'House'],
       cities: [],
       searchRequest: {
         cityName: '',
@@ -98,14 +101,15 @@ export default {
         page: 1
       },
       errorMessage: [],
-      households: [],
       count: null,
-      totalResultCount: null
+      totalResultCount: null,
+      households: []
     }
   },
   watch: {
     search (val) {
       val && val !== this.select && this.querySelections(val)
+      // .then((r) => this.loading = r)
     }
   },
   // Run a query to get the list of cities required for autocomplete as the page loads
@@ -113,31 +117,6 @@ export default {
     this.Autocomplete()
   },
   methods: {
-    // Used for filtering out option when typing in the autocomplete
-    querySelections (v) {
-      this.loading = true
-      setTimeout(() => {
-        this.items = this.cities.filter(e => {
-          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-        })
-        this.loading = false
-      }, 500)
-    },
-    // Function used to get a list of cities from server
-    Autocomplete () {
-      const uri = `${this.$hostname}/api/search/autocomplete`
-      const req = new Request(uri, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-        mode: 'cors'
-      })
-      fetch(req)
-        .then(response => response.json())
-        .then(data => {
-          this.cities = data
-        })
-    },
-
     // Function used to get a list of search results from the server
     // Also validates search inputs
     HouseholdSearch: function () {
@@ -160,16 +139,51 @@ export default {
       if (this.searchRequest.minPrice < 0 || this.searchRequest.minPrice > 10000) {
         this.errorMessage.push('The minimum price filter must be between 0 and 10000')
       }
-      if (this.searchRequest.householdType === '') {
+      if (this.searchRequest.householdType === '' || this.searchRequest.householdType === 'All') {
         this.searchRequest.householdType = 'none'
       }
       if (this.errorMessage.length === 0) {
         this.GetTotalResultCount()
         this.GetSearchResults()
-        this.$store.dispatch('updateSearchRequest', this.searchRequest)
-        this.$store.dispatch('updateSearchResults', this.households)
+        // HACK: WHY IS THIS ONLY WORKING ON DOUBLE CLICK?!??
+        this.$emit('input', this.households)
       }
     },
+    // Used for filtering out option when typing in the autocomplete
+    querySelections (v) {
+      this.loading = true
+      setTimeout(() => {
+        this.items = this.cities.filter(e => {
+          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+        })
+        this.loading = false
+      }, 500)
+
+      // return new Promise((resovle, reject) => {
+
+      //     this.items = this.cities.filter(e => {
+      //     return resolve((e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1)
+      //     }
+
+      //     return reject(false)
+
+      // })
+    },
+    // Function used to get a list of cities from server
+    Autocomplete () {
+      const uri = `${this.$hostname}/api/search/autocomplete`
+      const req = new Request(uri, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors'
+      })
+      fetch(req)
+        .then(response => response.json())
+        .then(data => {
+          this.cities = data
+        })
+    },
+
     // Get all results for a query using the searchRequest data
     GetSearchResults () {
       const params = {

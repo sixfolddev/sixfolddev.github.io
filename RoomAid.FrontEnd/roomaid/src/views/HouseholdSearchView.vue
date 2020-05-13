@@ -1,8 +1,8 @@
 <template>
   <div id = "SearchView">
     <v-container fluid>
-      <SearchBar/>
-      <SearchListing/>
+      <SearchBar v-model = "households"/>
+      <SearchListing :households = "households" />
     </v-container>
   </div>
 </template>
@@ -15,8 +15,8 @@ export default {
     SearchBar,
     SearchListing
   },
-  props: {
-    households: []
+  data () {
+    return { households: [] }
   }
 }
 </script>
