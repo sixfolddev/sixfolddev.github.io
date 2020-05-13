@@ -29,7 +29,15 @@
         id="zip"
         v-model="Zip"
         label="Zipcode"
-        :rules="zipRules"
+        :rules="ZipRules"
+        required
+      ></v-text-field>
+       <v-text-field
+        id="rent"
+        v-model="Rent"
+        label="Rent"
+        :rules="RentRules"
+        type="double"
         required
       ></v-text-field>
     </v-form>
@@ -43,24 +51,7 @@
         indeterminate
       ></v-progress-circular>
     </div>
-    <!-- Dialog to display the status of the form submission -->
-    <v-dialog v-model="dialog" max-width="800" :persistent="true">
-      <v-card>
-        <v-card-title class="headline">Registration Status</v-card-title>
-
-        <v-card-text>
-          {{ DialogMessage }}
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="green darken-1" text @click.stop="GoToLogin()">
-            Accept
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+<v-btn id="Create" @click="CreateService">Create</v-btn>
   </div>
 </template>
 
@@ -71,10 +62,12 @@ export default {
   data () {
     return {
       Loading: false,
+      Requester: '',
       StreetAddress: '',
       AptNumber: '',
       City: '',
       Zip: '',
+      Rent: 0.00,
       FormStatus: false,
       dialog: false,
       DialogMessage: '',
@@ -90,12 +83,69 @@ export default {
       ZipRules: [
         (v) => !!v || 'Zipcode is required',
         (v) => v.length !== 5 || 'zip code must be 5 digits'
+      ],
+      RentRules: [
+        (v) => !0.00 || 'Rent is required'
       ]
     }
   },
   methods: {
     Validate () {
       this.$refs.form.validate()
+    },
+    Register () {
+      const formValid = this.$refs.form.validate()
+      if (formValid) {
+        this.Loading = true
+        fetch(`${this.$hostname}/api/householdmanagement/createhousehold`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+
+          body: JSON.stringify({
+
+            RequesterEmail: this.$data.Requester,
+            Rent: this.$data.Rent,
+            StreetAddress: this.$data.Email,
+            City: this.$data.City,
+            ZipCode: this.$zip,
+            Suitnumber: this.$data.Aptnumber
+          })
+        }).then((response) => {
+          // Remove loading on response.
+          this.Loading = false
+          if (response > 401) {
+            throw Error('response error')
+          }
+          // Process response as json
+          return response.json()
+        })
+          .then((data) => {
+            if (data === true) {
+              this.dialog = true
+              this.DialogMessage =
+                'Household creation finished!'
+              this.FormStatus = true
+            } else {
+              var errorMesssage = data.Message
+              this.dialog = true
+              this.DialogMessage = errorMesssage
+            }
+          })
+          .catch((error) => {
+            this.Loading = false
+            console.log(error)
+            this.dialog = true
+            this.DialogMessage = 'Fetch data failed!: contact system admin!'
+          })
+      } else {
+        this.Loading = false
+        this.DialogMessage = 'Please make sure all fields are filled and valid!'
+        this.dialog = true
+      }
     }
   }
 }
