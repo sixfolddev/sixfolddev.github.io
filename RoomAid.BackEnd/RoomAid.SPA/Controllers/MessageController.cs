@@ -128,11 +128,11 @@ namespace RoomAid.SPA.Controllers
         // POST REQUESTS
         [HttpPost]
         [Route("{senderID}/send/general/{receiverID}")] //parameters and route... 1:1??
-        public IHttpActionResult SendMessage(int senderID, int receiverID, [FromBody]string messageBody)
+        public IHttpActionResult SendMessage(int senderID, int receiverID, [FromBody]string content)
         {
             try
             {
-                return Ok(_messageManager.SendMessage(receiverID, senderID, messageBody));
+                return Ok(_messageManager.SendMessage(receiverID, senderID, content));
             }
             catch
             {
@@ -156,11 +156,11 @@ namespace RoomAid.SPA.Controllers
 
         [HttpPost]
         [Route("{senderID}/{prevMessageID}/reply/general/{receiverID}")]
-        public IHttpActionResult ReplyMessage(int receiverID, int prevMessageID, int senderID, [FromBody] string messageBody)
+        public IHttpActionResult ReplyMessage(int receiverID, int prevMessageID, int senderID, [FromBody] string content)
         {
             try
             {
-                return Ok(_messageManager.ReplyMessage(receiverID, prevMessageID, senderID, messageBody));
+                return Ok(_messageManager.ReplyMessage(receiverID, prevMessageID, senderID, content));
             }
             catch
             {
