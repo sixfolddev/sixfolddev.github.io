@@ -11,6 +11,15 @@
       <v-spacer></v-spacer>
     </v-app-bar>
     <v-container>
+      <v-row v-if="households.length === 0" dense>
+        <v-card
+          class = "mx-auto"
+          dark>
+          <v-card-title>
+            Search for households in the city of your dreams!
+          </v-card-title>
+        </v-card>
+      </v-row>
       <v-row dense>
         <v-col
           v-for="(item, i) in households"
@@ -33,19 +42,12 @@
                   <!-- <v-btn color="green accent-4">Contact Host</v-btn> -->
                 </v-card-actions>
               </div>
-
-              <v-avatar
-                class="ma-3"
-                size="125"
-                tile
-              >
-                <v-img :src="item.src"></v-img>
-              </v-avatar>
             </div>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+    <v-pagination></v-pagination>
   </v-card>
 </div>
 </template>
