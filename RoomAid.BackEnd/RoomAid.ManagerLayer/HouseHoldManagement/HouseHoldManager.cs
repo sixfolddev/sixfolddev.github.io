@@ -105,7 +105,7 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
         //Check if zip exist in the ZipLocation table
         private bool IfUserExist(string email)
         {
-            SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectSysID"]);
+            SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectEmail"]);
             command.Parameters.AddWithValue("@email", email);
             if (dao.Retrieve(command) > 0)
                 return true;

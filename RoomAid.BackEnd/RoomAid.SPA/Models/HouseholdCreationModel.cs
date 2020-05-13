@@ -15,7 +15,7 @@ namespace RoomAid.SPA.Models
         [Required]
         public string City { get; set; }
         [Required]
-        public int Zip { get; set; }
+        public string ZipCode { get; set; }
         [Required]
         public string SuiteNumber { get; set; }
         [Required]

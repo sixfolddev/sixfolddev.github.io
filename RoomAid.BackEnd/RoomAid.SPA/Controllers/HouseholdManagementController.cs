@@ -15,21 +15,21 @@ namespace RoomAid.SPA.Controllers
     {
         [HttpPost]
         [Route("createhousehold")]
-        public IHttpActionResult Create(HouseholdCreationModel request)
+        public IHttpActionResult Create([FromBody]HouseholdCreationModel request)
         {
             HouseHoldManager houseHoldManager = new HouseHoldManager();
             HouseholdCreationRequestDTO dto = new HouseholdCreationRequestDTO
             {Requester = request.RequesterEmail,
             StreetAddress = request.StreetAddress,
             City = request.City,
-            Zip = request.Zip,
+            Zip = Int32.Parse(request.ZipCode),
             Rent = request.Rent,
             SuiteNumber = request.SuiteNumber
             };
             try
             {
                 var results = houseHoldManager.CreateNewHouseHold(dto);
-                return Content(HttpStatusCode.OK, results);
+                return Content(HttpStatusCode.OK, results.IsSuccess);
             }
             catch (Exception e)
             {

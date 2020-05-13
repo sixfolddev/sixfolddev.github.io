@@ -15,7 +15,6 @@
         id="aptNumber"
         v-model="AptNumber"
         label="Apt Number"
-        :rules="AptNumberRules"
         optional
       ></v-text-field>
       <v-text-field
@@ -36,14 +35,13 @@
         id="rent"
         v-model="Rent"
         label="Rent"
-        :rules="RentRules"
         type="double"
         required
       ></v-text-field>
     </v-form>
     </v-col>
     </v-row>
-    <v-btn id="submit" class="button" @click="Submit">Submit</v-btn>
+    <v-btn id="create" class="button" @click="Create">Create</v-btn>
     <div v-if="Loading" class="text-center">
       <v-progress-circular
         :size="100"
@@ -51,27 +49,43 @@
         indeterminate
       ></v-progress-circular>
     </div>
-<v-btn id="Create" @click="CreateService">Create</v-btn>
+
+    <v-dialog v-model="dialog" max-width="800" :persistent="true">
+      <v-card>
+        <v-card-title class="justify-center">Creation Status</v-card-title>
+
+        <v-card-text>
+          {{ DialogMessage }}
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="green" text @click.stop="Finish()">
+            Accept
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 export default {
   name: 'HouseholdCreationView',
-  components: { },
   data () {
     return {
       Loading: false,
       Requester: 'albertdu233@gmail.com',
       StreetAddress: '',
-      AptNumber: '',
+      AptNumber: '0',
       City: '',
       Zip: '',
       Rent: 0.00,
       FormStatus: false,
-      dialog: false,
       DialogMessage: '',
-      // Rules callback
+      dialog: false,
+      DialogHeadline: '',
       StreetAddressRules: [
         (v) => !!v || 'Street Address is required',
         (v) => v.length < 200 || 'Street Address must be less than 200 characters'
@@ -82,18 +96,12 @@ export default {
       ],
       ZipRules: [
         (v) => !!v || 'Zipcode is required',
-        (v) => v.length !== 5 || 'zip code must be 5 digits'
-      ],
-      RentRules: [
-        (v) => !0.00 || 'Rent is required'
+        (v) => v.length === 5 || 'zip code must be 5 digits'
       ]
     }
   },
   methods: {
-    Validate () {
-      this.$refs.form.validate()
-    },
-    Register () {
+    Create () {
       const formValid = this.$refs.form.validate()
       if (formValid) {
         this.Loading = true
@@ -106,31 +114,29 @@ export default {
           },
 
           body: JSON.stringify({
-
             RequesterEmail: this.$data.Requester,
             Rent: this.$data.Rent,
-            StreetAddress: this.$data.Email,
+            StreetAddress: this.$data.StreetAddress,
             City: this.$data.City,
-            ZipCode: this.$zip,
+            ZipCode: this.$data.Zip,
             Suitnumber: this.$data.Aptnumber
           })
         }).then((response) => {
-          // Remove loading on response.
           this.Loading = false
           if (response > 401) {
             throw Error('response error')
           }
-          // Process response as json
           return response.json()
         })
           .then((data) => {
             if (data === true) {
+              this.Loading = false
               this.dialog = true
               this.DialogMessage =
                 'Household creation finished!'
               this.FormStatus = true
             } else {
-              var errorMesssage = data.Message
+              var errorMesssage = 'Internal error!'
               this.dialog = true
               this.DialogMessage = errorMesssage
             }
@@ -146,6 +152,9 @@ export default {
         this.DialogMessage = 'Please make sure all fields are filled and valid!'
         this.dialog = true
       }
+    },
+    Finish () {
+      this.dialog = false
     }
   }
 }
