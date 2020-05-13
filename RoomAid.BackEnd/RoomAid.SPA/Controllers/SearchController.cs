@@ -16,6 +16,18 @@ namespace RoomAid.SPA.Controllers
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
+        private Exception GenerateUserFriendlyException(Exception e)
+        {
+            var message = string.Empty;
+
+            if (e.Message == "")
+            {
+                message = "";
+            }
+            
+            return new Exception(message);
+        }
+
         [HttpGet]
         [Route("householdsearch")]
         public IHttpActionResult Search(string cityName, int page, int minPrice, int maxPrice, string householdType)
@@ -23,15 +35,19 @@ namespace RoomAid.SPA.Controllers
             HouseholdSearchDAO searchDAO = new HouseholdSearchDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
             HouseholdSearchService searchService = new HouseholdSearchService(searchDAO);
             HouseholdSearchManager searchManager = new HouseholdSearchManager(searchService);
+
             try
             {
                 var results = searchManager.Search(cityName, page, minPrice, maxPrice, householdType);
-                return Content(HttpStatusCode.OK, results);
+
+                return Ok(results);
+                //return Content(HttpStatusCode.OK, results);
             }
             catch (Exception e)
             {
+                return InternalServerError(GenerateUserFriendlyException(e));
                 // TODO: Log
-                return Content(HttpStatusCode.InternalServerError, e.Message);
+                //return Content(HttpStatusCode.InternalServerError, e.Message);
             }
         }
         [HttpGet]
