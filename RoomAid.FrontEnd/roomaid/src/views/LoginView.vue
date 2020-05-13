@@ -108,8 +108,8 @@ export default {
         .then(data => {
           this.$store.dispatch('updateAuthenticationStatus', true)
           this.$store.dispatch('updateAuthenticationToken', data)
-          this.decodedToken = jwt_decode(data)
-          this.$store.dispatch('updateUserId', this.decodedToken.SUB)
+          // this.decodedToken = jwt_decode(data)
+          // this.$store.dispatch('updateUserId', this.decodedToken.SUB)
           this.$router.push('/home')
         })
         .catch(err => {

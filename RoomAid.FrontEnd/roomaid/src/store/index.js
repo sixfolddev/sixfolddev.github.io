@@ -12,7 +12,7 @@ const store = new Vuex.Store({
   state: {
     userData: {
       isauthenticated: false,
-      userid: 0,
+      userid: 2211,
       authenticationtoken: null
     },
     messageData: {

@@ -664,7 +664,7 @@ namespace RoomAid.Messaging.Tests
             IList<User> sendingUsers = new List<User>();
             try
             {
-                CreateUser(receiverID, email, "Michell", "Kuang"); // Creating a user for the first account created in test initialization
+                //CreateUser(receiverID, email, "Michell", "Kuang"); // Creating a user for the first account created in test initialization
                 for (int i = 0; i < _numMessages; i++) // Creating the same number of users as the number of messages that will be sent
                 {
                     // Create email
