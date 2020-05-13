@@ -37,7 +37,7 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
 
             //Check input length for streetAddress
             IResult result = vs.LengthValidation(streetAddress, 200, 1);
-            ifValid = IfUserExist(requester.SystemID);
+            ifValid = IfUserExist(requester);
 
             if (ifValid)
             {
