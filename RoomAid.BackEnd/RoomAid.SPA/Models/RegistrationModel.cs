@@ -9,7 +9,7 @@ namespace RoomAid.SPA.Models
     public class RegistrationModel
     {
         [Required]
-       public string Email{get; set;}
+        public string Email{get; set;}
         [Required]
         public string Firstname {get; set;}
         [Required]

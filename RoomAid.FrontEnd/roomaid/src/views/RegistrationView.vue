@@ -125,7 +125,6 @@ export default {
       dialog: false,
       DialogMessage: '',
       formValid: '',
-      // Rules callback
       FirstnameRules: [
         (v) => !!v || 'First name is required',
         (v) => v.length < 200 || 'First name must be less than 200 characters'
@@ -179,12 +178,10 @@ export default {
             DateofBirth: this.$data.DOB
           })
         }).then((response) => {
-          // Remove loading on response.
           this.Loading = false
           if (response > 401) {
             throw Error('response error')
           }
-          // Process response as json
           return response.json()
         })
           .then((data) => {
