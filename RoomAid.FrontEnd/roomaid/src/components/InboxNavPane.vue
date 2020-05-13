@@ -37,14 +37,14 @@
                         small>{{invitationsUnread}}
                     </v-chip>
                 </v-list-item>
-                <v-list-item data-cy="sent" router to="/inbox/sent">
+                <!-- <v-list-item data-cy="sent" router to="/inbox/sent">
                     <v-list-item-action>
                         <v-icon small></v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title class="text-left">Sent</v-list-item-title>
                     </v-list-item-content>
-                </v-list-item>
+                </v-list-item> -->
                 <!-- <v-list-item router to="/inbox/trash">
                     <v-list-item-action>
                         <v-icon small>fas fa-tachometer-alt</v-icon>

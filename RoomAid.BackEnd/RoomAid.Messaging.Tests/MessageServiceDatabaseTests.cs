@@ -687,7 +687,7 @@ namespace RoomAid.Messaging.Tests
                     var user = CreateUser(rcvid, userEmail.ToString(), firstName.ToString(), lastName.ToString());
                     sendingUsers.Add(user);
 
-                    messages.Add(new GeneralMessage(receiverID, rcvid, GetDateTime.GetUTCNow(), "Test message" + i)); // All messages will be sent to the first user created
+                    messages.Add(new GeneralMessage(2211, rcvid, GetDateTime.GetUTCNow(), "Test message" + i)); // All messages will be sent to the first user created
                     RoomAid.QueueConsumer.QueueConsumer.SendToDB((IMessage)messages[i]);
 
                     command = new SqlCommand("SELECT MessageID FROM dbo.InboxMessages WHERE SenderID = @sendid");
@@ -705,6 +705,7 @@ namespace RoomAid.Messaging.Tests
         public void DeleteTestData()
         {
             //Cleanup other users created
+            DeleteMessages();
             DeleteAccounts("email0@gmail.com");
             DeleteAccounts("email1@gmail.com");
             DeleteAccounts("email2@gmail.com");

@@ -28,7 +28,7 @@ export default {
   name: 'InboxContainer',
   // props: ['messages'],
   data: () => ({
-    userid: 0,
+    userid: 2211,
     messages: [],
     selected: [],
     // Headers that identify a message in an inbox
