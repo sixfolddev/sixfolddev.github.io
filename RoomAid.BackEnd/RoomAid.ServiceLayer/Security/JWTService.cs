@@ -23,7 +23,7 @@ namespace RoomAid.ServiceLayer
 
         public JWTService()
         {
-            _secretkey = ConfigurationManager.AppSettings["_secretkey"];
+            _secretkey = ConfigurationManager.AppSettings["secret_key"];
             _sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
             _encoder = new Base64UrlConverter();
         }
