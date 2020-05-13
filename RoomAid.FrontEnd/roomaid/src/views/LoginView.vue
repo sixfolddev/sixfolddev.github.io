@@ -105,6 +105,9 @@ export default {
           }
         })
         .then(data => {
+          this.$store.dispatch('updateAuthenticationStatus', true)
+          this.$store.dispatch('updateAuthenticationToken', data)
+          this.$router.push('/home')
         })
         .catch(err => {
           console.log(err)

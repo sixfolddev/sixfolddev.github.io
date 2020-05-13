@@ -9,9 +9,9 @@ namespace RoomAid.ServiceLayer
 {
     public class JWTService
     {
-        
-        private readonly static string secret_key = ConfigurationManager.AppSettings["secret_key"];
-        static readonly int sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
+
+        private readonly string _secretkey;
+        private readonly int _sessiontimeout;
 
         // Claims
         private const string ISSUED_AT_TIME = "iat";
@@ -20,10 +20,13 @@ namespace RoomAid.ServiceLayer
         private const string SUB = "sub";
         //public const string ADMIN = "admin";
 
-        public Base64UrlConverter Encoder 
+        public JWTService()
         {
-            get;set;
+            _secretkey = ConfigurationManager.AppSettings["_secretkey"];
+            _sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
         }
+
+        public Base64UrlConverter Encoder { get; set; }
 
         private string GenerateJWTHeader()
         {
@@ -39,7 +42,7 @@ namespace RoomAid.ServiceLayer
         {
             Dictionary<string, string> claims = new Dictionary<string, string>();
             claims.Add(ISSUED_AT_TIME, getTimeNowInSeconds().ToString());
-            claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + sessiontimeout).ToString());
+            claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + _sessiontimeout).ToString());
             //claims.Add(JWT_ID, Guid.NewGuid().ToString()); // TODO: Do not use GUID
             claims.Add(SUB, (user.SystemID).ToString()); // TODO: encrypt email
             //claims.Add(ADMIN, user.Admin.ToString());
@@ -70,7 +73,7 @@ namespace RoomAid.ServiceLayer
         {
             string header = GenerateJWTHeader();
             string payload = GenerateJWTPayload(user);
-            string signature = GenerateJWTSignature(secret_key, header, payload);
+            string signature = GenerateJWTSignature(_secretkey, header, payload);
 
             string token = $"{header}.{payload}.{signature}";
             

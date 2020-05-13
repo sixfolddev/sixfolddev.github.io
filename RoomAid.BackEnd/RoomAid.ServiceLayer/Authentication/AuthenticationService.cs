@@ -56,66 +56,34 @@ namespace RoomAid.ServiceLayer
 
         public bool CompareHashes(string password)
         {
-            string salt = GetSalt(_userEmail);
-            if (hasher.GenerateSaltedHash(password, salt) == RetrieveDataStoreHash())
+            Dictionary<string, string> storeAccountInfo = RetrievePasswordAndSalt();
+            string storedHash = storeAccountInfo["Hash"];
+            string storedSalt = storeAccountInfo["Salt"];
+
+            if (hasher.GenerateSaltedHash(password, storedSalt) == storedHash)
             {
                 return true;
             }
             return false;
         }
 
-        /*
-        public string GenerateHash(string _userEmail, string _password)
+        public Dictionary<string, string> RetrievePasswordAndSalt()
         {
-            int iterations = 100000;
-            //concatenate salt and input _password to run through hashing
-
-            var hash = new Rfc2898DeriveBytes(_password, GetSalt(_userEmail), 
-                iterations, HashAlgorithmName.SHA256);
-            var passwordToCheck = Encoding.Default.GetString(hash.GetBytes(32));
-
-            return passwordToCheck;
-        }*/
-
-        public string RetrieveDataStoreHash()
-        {
-            string storedHash;
+            var accountInfo = new Dictionary<string, string>();
             try
             {
-                //Retrieve hash connected to user ID from pw file
-                // DAO for retrieving for database
-                storedHash = "tempHash";/*"f8qÈessKÉü`\u0002æça'\u0014éãPHê\u008d¥çE\u0005\u0004Kc²e";*/
+                var dao = new AccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
+                var command = new SqlCommand("SELECT HashPassword, Salt FROM dbo.Accounts WHERE UserEmail = @email");
+                command.Parameters.AddWithValue("@email", _userEmail);
+                accountInfo = dao.RetrieveAccountInfo(command);
             }
             catch (Exception)
             {
                 //If hashed pw cannot be retrieved, AuthenticationService will fail because
                 //the comparison will fail
-                storedHash = "";
             }
-
-            return storedHash;
+            return accountInfo;
         }
-
-        public string GetSalt(string _userEmail)
-        {
-            try
-            {
-                //pull salt from pw file
-                return "tempsalt"; // temp salt
-            }
-            catch (Exception)
-            {
-                //Catch error handling.
-                //Returns error back to login screen if salt doesn't exist 
-                //which means account doesn't exist.
-                return "";
-            }
-        }
-/*
-        public bool GetAuthenticated()
-        {
-            return _authenticated;
-        }*/
     }
 }
 
