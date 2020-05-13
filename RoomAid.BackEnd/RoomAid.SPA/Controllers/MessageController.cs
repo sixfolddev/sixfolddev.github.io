@@ -128,7 +128,7 @@ namespace RoomAid.SPA.Controllers
         // POST REQUESTS
         [HttpPost]
         [Route("{senderID}/send/general/{receiverID}")] //parameters and route... 1:1??
-        public IHttpActionResult SendMessage(int senderID, int receiverID, string messageBody)
+        public IHttpActionResult SendMessage(int senderID, int receiverID, [FromBody]string messageBody)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace RoomAid.SPA.Controllers
 
         [HttpPost]
         [Route("{senderID}/{prevMessageID}/reply/general/{receiverID}")]
-        public IHttpActionResult ReplyMessage(int receiverID, int prevMessageID, int senderID, string messageBody)
+        public IHttpActionResult ReplyMessage(int receiverID, int prevMessageID, int senderID, [FromBody] string messageBody)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace RoomAid.SPA.Controllers
 
         [HttpPost]
         [Route("{senderID}/{prevMessageID}/reply/invitation/{receiverID}")]
-        public IHttpActionResult ReplyInvitation(int receiverID, int prevMessageID, int senderID, bool accepted)
+        public IHttpActionResult ReplyInvitation(int receiverID, int prevMessageID, int senderID,[FromBody] bool accepted)
         {
             try
             {
