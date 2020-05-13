@@ -3,6 +3,7 @@
         <v-container fluid>
             <v-toolbar
             dark
+            round
             class = "mx-10"
             >
                 <v-toolbar-title>Search For Households: </v-toolbar-title>
@@ -16,9 +17,11 @@
                     flat
                     hide-no-data
                     hide-details
+                    no-data-text="This city does not exist in California!"
                     label="Enter a city"
                     solo-inverted
                     auto-select-first
+                    append-icon=""
                 ></v-autocomplete>
                     <v-btn icon outlined @click="HouseholdSearch">
                         <v-icon>mdi-magnify</v-icon>
