@@ -7,28 +7,14 @@ using System.Threading.Tasks;
 namespace RoomAid.ServiceLayer
 {
     
-    public class HouseHoldCreationRequestDTO
+    public class HouseholdCreationRequestDTO
     {
-       public User Requester { get; }
-       public string StreetAddress { get; }
-       public string City { get; }
-       public int Zip { get; }
-       public string SuiteNumber { get; }
-       public double Rent { get; }
+       public string Requester { get; set; }
+       public string StreetAddress { get; set; }
+       public string City { get; set; }
+       public int Zip { get; set; }
+       public string SuiteNumber { get; set; }
+       public double Rent { get; set; }
 
-        public HouseHoldCreationRequestDTO(User user, string streetAddress, string city, int zip, string suiteNumber, double rent)
-        {
-            Requester = user;
-
-            StreetAddress = streetAddress;
-
-            City = city;
-
-            Zip = zip;
-
-            SuiteNumber = suiteNumber;
-
-            Rent = rent;
-        }
     }
 }

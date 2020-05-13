@@ -1,10 +1,9 @@
-﻿using Roomaid.Controllers.Models;
-using RoomAid.DataAccessLayer.HouseHoldManagement;
+﻿
 using RoomAid.DataAccessLayerLayer;
 using RoomAid.ManagerLayer;
-using RoomAid.ManagerLayer.HouseHoldManagement;
-using RoomAid.ServiceLayer.HouseHoldManagement;
+using RoomAid.SPA.Models;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -16,14 +15,24 @@ namespace RoomAid.SPA.Controllers
     public class RegistrationController : ApiController
     {
         [HttpPost]
-        [Route("registerNewUser")]
-        public IHttpActionResult Register(RegistrationRequestDTO request)
+        [Route("registerUser")]
+        public IHttpActionResult Register([FromBody]RegistrationModel request)
         {
-            RegistrationManager registrationManager = new RegistrationManager(request);
+            RegistrationRequestDTO registrationRequestDTO = new RegistrationRequestDTO
+            {
+                Email = request.Email,
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                Password = request.Password,
+                Repeatpassword = request.Password,
+                Dob = request.DateofBirth
+            };
+
+            RegistrationManager registrationManager = new RegistrationManager(registrationRequestDTO);
             try
             {
-                var results = registrationManager.RegisterUser();
-                return Content(HttpStatusCode.OK, results);
+                var result = registrationManager.RegisterUser();
+                return Content(HttpStatusCode.OK, result.IsSuccess);
             }
             catch (Exception e)
             {

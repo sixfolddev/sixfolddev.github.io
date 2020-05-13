@@ -38,7 +38,15 @@ namespace RoomAid.HouseHoldManagement.Tests
             cas.Create();
             int sid = mapperDAO.GetSysID("testerEmail");
             User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity",92868,"TestSuiteNumber", 1500.00);
+            HouseholdCreationRequestDTO request = new HouseholdCreationRequestDTO
+            {
+                Requester = "testerEmail",
+                StreetAddress = "TestStreetAddress",
+                City = "TestCity",
+                Zip = 92868,
+                SuiteNumber = "TestSuiteNumber",
+                Rent = 1500.00
+            };
             IResult result = mr.CreateNewHouseHold(request);
             Console.WriteLine("New HouseHold ID is: " + result.Message);
             int hID = Int32.Parse(result.Message);
@@ -77,7 +85,15 @@ namespace RoomAid.HouseHoldManagement.Tests
             DeleteAccount(testAccount.UserEmail);
 
             User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity", 92868, "TestSuiteNumber", 1500.00);
+            HouseholdCreationRequestDTO request = new HouseholdCreationRequestDTO
+            {
+                Requester = "testerEmail",
+                StreetAddress = "TestStreetAddress",
+                City = "TestCity",
+                Zip = 92868,
+                SuiteNumber = "TestSuiteNumber",
+                Rent = 1500.00
+            }; ;
             IResult result = mr.CreateNewHouseHold(request);
             Console.WriteLine(result.Message);
             bool actual = result.IsSuccess;
@@ -106,7 +122,15 @@ namespace RoomAid.HouseHoldManagement.Tests
             int sid = mapperDAO.GetSysID("testerEmail");
 
             User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity", 92868, "TestSuiteNumber", 1500.00);
+            HouseholdCreationRequestDTO request = new HouseholdCreationRequestDTO
+            {
+                Requester = "testerEmail",
+                StreetAddress = "TestStreetAddress",
+                City = "TestCity",
+                Zip = 92868,
+                SuiteNumber = "TestSuiteNumber",
+                Rent = 1500.00
+            }; ;
             IResult result = mr.CreateNewHouseHold(request);
             int hID = Int32.Parse(result.Message);
             result = mr.CreateNewHouseHold(request);
@@ -142,7 +166,13 @@ namespace RoomAid.HouseHoldManagement.Tests
 
             User testUser = new User(sid, "testerEmail", "testerFname", "testerLname", "Enable", DateTime.Today, "Male");
             //using zip for New York
-            HouseHoldCreationRequestDTO request = new HouseHoldCreationRequestDTO(testUser, "TestStreetAddress", "TestCity", 10001, "TestSuiteNumber", 1500.00);
+            HouseholdCreationRequestDTO request = new HouseholdCreationRequestDTO{
+                Requester = "testerEmail", 
+                StreetAddress = "TestStreetAddress",
+                City = "TestCity", 
+                Zip = 10001, 
+                SuiteNumber = "TestSuiteNumber", 
+                Rent = 1500.00 };
             IResult result = mr.CreateNewHouseHold(request);
             Console.WriteLine(result.Message);
             DeleteUser(testAccount.UserEmail);
