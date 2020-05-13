@@ -12,6 +12,7 @@ namespace RoomAid.ServiceLayer
 
         private readonly string _secretkey;
         private readonly int _sessiontimeout;
+        private readonly Base64UrlConverter _encoder;
 
         // Claims
         private const string ISSUED_AT_TIME = "iat";
@@ -24,16 +25,15 @@ namespace RoomAid.ServiceLayer
         {
             _secretkey = ConfigurationManager.AppSettings["_secretkey"];
             _sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
+            _encoder = new Base64UrlConverter();
         }
-
-        public Base64UrlConverter Encoder { get; set; }
 
         private string GenerateJWTHeader()
         {
             Dictionary<string, string> header = new Dictionary<string, string>();
             header.Add("alg", "HS256"); // HMAC SHA256
             header.Add("typ", "JWT");
-            string encodedHeader = Encoder.Encode(header);
+            string encodedHeader = _encoder.Encode(header);
 
             return encodedHeader;
         }
@@ -46,7 +46,7 @@ namespace RoomAid.ServiceLayer
             //claims.Add(JWT_ID, Guid.NewGuid().ToString()); // TODO: Do not use GUID
             claims.Add(SUB, (user.SystemID).ToString()); // TODO: encrypt email
             //claims.Add(ADMIN, user.Admin.ToString());
-            string encodedPayload = Encoder.Encode(claims);
+            string encodedPayload = _encoder.Encode(claims);
 
             return encodedPayload;
         }
@@ -58,12 +58,15 @@ namespace RoomAid.ServiceLayer
 
         private string GenerateJWTSignature(string key, string header, string payload)
         {
-            byte[] headPayInBytes = Encoding.UTF8.GetBytes(header + "." + payload);
+            var sb = new StringBuilder(header);
+            sb.Append('.');
+            sb.Append(payload);
+            byte[] headPayInBytes = Encoding.UTF8.GetBytes(sb.ToString());
             byte[] keyInBytes = Encoding.UTF8.GetBytes(key);
             HMACSHA256 hash = new HMACSHA256(keyInBytes);
             byte[] signature = hash.ComputeHash(headPayInBytes);
             hash.Dispose();
-            string encodedSignature = Encoder.CleanString(signature);
+            string encodedSignature = _encoder.CleanString(signature);
 
             return encodedSignature;
         }
