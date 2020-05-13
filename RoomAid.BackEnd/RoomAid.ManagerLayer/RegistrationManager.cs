@@ -59,7 +59,7 @@ namespace RoomAid.ManagerLayer
                 if (sysID!=-1)
                 {
                     ISqlDAO DAO = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
-                    User newUser = new User(sysID, email, fname, lname, "Enable", dob, null);
+                    User newUser = new User(sysID, email, fname, lname, "Enable", dob, "male");
                     UpdateAccountSqlService updateAccount = new UpdateAccountSqlService(newUser, DAO);
                     checkResult = updateAccount.Update();
                     message = message + checkResult.Message;

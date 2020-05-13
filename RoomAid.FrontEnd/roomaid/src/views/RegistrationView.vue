@@ -34,7 +34,7 @@
         :rules="PasswordRules"
       ></v-text-field>
       <v-text-field
-        id="pepeatPassword"
+        id="repeatPassword"
         @keyup="Validate"
         type="password"
         v-model="RepeatPassword"
@@ -59,7 +59,7 @@
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker v-model="DOB" no-title scrollable :selectableYearRange="{from: 1985, to: 2020}">
+        <v-date-picker v-model="DOB" :format= dateFormat no-title scrollable :selectableYearRange="{from: 1985, to: 2020} ">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
           <v-btn text color="primary" @click="$refs.menu.save(DOB)">OK</v-btn>
@@ -67,7 +67,7 @@
       </v-menu>
     </v-col>
     </v-row>
-    <v-btn id="submit" class="button" @click="Submit">Submit</v-btn>
+    <v-btn id="submit" class="button" @click="Register">Submit</v-btn>
     <div v-if="Loading" class="text-center">
       <v-progress-circular
         :size="100"
@@ -111,6 +111,7 @@ export default {
   data () {
     return {
       Loading: false,
+      dateFormat: 'yyyy.MM.dd',
       Email: '',
       Firstname: '',
       Lastname: '',
@@ -158,13 +159,11 @@ export default {
     Validate () {
       this.$refs.form.validate()
     },
-    Submit () {
+    Register () {
       const formValid = this.$refs.form.validate()
-      // If the form is valid submit to backend.
       if (formValid) {
         this.Loading = true
-        // Submit post request.
-        fetch(`${this.$hostname}/api/registration/registerNewUser`, {
+        fetch(`${this.$hostname}/api/registration/registerUser`, {
           method: 'POST',
           mode: 'cors',
           headers: {
@@ -177,23 +176,25 @@ export default {
             Lastname: this.$data.Lastname,
             Password: this.$data.Password,
             RepeatPassword: this.$data.RepeatPassword,
-            Dob: this.$data.Date
+            DateofBirth: this.$data.DOB
           })
+        }).then((response) => {
+          // Remove loading on response.
+          this.Loading = false
+          if (response > 401) {
+            throw Error('response error')
+          }
+          // Process response as json
+          return response.json()
         })
-          .then((response) => {
-            this.Loading = false
-            if (response > 401) {
-              throw Error('response error')
-            }
-            return response.json()
-          })
           .then((data) => {
-            if (data.IsSuccess === true) {
+            if (data === true) {
+              this.dialog = true
               this.DialogMessage =
                 'Registration finished!'
-              this.dialog = true
               this.FormStatus = true
             } else {
+              this.Loading = false
               var errorMesssage = data.Message
               this.dialog = true
               this.DialogMessage = errorMesssage
@@ -220,6 +221,5 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 </style>

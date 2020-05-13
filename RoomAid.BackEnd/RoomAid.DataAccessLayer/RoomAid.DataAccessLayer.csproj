@@ -103,6 +103,7 @@
     <Compile Include="MessageDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\RegistrationRequestDTO.cs" />
+    <Compile Include="UserManagement\AccountDAO.cs" />
     <Compile Include="UserManagement\CreateAccountDAOs.cs" />
     <Compile Include="UserManagement\GetUserDao.cs" />
     <Compile Include="UserManagement\ISqlDAO.cs" />

@@ -21,9 +21,9 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
 
         //Create a new HouseHold with an empty HouseHoldListing, if failed, return reasons that failed.
         // if successed return the new HouseHoldID
-        public IResult CreateNewHouseHold(HouseHoldCreationRequestDTO request)
+        public IResult CreateNewHouseHold(HouseholdCreationRequestDTO request)
         {
-            User requester = request.Requester;
+            String requester = request.Requester;
             string streetAddress = request.StreetAddress;
             string city = request.City;
             int zip = request.Zip;
@@ -37,7 +37,7 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
 
             //Check input length for streetAddress
             IResult result = vs.LengthValidation(streetAddress, 200, 1);
-            ifValid = IfUserExist(requester.SystemID);
+            ifValid = IfUserExist(requester);
 
             if (ifValid)
             {
@@ -103,10 +103,10 @@ namespace RoomAid.ManagerLayer.HouseHoldManagement
             return new CheckResult(message,ifValid);
         }
         //Check if zip exist in the ZipLocation table
-        private bool IfUserExist(int sID)
+        private bool IfUserExist(string email)
         {
             SqlCommand command = new SqlCommand(ConfigurationManager.AppSettings["querySelectSysID"]);
-            command.Parameters.AddWithValue("@sysID", sID);
+            command.Parameters.AddWithValue("@email", email);
             if (dao.Retrieve(command) > 0)
                 return true;
             else

@@ -344,7 +344,13 @@ namespace RoomAid.Registration.Test
             bool expected = true;
 
             //Act
-            RegistrationRequestDTO testDTO = new RegistrationRequestDTO("Tester@email.com","testerFname", "testerLname", DateTime.Today, "testpassword", "testpassword");
+            RegistrationRequestDTO testDTO = new RegistrationRequestDTO();
+            testDTO.Email = "Tester@email.com";
+            testDTO.Firstname = "testerFname";
+            testDTO.Lastname = "testerLname";
+            testDTO.Dob = DateTime.Today;
+            testDTO.Password = "testpassword";
+            testDTO.Repeatpassword = "testpassword";
             DeleteUser(testDTO.Email);
             DeleteMapping(testDTO.Email);
             DeleteAccount(testDTO.Email);
