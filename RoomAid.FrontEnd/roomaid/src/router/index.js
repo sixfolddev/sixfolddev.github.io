@@ -6,8 +6,13 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home',
+    redirect: '/login',
     name: 'Default'
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/home',
@@ -38,6 +43,11 @@ const routes = [
     path: '/inbox/message/:id',
     name: 'ReadMessage',
     component: () => import('../views/ReadMessageView')
+  },
+  {
+    path: '/inbox/message/reply/:type',
+    name: 'ReplyMessage',
+    component: () => import('../views/ReplyMessageView')
   },
   {
     path: '/search',

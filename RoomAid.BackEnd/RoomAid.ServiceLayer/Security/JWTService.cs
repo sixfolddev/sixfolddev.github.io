@@ -9,9 +9,10 @@ namespace RoomAid.ServiceLayer
 {
     public class JWTService
     {
-        
-        private readonly static string secret_key = ConfigurationManager.AppSettings["secret_key"];
-        static readonly int sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
+
+        private readonly string _secretkey;
+        private readonly int _sessiontimeout;
+        private readonly Base64UrlConverter _encoder;
 
         // Claims
         private const string ISSUED_AT_TIME = "iat";
@@ -20,9 +21,11 @@ namespace RoomAid.ServiceLayer
         private const string SUB = "sub";
         //public const string ADMIN = "admin";
 
-        public Base64UrlConverter Encoder 
+        public JWTService()
         {
-            get;set;
+            _secretkey = ConfigurationManager.AppSettings["secret_key"];
+            _sessiontimeout = Int32.Parse(ConfigurationManager.AppSettings["sessiontimeout"]); // 20 minute session timeout
+            _encoder = new Base64UrlConverter();
         }
 
         private string GenerateJWTHeader()
@@ -30,7 +33,7 @@ namespace RoomAid.ServiceLayer
             Dictionary<string, string> header = new Dictionary<string, string>();
             header.Add("alg", "HS256"); // HMAC SHA256
             header.Add("typ", "JWT");
-            string encodedHeader = Encoder.Encode(header);
+            string encodedHeader = _encoder.Encode(header);
 
             return encodedHeader;
         }
@@ -39,11 +42,11 @@ namespace RoomAid.ServiceLayer
         {
             Dictionary<string, string> claims = new Dictionary<string, string>();
             claims.Add(ISSUED_AT_TIME, getTimeNowInSeconds().ToString());
-            claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + sessiontimeout).ToString());
+            claims.Add(EXPIRATION_TIME, (getTimeNowInSeconds() + _sessiontimeout).ToString());
             //claims.Add(JWT_ID, Guid.NewGuid().ToString()); // TODO: Do not use GUID
             claims.Add(SUB, (user.SystemID).ToString()); // TODO: encrypt email
             //claims.Add(ADMIN, user.Admin.ToString());
-            string encodedPayload = Encoder.Encode(claims);
+            string encodedPayload = _encoder.Encode(claims);
 
             return encodedPayload;
         }
@@ -55,12 +58,15 @@ namespace RoomAid.ServiceLayer
 
         private string GenerateJWTSignature(string key, string header, string payload)
         {
-            byte[] headPayInBytes = Encoding.UTF8.GetBytes(header + "." + payload);
+            var sb = new StringBuilder(header);
+            sb.Append('.');
+            sb.Append(payload);
+            byte[] headPayInBytes = Encoding.UTF8.GetBytes(sb.ToString());
             byte[] keyInBytes = Encoding.UTF8.GetBytes(key);
             HMACSHA256 hash = new HMACSHA256(keyInBytes);
             byte[] signature = hash.ComputeHash(headPayInBytes);
             hash.Dispose();
-            string encodedSignature = Encoder.CleanString(signature);
+            string encodedSignature = _encoder.CleanString(signature);
 
             return encodedSignature;
         }
@@ -70,7 +76,7 @@ namespace RoomAid.ServiceLayer
         {
             string header = GenerateJWTHeader();
             string payload = GenerateJWTPayload(user);
-            string signature = GenerateJWTSignature(secret_key, header, payload);
+            string signature = GenerateJWTSignature(_secretkey, header, payload);
 
             string token = $"{header}.{payload}.{signature}";
             

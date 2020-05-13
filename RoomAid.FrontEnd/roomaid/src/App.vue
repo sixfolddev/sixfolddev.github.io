@@ -2,17 +2,37 @@
   <v-app id = 'app'>
     <div id="static">
     <div id="nav">
-      <router-link to="/home">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/inbox">Inbox</router-link> |
-      <router-link to="/search">Search</router-link> |
-      <router-link to="/registration">Registration</router-link> |
-      <router-link to="/householdCreation">HouseholdCreation</router-link>
+      <div v-if="isLoggedIn()">
+        <router-link to="/home">Home</router-link> |
+        <router-link to="/about">About</router-link> |
+        <router-link to="/inbox">Inbox</router-link> |
+        <router-link to="/search">Search</router-link> |
+        <router-link to="/householdCreation">HouseholdCreation</router-link>
+      </div>
+      <div v-if="!isLoggedIn()">
+        <router-link to="/login">Home</router-link> |
+        <router-link to="/about">About</router-link> |
+        <router-link to="/registration">Register</router-link>
+      </div>
     </div>
     <router-view/>
-  </div>
+    </div>
   </v-app>
 </template>
+
+<script>
+export default {
+  methods: {
+    isLoggedIn () {
+      if (this.$store.getters.isauthenticated) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+}
+</script>
 
 <style>
 #app {

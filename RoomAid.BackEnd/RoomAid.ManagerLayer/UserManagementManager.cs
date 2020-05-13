@@ -1,5 +1,6 @@
 ﻿using RoomAid.Authorization;
 using RoomAid.DataAccessLayer;
+using RoomAid.DataAccessLayer.UserManagement;
 using RoomAid.ServiceLayer;
 using RoomAid.ServiceLayer.UserManagement;
 using System;
@@ -47,6 +48,22 @@ namespace RoomAid.ManagerLayer
         private readonly UpdateAccountSqlService _updateAccountService;
         private readonly PermissionUpdateSqlService _updatePermissionService;
         private readonly JWTService _authService;
+
+        public UserManagementManager()
+        {
+            var sqlDao = new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+            var createAccountDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User));
+            var newMappingDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+            var newUserDAO = new SqlCreateAccountDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User));
+            var mapperDAO = new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User));
+            var bunchedDaos = new CreateAccountDAOs(createAccountDAO, newMappingDAO, newUserDAO, mapperDAO);
+            _updatePermissionService = new PermissionUpdateSqlService(new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)),new SqlMapperDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User)));
+            _updateAccountService = new UpdateAccountSqlService(new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)));
+            _createAccountService = new SqlCreateAccountService(bunchedDaos);
+            _deleteAccountService = new DeleteAccountSQLService(new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)), new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionMapping", EnvironmentVariableTarget.User)), new SqlDAO(Environment.GetEnvironmentVariable("sqlConnectionAccount", EnvironmentVariableTarget.User)));
+            _authNService = new AuthenticationService(new GetUserDao(Environment.GetEnvironmentVariable("sqlConnectionSystem", EnvironmentVariableTarget.User)));
+            _authService = new JWTService();
+        }
 
 
         public UserManagementManager(JWTService authService, AuthenticationService authenticationService, SqlCreateAccountService createAccountService, DeleteAccountSQLService deleteAccountService, UpdateAccountSqlService updateAccountService, PermissionUpdateSqlService updatePermissionService) {

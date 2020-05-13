@@ -11,7 +11,9 @@ const store = new Vuex.Store({
   // Global variables that every Vue component can reference
   state: {
     userData: {
-      userid: 2207 // Test id: need to grab from token authentication
+      isauthenticated: false,
+      userid: 2207, // Test id: need to grab from token authentication
+      authenticationtoken: null
     },
     messageData: {
       messageid: 0,
@@ -26,6 +28,12 @@ const store = new Vuex.Store({
   getters: {
     userid: state => {
       return state.userData.userid
+    },
+    isauthenticated: state => {
+      return state.userData.isauthenticated
+    },
+    authenticationtoken: state => {
+      return state.userData.authenticationtoken
     },
     messageid: state => {
       return state.messageData.messageid
@@ -51,6 +59,12 @@ const store = new Vuex.Store({
     updateUserId (state, newUserId) {
       state.userData.userid = newUserId
     },
+    updateAuthenticationStatus (state, newAuthenticationStatus) {
+      state.userData.isauthenticated = newAuthenticationStatus
+    },
+    updateAuthenticationToken (state, newToken) {
+      state.userData.authenticationtoken = newToken
+    },
     updateMessageId (state, newMessageId) {
       state.messageData.messageid = newMessageId
     },
@@ -74,6 +88,12 @@ const store = new Vuex.Store({
   actions: {
     updateUserId ({ commit }, newUserId) {
       commit('updateUserId', newUserId)
+    },
+    updateAuthenticationStatus ({ commit }, newAuthenticationStatus) {
+      commit('updateAuthenticationStatus', newAuthenticationStatus)
+    },
+    updateAuthenticationToken ({ commit }, newToken) {
+      commit('updateAuthenticationToken', newToken)
     },
     updateMessageId ({ commit }, newMessageId) {
       commit('updateMessageId', newMessageId)

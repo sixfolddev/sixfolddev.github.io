@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace RoomAid.SPA.Controllers
 {
-    //[EnableCors(origins: "http://localhost:8080", headers: "*", methods: "GET, POST, PUT, DELETE")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/inbox")]
     public class MessageController : ApiController
     {
@@ -18,11 +18,6 @@ namespace RoomAid.SPA.Controllers
         public MessageController()
         {
             _messageManager = new MessageManager();
-        }
-
-        public MessageController(MessageManager messageManager)
-        {
-            _messageManager = messageManager;
         }
 
         // GET REQUESTS
@@ -133,11 +128,11 @@ namespace RoomAid.SPA.Controllers
         // POST REQUESTS
         [HttpPost]
         [Route("{senderID}/send/general/{receiverID}")] //parameters and route... 1:1??
-        public IHttpActionResult SendMessage(int senderID, int receiverID, string messageBody)
+        public IHttpActionResult SendMessage(int senderID, int receiverID, [FromBody]string content)
         {
             try
             {
-                return Ok(_messageManager.SendMessage(receiverID, senderID, messageBody));
+                return Ok(_messageManager.SendMessage(receiverID, senderID, content));
             }
             catch
             {
@@ -161,11 +156,11 @@ namespace RoomAid.SPA.Controllers
 
         [HttpPost]
         [Route("{senderID}/{prevMessageID}/reply/general/{receiverID}")]
-        public IHttpActionResult ReplyMessage(int receiverID, int prevMessageID, int senderID, string messageBody)
+        public IHttpActionResult ReplyMessage(int receiverID, int prevMessageID, int senderID, [FromBody] string content)
         {
             try
             {
-                return Ok(_messageManager.ReplyMessage(receiverID, prevMessageID, senderID, messageBody));
+                return Ok(_messageManager.ReplyMessage(receiverID, prevMessageID, senderID, content));
             }
             catch
             {
@@ -175,7 +170,7 @@ namespace RoomAid.SPA.Controllers
 
         [HttpPost]
         [Route("{senderID}/{prevMessageID}/reply/invitation/{receiverID}")]
-        public IHttpActionResult ReplyInvitation(int receiverID, int prevMessageID, int senderID, bool accepted)
+        public IHttpActionResult ReplyInvitation(int receiverID, int prevMessageID, int senderID,[FromBody] bool accepted)
         {
             try
             {

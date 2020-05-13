@@ -19,14 +19,11 @@ namespace RoomAid.DataAccessLayer.UserManagement
 
         public Dictionary<string, string> RetrieveUser(string email)
         {
-
-            var command = new SqlCommand();
-            command.CommandText = "SELECT * FROM dbo.Users WHERE UserEmail = @email";
-            command.Parameters.AddWithValue("@email", email);
-
             using (SqlConnection connection = new SqlConnection(_connection))
             {
                 connection.Open();
+                var command = new SqlCommand("SELECT * FROM dbo.Users WHERE UserEmail = @email", connection);
+                command.Parameters.AddWithValue("@email", email);
                 var reader = command.ExecuteReader();
                 var dictionary = new Dictionary<string, string>();
 

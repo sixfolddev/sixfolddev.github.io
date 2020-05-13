@@ -19,7 +19,7 @@ namespace RoomAid.SPA
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        protected void Application_BeginRequest()
+/*        protected void Application_BeginRequest()
         {
             if (Request.HttpMethod == "OPTIONS")
             {
@@ -30,7 +30,7 @@ namespace RoomAid.SPA
                 Response.AppendHeader("Access-Control-Allow-Credentials", "true");
                 Response.End();
             }
-        }
+        }*/
 
     }
 }
