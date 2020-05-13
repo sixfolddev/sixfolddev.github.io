@@ -72,7 +72,8 @@ export default {
     valid: false,
     disable: false,
     showError: false,
-    errors: null
+    errors: null,
+    decodedToken: null
   }),
   beforeCreate () {
     try {
@@ -107,6 +108,8 @@ export default {
         .then(data => {
           this.$store.dispatch('updateAuthenticationStatus', true)
           this.$store.dispatch('updateAuthenticationToken', data)
+          // this.decodedToken = jwt_decode(data)
+          // this.$store.dispatch('updateUserId', this.decodedToken.SUB)
           this.$router.push('/home')
         })
         .catch(err => {

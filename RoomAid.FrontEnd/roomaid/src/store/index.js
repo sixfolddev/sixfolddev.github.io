@@ -12,7 +12,7 @@ const store = new Vuex.Store({
   state: {
     userData: {
       isauthenticated: false,
-      userid: 0, // Test id: need to grab from token authentication
+      userid: 2211,
       authenticationtoken: null
     },
     messageData: {
